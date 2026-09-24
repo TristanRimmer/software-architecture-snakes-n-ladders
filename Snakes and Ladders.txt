@@ -1,0 +1,139 @@
+Snakes and Ladders:
+
+Requirements:
+
+Your submitted code will need to fulfil the following coding standards
+
+• Code to be written in Java 21 or higher. 25 is the current version at time of writing.
+• Code to follow the Google Java coding guidelines available from
+https://google.github.io/styleguide/javaguide.html.
+• Code should make use of design patterns to solve design problems. Your Q&A document should
+include an explanation of where and why design patterns have been used (naming the design pattern).
+Your code should demonstrate the use of as many patterns as possible as long as they are used
+appropriately. You can include design patterns not covered in the module material, but if so, you
+should provide a citation and reference to the source of the pattern in literature using the Cite Them
+Right Harvard referencing style.
+• The application uses the Dependency Injection container from Spring Boot Framework.
+• Is written in the Clean Architecture style discussed in the textbook and labs.
+• Plays multiple games automatically.
+
+The Clean Architecture style means that your submitted code will need to fulfil the following criteria:
+
+• The domain logic (all the game mechanics) is separated from the technology (such as input from and
+output to the console and saving/retrieving files).
+• Correctly places code into domain, usecase, and infrastructure packages according to their
+responsibilities.
+• Package dependencies follow Clean Architecture principles (infrastructure depends on usecase,
+usecase depends on domain).
+• Domain and use case code is testable with no direct dependencies on infrastructure code.
+• The application is assembled using the Spring Dependency Injection container.
+
+
+GAME STATE COULD BE TRACKED VIA A STATE MACHINE
+
+Game state
+- Starts a game (setup board and pieces)
+- Takes input of a roll of die(c), auto alternates between players
+- Tracks the position of players around the board and implements the base rules
+- Outputs move made by each player
+
+- Needs to track progress information (written) and player statistics
+
+NOTE: THE RANDOM NUMBER SEED FOR DICE ROLLING SHOULD BE SET, WHICH ALLOWS FIXED DICE ROLL SEQUENCING
+
+When the game starts, output the size of the board, the number of players, the game rules being used:
+- End condition 
+- Hit Condition -> If a piece would land directly on another:
+	- The move is forfeit
+	- The other piece's next move is forfeit? THIS IS AN EXTENSION AND NOT NECESSARY, MAYBE JUST DONT DO IT
+		- THIS COULD BE COOL THOUGH: IF THE PIECES ARE NO LONGER STORED IN A CIRCULAR QUEUE AND INSTEAD A REGULAR QUEUE, 
+		  THEN IT ELIMINATES THE NEED FOR PIECE SKIPPING LOGIC BECAUSE YOU CAN JUST REMOVE ITS NEXT MOVE FROM THE QUEUE.
+		  THE ONE CATCH IS THIS NOW MEANS YOU NEED TO TRACK SKIPPED MOVES IN ANOTHER WAY SO THAT THE PUSHING ONTO 
+		  THE QUEUE MAKES SENSE. COULD BE INTERESTING. THE BENEFIT IS THAT THE STORAGE OF GAMES IS EASIER AS IT OMITS THE NEED FOR A 'SKIP TURN' BIT
+- Linked Position Condition:
+	- The assignment only mentions wormholes
+	- If it architecturally makes sense, having one-way things like in regular snakes and ladders could be cool
+- Number of dice
+
+Each turn:
+- the dice is rolled
+- Outputs the current player, the value of the dice rolls and the position of the player before and after the turn
+- After, output the total number of turns taken by the dice
+
+At the end of the game:
+- Output the winning player
+- Output the number of total turns taken by all players
+
+EACH PLAYED GAME MUST BE STORED IN MEMORY. SAVED GAMES CAN BE SAVED TO A FILE
+
+COOL IDEA:
+
+Storing the games could be done as just a single number with bits corresponding to each 'turn'.
+
+Aka, an initial number stores the game state. It may be better if this is stored as a record with regular data
+FOLLOWED by an array of numbers for the game. Only worth it if it saves memory.
+
+NOTE: THIS WILL WORK IF THE INITIAL ORDER OF PIECES IS KEPT SOMEWHERE AS FINAL
+
+Eg: the first 4 bits store the index of the piece in the INITIAL ORDER array, the next 6 bits store the dice roll, the next 10 (5x2) store the grid X and Y position afterwards. Everything else can be interpreted at run time
+that means an example output might look like:
+00100011000010100011
+0010|001100|00101,00011
+
+NOTE: IF YOU EXACTLY MATCH WHAT THE ASSIGNMENT BRIEF IS ASKING FOR, YOU CAN GET RID A LOT OF THESE BITS:
+first 4 bits become 3 bits (max of 4)
+the following 6 bits becomes a max of 12, therefore 4 bits
+the proceeding 5x2 becomes a 3x3 (max of 6)
+the above becomes 
+0101100101011
+010|1100|101,011
+
+Could be interesting -> an entire game move could be stored in one 'short'. What a flex!
+
+If instead you make it so the game is stored in an 'int', you can:
+- Have 255 individual pieces
+- Support 42 dice per turn
+- Support a 255x255 grid
+
+^ storing as an int is actually a nice idea, as it prevents the need for any initial bit masking
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
