@@ -10,4 +10,6 @@ public sealed interface PieceMovesetFromOrigin permits LowLeftToUpRightPiece, Lo
 
     GridPosition getPosition();
     void set_position(GridPosition new_position);
+
+    int distanceFromWinningSpot();
 }

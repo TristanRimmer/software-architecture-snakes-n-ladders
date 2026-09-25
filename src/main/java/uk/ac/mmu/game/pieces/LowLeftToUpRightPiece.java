@@ -23,32 +23,42 @@ public final class LowLeftToUpRightPiece implements PieceMovesetFromOrigin {
     // Intentionally not rounded to the board dimensions
     public GridPosition moveForward(int dice_sum) {
         int traversalRemaining = dice_sum;
-        // The traversal function is one way
-        // NOTE: you may notice that when assigning localPosX it doesnt take an additional 1 off, but for the actual posX it does: THIS IS CORRECT!
-        int localPosX = posY % 2 == 0 ? this.posX : this.boardWidth - this.posX;
 
-        // INFO: Assumptions were made here because the passed parameter should be unsigned
+        int returnedPosX = this.posX;
+        int returnedPosY = this.posY;
+
+        // Need to calculate how far along the current row the piece is, accounting for 0 indexing and direction
+        // The -1 is here because without it you get off by 1 errors 
+        // (it makes sense when converting from local traversal X to global X)
+        int localPosX = returnedPosY % 2 == 0
+            ? returnedPosX
+            : this.boardWidth - 1 - returnedPosX;
+        
         while (traversalRemaining != 0) {
-            MovementUtil.TraversalStatus traversalResult = MovementUtil.traverseHorizontal(localPosX, this.boardWidth, traversalRemaining);
-            if (traversalResult.wrapped()) {
-                this.posY += 1;
+            MovementUtil.TraversalStatus traversalResult = MovementUtil.traverseAlongLine(localPosX, this.boardWidth, traversalRemaining);
+
+            traversalRemaining = traversalResult.placesLeftoverToMove();
+            boolean wrappedAround = traversalResult.wrapped();
+
+            if (wrappedAround) {
+                returnedPosY += 1;
             }
 
-            if (traversalResult.newPos() >= boardWidth) {
-                System.out.println("Here: " + traversalResult.newPos());
-                // If the leftover is >= the boardWidth, traversing needs to happen again
-                traversalRemaining = traversalResult.newPos();
-
+            if (traversalRemaining >= this.boardWidth) {
                 localPosX = 0;
             } else {
-                // If not, the traversal is done and we know the remainder is from the left
-                traversalRemaining = 0;
+                localPosX = traversalRemaining;
 
-                this.posX = posY % 2 == 0 ? traversalResult.newPos() : this.boardWidth - traversalResult.newPos();
+                traversalRemaining = 0;
             }
         }
 
-        return new GridPosition(this.posX, this.posY);
+        // -1 for the same reason as localPosX
+        returnedPosX = returnedPosY % 2 == 0
+            ? localPosX
+            : this.boardWidth - 1 - localPosX;
+
+        return new GridPosition(returnedPosX, returnedPosY);
     }
 
     @Override
@@ -57,30 +67,45 @@ public final class LowLeftToUpRightPiece implements PieceMovesetFromOrigin {
     public GridPosition moveBackward(int back_step) {
         int traversalRemaining = back_step;
 
-        int localPosX = posY % 2 == 0 ? this.posX : this.boardWidth - this.posX;
+        int returnedPosX = this.posX;
+        int returnedPosY = this.posY;
 
+        // Need to calculate how far along the current row the piece is, accounting for 0 indexing and direction
+        // The -1 is here because without it you get off by 1 errors 
+        // (it makes sense when converting from local traversal X to global X)
+        int localPosX = returnedPosY % 2 == 0
+            ? returnedPosX
+            : this.boardWidth - 1 - returnedPosX;
+        
         while (traversalRemaining != 0) {
-            MovementUtil.TraversalStatus traversalResult = MovementUtil.traverseHorizontal(localPosX, this.boardWidth, traversalRemaining);
-            if (traversalResult.wrapped()) {
-                // Decrease this time
-                this.posY -= 1;
+            MovementUtil.TraversalStatus traversalResult = MovementUtil.traverseAlongLine(localPosX, this.boardWidth, traversalRemaining);
+
+            traversalRemaining = traversalResult.placesLeftoverToMove();
+            boolean wrappedAround = traversalResult.wrapped();
+
+            if (wrappedAround) {
+                returnedPosY -= 1;
             }
 
-            if (traversalResult.newPos() >= boardWidth) {
-                traversalRemaining = traversalResult.newPos();
-
+            if (traversalRemaining >= this.boardWidth) {
                 localPosX = 0;
             } else {
-                traversalRemaining = 0;
+                localPosX = traversalRemaining;
 
-                this.posX = posY % 2 == 0 ? traversalResult.newPos() : this.boardWidth - traversalResult.newPos();
+                traversalRemaining = 0;
             }
         }
 
-        this.posX = Math.max(0, posX);
-        this.posY = Math.max(0, posY);
+        // -1 for the same reason as localPosX
+        returnedPosX = returnedPosY % 2 == 0
+            ? localPosX
+            : this.boardWidth - 1 - localPosX;
 
-        return new GridPosition(this.posX, this.posY);
+
+        returnedPosX = Math.max(0, returnedPosX);
+        returnedPosY = Math.max(0, returnedPosY);
+
+        return new GridPosition(returnedPosX, returnedPosY);
     }
 
     @Override
@@ -91,5 +116,13 @@ public final class LowLeftToUpRightPiece implements PieceMovesetFromOrigin {
     @Override
     public GridPosition getPosition() {
         return new GridPosition(this.posX, this.posY);
+    }
+    @Override
+    public int distanceFromWinningSpot() {
+        int winningSpot = this.boardWidth * this.boardHeight;
+
+        int currentGlobalIndex = (this.boardWidth * this.posY) + this.posX;
+
+        return currentGlobalIndex - winningSpot;
     }
 }
