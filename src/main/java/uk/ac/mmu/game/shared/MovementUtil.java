@@ -11,4 +11,13 @@ public class MovementUtil {
         return wrappedAround ? new TraversalStatus(wrappedAround, sum - maxDim) : new TraversalStatus(
             wrappedAround, sum);
     }
+
+    public static TraversalStatus traverseBackwards(int currentPoint, int maxDim, int increment) {
+        int difference = currentPoint - Math.abs(increment);
+
+        boolean wrappedAround = difference < 0;
+
+        return wrappedAround ? new TraversalStatus(true, Math.abs(difference)) : new TraversalStatus(
+            false, difference);
+    }
 }
