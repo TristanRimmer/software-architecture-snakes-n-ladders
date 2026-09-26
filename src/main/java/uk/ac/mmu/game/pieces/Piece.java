@@ -7,8 +7,6 @@ public class Piece implements PieceService {
 
     int gridWidth;
     int gridHeight;
-    // This can always be formed from gridWidth and Height but its nice to have a copy 
-    int winningDisplacement;
 
     int currentDisplacement;
 
@@ -16,18 +14,18 @@ public class Piece implements PieceService {
         this.converter = converter;
         this.gridWidth = gridWidth;
         this.gridHeight = gridHeight;
-        this.winningDisplacement = gridWidth * gridHeight - 1;
         this.currentDisplacement = 0;
-
-        System.out.println("This piece reports it's winning point at " + this.converter.displacementToGridPosition(this.winningDisplacement, gridWidth, gridHeight));
     }
     /*
         Methods from PieceMoveset - used by the service that handles the turns of each piece
     */
     @Override
-    public GridPosition proposeNewPosition(int increment) {
+    public GridPosition move(int increment) {
+        //System.out.println("Displ before: " + this.currentDisplacement + ", adding: " + increment);
+        this.currentDisplacement += increment;
+
         return converter.displacementToGridPosition(
-            this.currentDisplacement + increment, 
+            this.currentDisplacement, 
             this.gridWidth, 
             this.gridHeight
         );
@@ -55,8 +53,8 @@ public class Piece implements PieceService {
         Methods from WinConditionCheckingMethods - used by the service which checks whether a piece has won
     */
     @Override
-    public int getDisplacementFromWinning() {
-        return this.currentDisplacement - this.winningDisplacement;
+    public int getDisplacementAsScalar() {
+        return this.currentDisplacement;
     }
 
 }

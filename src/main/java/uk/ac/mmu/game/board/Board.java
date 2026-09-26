@@ -74,4 +74,9 @@ public class Board implements BoardService {
 
         return this.specialPositionsList.get(indexInList).getPositionAfterSpecialBehaviour(position);
     }
+
+    @Override
+    public int getMinimumTravelDistance() {
+        return this.width * this.height - 1;
+    }
 }
