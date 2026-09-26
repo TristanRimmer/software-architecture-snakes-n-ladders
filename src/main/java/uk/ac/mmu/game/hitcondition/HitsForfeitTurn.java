@@ -10,8 +10,10 @@ public class HitsForfeitTurn implements PieceCollisionService {
     public GridPosition canPieceOccupyNewSpace(ArrayList<GridPosition> allCurrentPositions, GridPosition old,
             GridPosition proposed) {
         for (GridPosition p : allCurrentPositions) {
-            if (p.equals(proposed))
+            if (p.equals(proposed)) {
+                System.out.println("Piece tried to occupy another piece at " + proposed + ", turn is forfeit!");
                 return old;
+            }
         }
         return proposed;
     }
