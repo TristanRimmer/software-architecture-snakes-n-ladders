@@ -2,7 +2,7 @@ package uk.ac.mmu.game.pieces;
 
 import uk.ac.mmu.game.shared.GridPosition;
 
-public final class LLtoUR implements DisplacementConversionService {
+public final class LLtoUR implements PositionTrackingConverter {
     // For LLtoUR, if the numFullRows % 2 == 0 then we are traversing right, and left overwise
     @Override
     public GridPosition displacementToGridPosition(int displacement, int gridWidth, int gridHeight) {

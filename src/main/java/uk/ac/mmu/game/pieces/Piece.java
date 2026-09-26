@@ -3,7 +3,7 @@ package uk.ac.mmu.game.pieces;
 import uk.ac.mmu.game.shared.GridPosition;
 
 public class Piece implements PieceService {
-    DisplacementConversionService converter;
+    PositionTrackingConverter converter;
 
     int gridWidth;
     int gridHeight;
@@ -12,7 +12,7 @@ public class Piece implements PieceService {
 
     int currentDisplacement;
 
-    public Piece(DisplacementConversionService converter, int gridWidth, int gridHeight) {
+    public Piece(PositionTrackingConverter converter, int gridWidth, int gridHeight) {
         this.converter = converter;
         this.gridWidth = gridWidth;
         this.gridHeight = gridHeight;
