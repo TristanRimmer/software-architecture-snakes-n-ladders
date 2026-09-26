@@ -18,6 +18,8 @@ public class Piece implements PieceService {
         this.gridHeight = gridHeight;
         this.winningDisplacement = gridWidth * gridHeight - 1;
         this.currentDisplacement = 0;
+
+        System.out.println("This piece reports it's winning point at " + this.converter.displacementToGridPosition(this.winningDisplacement, gridWidth, gridHeight));
     }
     /*
         Methods from PieceMoveset - used by the service that handles the turns of each piece

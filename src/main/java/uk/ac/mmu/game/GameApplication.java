@@ -33,7 +33,8 @@ public class GameApplication {
 
 		// Create the special positions
 		ArrayList<SpecialPositionService> specialPositions = new ArrayList<>();
-		specialPositions.add(new Teleporter(new GridPosition(3,4), new GridPosition(1, 0)));
+		specialPositions.add(new Teleporter(new GridPosition(0,3), new GridPosition(1, 0)));
+		//specialPositions.add(new Teleporter(new GridPosition(3,4), new GridPosition(1, 0)));
 
 		BoardService board = new Board(5, 5, specialPositions);
 
@@ -49,16 +50,20 @@ public class GameApplication {
 
 		rand_gen.setSeed(rand_seed);
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 1; i < 100; i++) {
 			int newDiceRoll = rand_gen.nextInt(MAX_DICE_ROLL + 1);
 
 			GridPosition proposedNewPos = piece.proposeNewPosition(newDiceRoll);
-			
-			System.out.println("Pos: " + piece.getCurrentPosition() + " + " + newDiceRoll + " -> " + proposedNewPos);
 
-			// Win condition first
+			System.out.print("[" + i + "] Pos: " + piece.getCurrentPosition() + " + " + newDiceRoll + " -> " + proposedNewPos);
+
+			// Update its position so displacement calculations work
+			piece.setPosition(proposedNewPos);
 			int displFromWinning = piece.getDisplacementFromWinning();
 
+			System.out.print(" (Displ: " + displFromWinning + ")\n");
+
+			// Win condition first
 			if (displFromWinning == 0) {
 				System.out.println("Piece has reached its winning spot");
 				return;
@@ -67,6 +72,10 @@ public class GameApplication {
 				proposedNewPos = (piece.proposeNewPosition(-2 * displFromWinning));
 			}
 
+			// In case win condition updated proposedNewPos, re-set piece position again
+
+			piece.setPosition(proposedNewPos);
+
 			if (board.pieceHasLandedOnSpecialSpot(proposedNewPos)) {
 				GridPosition oldProposedPosition = proposedNewPos;
 				proposedNewPos = board.getSpecialPositionBehaviour(proposedNewPos);
@@ -74,6 +83,7 @@ public class GameApplication {
 				System.out.println("Position " + oldProposedPosition + " was a teleporter! Piece is now at " + proposedNewPos);
 			}
 
+			// Lastly, if piece landed on a special spot update its position from there
 			piece.setPosition(proposedNewPos);
 		}
 	}

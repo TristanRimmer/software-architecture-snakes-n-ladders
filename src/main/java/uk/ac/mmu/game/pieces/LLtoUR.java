@@ -18,6 +18,7 @@ public final class LLtoUR implements PositionTrackingConverter {
 
     @Override
     public int gridPositionToDisplacement(GridPosition position, int gridWidth, int gridHeight) {
+        // On a 5x5 grid @ [0,3] this is reporting -9 when it should be -5
         return (position.y() * gridWidth) 
             + (position.y() % 2 == 0 ? position.x() : gridWidth - 1 - position.x());
     }
