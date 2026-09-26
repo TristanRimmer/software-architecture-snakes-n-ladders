@@ -13,8 +13,12 @@ import uk.ac.mmu.game.diceroller.DiceRoller;
 import uk.ac.mmu.game.diceroller.DiceRollingService;
 import uk.ac.mmu.game.diceroller.NextDiceRoll;
 import uk.ac.mmu.game.diceroller.SingleDice;
+import uk.ac.mmu.game.gamestate.Game;
 import uk.ac.mmu.game.hitcondition.HitsForfeitTurn;
 import uk.ac.mmu.game.hitcondition.PieceCollisionService;
+import uk.ac.mmu.game.output.SystemOut;
+import uk.ac.mmu.game.output.TextOutputHandler;
+import uk.ac.mmu.game.output.TextOutputTracker;
 import uk.ac.mmu.game.pieces.LLtoUR;
 import uk.ac.mmu.game.pieces.Piece;
 import uk.ac.mmu.game.pieces.PieceService;
@@ -36,7 +40,6 @@ public class GameApplication {
 	*/
 	public static void main(String[] args) {
 		SpringApplication.run(GameApplication.class, args);
-
 		/*
 			Board Initialisation
 		*/
@@ -75,84 +78,15 @@ public class GameApplication {
 		WinEvaluationService winEvaluator = new ExactHit();
 
 		/*
-			Hit Condition Initialisation - NOT IN USE!
+			Hit Condition Initialisation
 		*/
 		PieceCollisionService collisionHandler = new HitsForfeitTurn();
 
-		//System.out.println("Starting Piece Position: " + piece.getCurrentPosition());
-		System.out.println("System Dimensions: [" + board.getBoardWidth() + ", " + board.getBoardHeight() + "]");
+		TextOutputHandler textOutput = new TextOutputTracker(new SystemOut());
 
-		int turns = 0;
+		Game game = new Game(board, pieces, diceRoller, winEvaluator, collisionHandler, textOutput);
 
-		while (true) {
-			/*
-				0th step -> Get a list of all initial positions
-				1 - Rolls the Dice
-				2 - Gets a new proposed position
-				3 - Checks for a win condition based on proposed position and respond correctly
-				[TODO] First player hit check
-				4 - Checks for a special spot and responds correctly
-				[TODO] Second player hit check
-
-				There are two points where it may need to forfeit its turn or not
-			*/
-			
-			/*
-				Whose turn is it
-			*/
-			int pieceNum = turns % pieces.size();
-			PieceService piece = pieces.get(pieceNum);
-			turns++;
-	
-			ArrayList<GridPosition> allPositions = new ArrayList<>();
-			for (PieceService p : pieces) {
-				if (p != piece) // Memory Address Comparison
-					allPositions.add(p.getCurrentPosition());
-			}
-
-			GridPosition initialPosition = piece.getCurrentPosition();
-
-			System.out.println("========= Piece " + pieceNum + " =========");
-			System.out.println(" - Position at start of turn: " + initialPosition);
-
-			int newDiceRoll = diceRoller.nextDiceRoll();
-
-			piece.move(newDiceRoll);
-
-			System.out.println(" - Rolled a " + newDiceRoll + "!");
-
-			if (winEvaluator.hasPieceWon(piece, board)) {
-				System.out.println("Piece " + pieceNum + " has reached its winning spot");
-				break;
-			}
-			
-			piece.setPosition(
-				collisionHandler.canPieceOccupyNewSpace(
-					allPositions, 
-					initialPosition, 
-					piece.getCurrentPosition()));
-
-			GridPosition updatedPiecePosition = piece.getCurrentPosition();
-
-			if (board.pieceHasLandedOnSpecialSpot(updatedPiecePosition)) {
-				GridPosition oldProposedPosition = updatedPiecePosition;
-
-				updatedPiecePosition = board.getSpecialPositionBehaviour(updatedPiecePosition);
-
-				System.out.println("Position " + oldProposedPosition + " was a teleporter! Piece is now at " + updatedPiecePosition);
-			}
-
-			// Lastly, if piece landed on a special spot update its position from there
-			piece.setPosition(updatedPiecePosition);
-
-			piece.setPosition(
-				collisionHandler.canPieceOccupyNewSpace(
-					allPositions, 
-					initialPosition, 
-					piece.getCurrentPosition()));
-
-			System.out.println(" - Position at end of turn:   " + piece.getCurrentPosition());
-		}
+		game.play();
 
 		ArrayList<Integer> diceStream = diceRoller.getDiceRollHistory();
 
