@@ -2,7 +2,7 @@ package uk.ac.mmu.game.pieces;
 
 import uk.ac.mmu.game.shared.GridPosition;
 
-public class Piece implements PieceMoveset, WinConditionCheckingMethods {
+public class Piece implements PieceService {
     DisplacementConversionService converter;
 
     int gridWidth;
@@ -23,7 +23,7 @@ public class Piece implements PieceMoveset, WinConditionCheckingMethods {
         Methods from PieceMoveset - used by the service that handles the turns of each piece
     */
     @Override
-    public GridPosition getPositionFromMove(int increment) {
+    public GridPosition proposeNewPosition(int increment) {
         return converter.displacementToGridPosition(
             this.currentDisplacement + increment, 
             this.gridWidth, 
