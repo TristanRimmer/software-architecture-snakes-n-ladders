@@ -100,5 +100,4 @@ public final class InPlay implements GameState {
     public GameState progessState() {
         return new GameOver();
     }
-
 }

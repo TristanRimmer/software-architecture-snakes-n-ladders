@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import uk.ac.mmu.game.board.Board;
 import uk.ac.mmu.game.board.BoardService;
 import uk.ac.mmu.game.board.SpecialPositionService;
-import uk.ac.mmu.game.board.Teleporter;
 import uk.ac.mmu.game.diceroller.DiceRoller;
 import uk.ac.mmu.game.diceroller.DiceRollingService;
 import uk.ac.mmu.game.diceroller.NextDiceRoll;
@@ -19,12 +18,13 @@ import uk.ac.mmu.game.hitcondition.PieceCollisionService;
 import uk.ac.mmu.game.output.SystemOut;
 import uk.ac.mmu.game.output.TextOutputHandler;
 import uk.ac.mmu.game.output.TextOutputTracker;
-import uk.ac.mmu.game.pieces.LLtoUR;
+import uk.ac.mmu.game.pieces.LowerLeftOrigin;
+import uk.ac.mmu.game.pieces.LowerRightOrigin;
 import uk.ac.mmu.game.pieces.Piece;
 import uk.ac.mmu.game.pieces.PieceService;
 import uk.ac.mmu.game.pieces.PositionTrackingConverter;
-import uk.ac.mmu.game.pieces.URtoLL;
-import uk.ac.mmu.game.shared.GridPosition;
+import uk.ac.mmu.game.pieces.UpperLeftOrigin;
+import uk.ac.mmu.game.pieces.UpperRightOrigin;
 import uk.ac.mmu.game.wincondition.ExactHit;
 import uk.ac.mmu.game.wincondition.WinEvaluationService;
 
@@ -44,7 +44,7 @@ public class GameApplication {
 			Board Initialisation
 		*/
 		ArrayList<SpecialPositionService> specialPositions = new ArrayList<>();
-		specialPositions.add(new Teleporter(new GridPosition(0,3), new GridPosition(1, 0)));
+		//specialPositions.add(new Teleporter(new GridPosition(0,3), new GridPosition(1, 0)));
 
 		BoardService board = new Board(5, 5, specialPositions);
 
@@ -54,20 +54,26 @@ public class GameApplication {
 		ArrayList<PieceService> pieces = new ArrayList<>();
 
 		// Could implement a wicked factory here
-		PositionTrackingConverter pieceConverter = new LLtoUR();
+		PositionTrackingConverter pieceConverter = new LowerLeftOrigin();
 		pieces.add(new Piece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
 
-		pieceConverter = new URtoLL();
+		pieceConverter = new UpperRightOrigin();
 		pieces.add(new Piece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
 
+		pieceConverter = new UpperLeftOrigin();
+		pieces.add(new Piece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
+
+		pieceConverter = new LowerRightOrigin();
+		pieces.add(new Piece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
+		
 		/*
 			Dice Rolling Initialisation
 		*/
 		NextDiceRoll chosenDiceImpl = new SingleDice(6);
 		// NextDiceRoll chosenDiceImpl = new DiceStreamFixed(
 		// 	new ArrayList<>(
-		//	 	List.of(1, 1, 5, 2, 5, 3, 2, 3, 6, 5, 2, 6, 6, 6, 5, 1, 6, 1, 2, 6, 4, 1, 6, 1, 5, 3)
-		// 		List.of(6, 6, 3, 5, 2, 5, 6, 2, 6, 6, 4, 2, 4, 4, 3)
+		// 	 	List.of(1, 1, 5, 2, 5, 3, 2, 3, 6, 5, 2, 6, 6, 6, 5, 1, 6, 1, 2, 6, 4, 1, 6, 1, 5, 3)
+		// 		//List.of(6, 6, 3, 5, 2, 5, 6, 2, 6, 6, 4, 2, 4, 4, 3)
 		// 	)
 		// );
 		DiceRollingService diceRoller = new DiceRoller(chosenDiceImpl);

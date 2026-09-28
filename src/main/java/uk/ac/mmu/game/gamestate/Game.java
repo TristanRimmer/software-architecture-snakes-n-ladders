@@ -18,7 +18,6 @@ public class Game {
     private DiceRollingService diceRoller;
     private WinEvaluationService winEvaluator;
     private PieceCollisionService collisionService;
-
     // I/O
     private TextOutputHandler textOutputHandler;
     // TODO: input 
