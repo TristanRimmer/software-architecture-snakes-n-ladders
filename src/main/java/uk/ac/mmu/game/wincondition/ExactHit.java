@@ -5,19 +5,19 @@ import uk.ac.mmu.game.pieces.PieceService;
 
 public class ExactHit implements WinEvaluationService {
     @Override
-    public boolean hasPieceWon(PieceService piece, BoardDimensions boardProperties) {
+    public WinEvaluationStatus evaluateWinStatus(PieceService piece, BoardDimensions boardProperties) {
         int currentDisplacement = piece.getDisplacementAsScalar();
         int offset = currentDisplacement - boardProperties.getMinimumTravelDistance();
 
-        //System.out.println("OFFSET: " + offset);
-
         if (offset == 0) {
-            return true;
+            return WinEvaluationStatus.WON;
         } else if (offset > 0) {
             // Need to bounce it back
             piece.move(-2 * offset);
+
+            return WinEvaluationStatus.CLOSECALL;
         }
 
-        return false;
+        return WinEvaluationStatus.CONTINUE;
     }
 }
