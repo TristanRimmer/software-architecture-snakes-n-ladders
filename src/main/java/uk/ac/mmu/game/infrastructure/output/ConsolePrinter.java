@@ -6,10 +6,13 @@ import uk.ac.mmu.game.domain.events.types.ArbitraryMessage;
 import uk.ac.mmu.game.domain.events.types.DiceRolled;
 import uk.ac.mmu.game.domain.events.types.GameEvent;
 import uk.ac.mmu.game.domain.events.types.GameStateTransition;
+import uk.ac.mmu.game.domain.events.types.HitConditionsPreventedMove;
 import uk.ac.mmu.game.domain.events.types.PieceMove;
 import uk.ac.mmu.game.domain.events.types.PieceWon;
 import uk.ac.mmu.game.domain.events.types.PiecesHit;
+import uk.ac.mmu.game.domain.events.types.SpecialPositionMovedPiece;
 import uk.ac.mmu.game.domain.events.types.TurnChange;
+import uk.ac.mmu.game.domain.events.types.WinConditionPreventedWin;
 
 // TODO: add early returns and make it a chain
 public class ConsolePrinter implements GameEventSubscriber {
@@ -28,7 +31,11 @@ public class ConsolePrinter implements GameEventSubscriber {
         this.stylisedPrinterIOMechanism.println("=> The Dice was rolled and landed on a " + diceRolled.diceRoll());
 
        if (state instanceof PieceMove pieceMove)
-        this.stylisedPrinterIOMechanism.println("=> The Piece has moved from " + pieceMove.oldPos() + " to " + pieceMove.newPos());
+        this.stylisedPrinterIOMechanism.println((
+            pieceMove.oldPos().equals(pieceMove.newPos()) ? 
+                "The piece has ended its turn in the same place, at" + pieceMove.newPos()
+            :   "=> The Piece has moved from " + pieceMove.oldPos() + " to " + pieceMove.newPos()
+        ));
 
        if (state instanceof PiecesHit piecesHit)
         this.stylisedPrinterIOMechanism.println("=> The piece has collided with another one at " + piecesHit.pieceB().getCurrentPosition());
@@ -47,5 +54,14 @@ public class ConsolePrinter implements GameEventSubscriber {
 
        if (state instanceof ArbitraryMessage message)
         this.stylisedPrinterIOMechanism.println("=> " + message.msg());         
+
+       if (state instanceof HitConditionsPreventedMove)
+        this.stylisedPrinterIOMechanism.println("=> Due to the current Hit Condition, the piece's move was cancelled!");
+
+       if (state instanceof SpecialPositionMovedPiece)
+        this.stylisedPrinterIOMechanism.println("=> The piece landed on a special position!");
+
+       if (state instanceof WinConditionPreventedWin)
+        this.stylisedPrinterIOMechanism.println("=> The piece would have won, but hasn't as a direct result of the chosen win condition");
     }
 }

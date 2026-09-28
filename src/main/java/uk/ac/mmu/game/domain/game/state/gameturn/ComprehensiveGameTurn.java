@@ -6,9 +6,11 @@ import java.util.List;
 import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
-import uk.ac.mmu.game.domain.events.types.ArbitraryMessage;
 import uk.ac.mmu.game.domain.events.types.DiceRolled;
+import uk.ac.mmu.game.domain.events.types.HitConditionsPreventedMove;
 import uk.ac.mmu.game.domain.events.types.PieceMove;
+import uk.ac.mmu.game.domain.events.types.SpecialPositionMovedPiece;
+import uk.ac.mmu.game.domain.events.types.WinConditionPreventedWin;
 import uk.ac.mmu.game.domain.pieces.Piece;
 import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
 import uk.ac.mmu.game.domain.rules.hitcondition.CollisionStatus;
@@ -52,25 +54,25 @@ public class ComprehensiveGameTurn implements GameTurn {
             Has the piece just won?
         */
         WinEvaluationStatus winEvaluationStatus = winEvaluator.evaluateWinStatus(currentPiece, board);
-        if (winEvaluationStatus.equals(WinEvaluationStatus.WON)) {
+        if (winEvaluationStatus == WinEvaluationStatus.WON) {
             return true;
-        } else if (winEvaluationStatus.equals(WinEvaluationStatus.CLOSECALL)) {
-            publisher.publish(new ArbitraryMessage("Piece nearly won, but the win rules prevented it."));
+        } else if (winEvaluationStatus == WinEvaluationStatus.CLOSECALL) {
+            publisher.publish(new WinConditionPreventedWin());
         } // Otherwise, its just a continue
         
         /*
             Does the piece need to move based on hit rules?    
         */
         CollisionStatus collisionStatus = collisionHandler.evaluateCollisions(currentPiece, initialPosition, currentPiece.getCurrentPosition(), allPositions);
-        if (collisionStatus.equals(CollisionStatus.MOVEDIDNTHAPPEN)) {
-            publisher.publish(new ArbitraryMessage("The piece's move did not happen because of the hit rules!"));
+        if (collisionStatus == CollisionStatus.MOVEDIDNTHAPPEN) {
+            publisher.publish(new HitConditionsPreventedMove());
         } // Otherwise the piece did move
 
         /*
             Did the piece land on a special spot?
         */
         if (board.pieceHasLandedOnSpecialSpot(currentPiece.getCurrentPosition())) {
-            publisher.publish(new ArbitraryMessage("The piece landed on a special spot!"));
+            publisher.publish(new SpecialPositionMovedPiece());
             
             currentPiece.setPosition(
                 board.getSpecialPositionBehaviour(currentPiece.getCurrentPosition())
@@ -79,10 +81,8 @@ public class ComprehensiveGameTurn implements GameTurn {
                 Does THIS need to be voided based on hit rules?
             */
             CollisionStatus secondCollisionStatus = collisionHandler.evaluateCollisions(currentPiece, initialPosition, currentPiece.getCurrentPosition(), allPositions);
-            if (secondCollisionStatus.equals(CollisionStatus.MOVEDIDNTHAPPEN)) {
-                publisher.publish(
-                    new ArbitraryMessage(
-                        "The piece's move did not happen, as a result of the special spot's behaviour and the chosen hit rules!"));
+            if (secondCollisionStatus == CollisionStatus.MOVEDIDNTHAPPEN) {
+                publisher.publish(new HitConditionsPreventedMove());
             } // Otherwise the piece did move
         }
         publisher.publish(new PieceMove(initialPosition, currentPiece.getCurrentPosition()));
