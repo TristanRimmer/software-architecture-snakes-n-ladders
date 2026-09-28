@@ -16,4 +16,9 @@ public final class GameOver implements GameState {
         return new Ready();
     }
 
+    @Override
+    public boolean isEndOfChain() {
+        return true;
+    }
+
 }

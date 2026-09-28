@@ -1,5 +1,6 @@
 package uk.ac.mmu.game.gamestate;
 
+import uk.ac.mmu.game.board.BoardService;
 import uk.ac.mmu.game.observer.GameEventPublisher;
 import uk.ac.mmu.game.observer.events.ArbitraryHeader;
 import uk.ac.mmu.game.observer.events.ArbitraryMessage;
@@ -12,9 +13,11 @@ public final class Ready implements GameState {
 
         output.publish(new ArbitraryHeader("Game Information"));
 
+        BoardService board = context.getConfig().board();
+
         int numberOfPlayers = context.getPieces().size();
-        int boardWidth = context.getBoard().getBoardWidth();
-        int boardHeight = context.getBoard().getBoardHeight();
+        int boardWidth = board.getBoardWidth();
+        int boardHeight = board.getBoardHeight();
 
         output.publish(new ArbitraryMessage("-> Number of Pieces/Players: " + numberOfPlayers));
         output.publish(new ArbitraryMessage("-> Board Dimensions: " + boardWidth + " x " + boardHeight));
@@ -26,5 +29,10 @@ public final class Ready implements GameState {
     @Override
     public GameState progessState() {
         return new InPlay();    
+    }
+
+    @Override
+    public boolean isEndOfChain() {
+        return false;
     }
 }
