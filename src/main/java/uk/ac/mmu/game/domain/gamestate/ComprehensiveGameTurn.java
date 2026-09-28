@@ -3,7 +3,7 @@ package uk.ac.mmu.game.domain.gamestate;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.ac.mmu.game.domain.board.BoardService;
+import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.dice.DiceRollingService;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.events.types.ArbitraryMessage;
@@ -28,7 +28,7 @@ public class ComprehensiveGameTurn implements GameTurn {
     @Override
     public boolean didNextTurnWinGame(Piece currentPiece, List<Piece> allPieces,
             DiceRollingService diceRoller, PieceCollisionService collisionHandler, WinEvaluationService winEvaluator,
-            BoardService board, GameEventPublisher publisher) {
+            Board board, GameEventPublisher publisher) {
         /*
             Store some initial position data about this and other pieces
         */

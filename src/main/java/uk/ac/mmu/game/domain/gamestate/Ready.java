@@ -1,6 +1,6 @@
 package uk.ac.mmu.game.domain.gamestate;
 
-import uk.ac.mmu.game.domain.board.BoardService;
+import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.events.types.ArbitraryHeader;
 import uk.ac.mmu.game.domain.events.types.ArbitraryMessage;
@@ -13,7 +13,7 @@ public final class Ready implements GameState {
 
         output.publish(new ArbitraryHeader("Game Information"));
 
-        BoardService board = context.getConfig().board();
+        Board board = context.getConfig().board();
 
         int numberOfPlayers = context.getPieces().size();
         int boardWidth = board.getBoardWidth();

@@ -2,7 +2,7 @@ package uk.ac.mmu.game.domain.gamestate;
 
 import java.util.List;
 
-import uk.ac.mmu.game.domain.board.BoardService;
+import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.dice.DiceRollingService;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.events.types.GameStateTransition;
@@ -20,7 +20,7 @@ public final class InPlay implements GameState {
         final DiceRollingService diceRoller = context.getConfig().diceRoller();
         final PieceCollisionService collisionHandler = context.getConfig().pieceCollisionService();
         final WinEvaluationService winEvaluator = context.getConfig().winEvaluator();
-        final BoardService board = context.getConfig().board();
+        final Board board = context.getConfig().board();
         final GameTurn turnSequence = context.getConfig().turnSequence();
 
         final GameEventPublisher publisher = context.getEventPublisher();
