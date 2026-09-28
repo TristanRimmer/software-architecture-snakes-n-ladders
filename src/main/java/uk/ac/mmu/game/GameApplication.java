@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.board.GameBoard;
-import uk.ac.mmu.game.domain.board.SpecialPositionService;
+import uk.ac.mmu.game.domain.board.SpecialLinkedPositions;
 import uk.ac.mmu.game.domain.dice.DiceRoller;
 import uk.ac.mmu.game.domain.dice.DiceRollingService;
 import uk.ac.mmu.game.domain.dice.NextDiceRoll;
@@ -39,7 +39,7 @@ public class GameApplication {
 		/*
 			Board Initialisation
 		*/
-		ArrayList<SpecialPositionService> specialPositions = new ArrayList<>();
+		ArrayList<SpecialLinkedPositions> specialPositions = new ArrayList<>();
 		//specialPositions.add(new Teleporter(new GridPosition(0,3), new GridPosition(1, 0)));
 
 		Board board = new GameBoard(5, 5, specialPositions);

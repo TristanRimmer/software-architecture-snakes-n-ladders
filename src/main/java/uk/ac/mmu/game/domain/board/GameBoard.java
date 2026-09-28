@@ -8,11 +8,11 @@ import uk.ac.mmu.game.domain.shared.GridPosition;
 public class GameBoard implements Board {
     int width;
     int height;
-    ArrayList<SpecialPositionService> specialPositionsList;
+    ArrayList<SpecialLinkedPositions> specialPositionsList;
     // Note: this works because GridPosition implements a proper equals()
     HashMap<GridPosition, Integer> specialPositionsMap = new HashMap<>();
 
-    public GameBoard(int width, int height, ArrayList<SpecialPositionService> specialPositions) {
+    public GameBoard(int width, int height, ArrayList<SpecialLinkedPositions> specialPositions) {
         this.width = width;
         this.height = height;
         this.specialPositionsList = specialPositions;
@@ -29,7 +29,7 @@ public class GameBoard implements Board {
 
         int currentIndex = 0;
 
-        for (SpecialPositionService specialPos : this.specialPositionsList) {
+        for (SpecialLinkedPositions specialPos : this.specialPositionsList) {
             ArrayList<GridPosition> relevantPositions = specialPos.getListOfSpecialPositions();
 
             for (GridPosition pos : relevantPositions) {

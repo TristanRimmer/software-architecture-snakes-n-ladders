@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import uk.ac.mmu.game.domain.shared.GridPosition;
 
 // TODO: for saving and recreating, it might be good to implement a Serialise/Deserialise like serde
-public class Teleporter implements SpecialPositionService {
+public class Teleporter implements SpecialLinkedPositions{
     GridPosition positionOne;
     GridPosition positionTwo;
 
@@ -39,11 +39,5 @@ public class Teleporter implements SpecialPositionService {
         positions.add(this.positionTwo);
 
         return positions;
-    }
-
-    @Override
-    public String serialise() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'serialise'");
     }
 }
