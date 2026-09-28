@@ -32,14 +32,6 @@ import uk.ac.mmu.game.wincondition.WinEvaluationService;
 
 @SpringBootApplication
 public class GameApplication {
-	/*
-		GameApplication:
-		- Owns the board -> DONE!
-		- Owns the pieces -> DONE!
-		- Owns the DiceRoller -> DONE!
-		- Owns a HitCondition Evaluator -> VERY PRIMITIVE VERSION IMPLEMENTED
-		- Owns the WinCondition Evaluater -> DONE
-	*/
 	public static void main(String[] args) {
 		SpringApplication.run(GameApplication.class, args);
 		/*
