@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.infrastructure.eventlistener;
+package uk.ac.mmu.game.domain.events.eventlistener;
 
 import java.util.ArrayList;
 import java.util.List;

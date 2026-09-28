@@ -14,6 +14,7 @@ import uk.ac.mmu.game.domain.dice.DiceRollingService;
 import uk.ac.mmu.game.domain.dice.NextDiceRoll;
 import uk.ac.mmu.game.domain.dice.SingleDice;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
+import uk.ac.mmu.game.domain.events.eventlistener.DiceRollRecorder;
 import uk.ac.mmu.game.domain.gamestate.ComprehensiveGameTurn;
 import uk.ac.mmu.game.domain.gamestate.Game;
 import uk.ac.mmu.game.domain.gamestate.GameConfiguration;
@@ -28,8 +29,7 @@ import uk.ac.mmu.game.domain.pieces.UpperLeftOrigin;
 import uk.ac.mmu.game.domain.pieces.UpperRightOrigin;
 import uk.ac.mmu.game.domain.wincondition.ExactHit;
 import uk.ac.mmu.game.domain.wincondition.WinEvaluationService;
-import uk.ac.mmu.game.infrastructure.eventlistener.ConsolePrinter;
-import uk.ac.mmu.game.infrastructure.eventlistener.DiceRollRecorder;
+import uk.ac.mmu.game.infrastructure.output.ConsolePrinter;
 import uk.ac.mmu.game.infrastructure.random.JavaStlRandom;
 
 @SpringBootApplication
