@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.domain.wincondition;
+package uk.ac.mmu.game.domain.rules.wincondition;
 
 public enum WinEvaluationStatus {
     // When a piece is not close to winning

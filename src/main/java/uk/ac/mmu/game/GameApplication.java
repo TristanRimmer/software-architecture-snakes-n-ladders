@@ -16,8 +16,6 @@ import uk.ac.mmu.game.domain.events.eventlistener.DiceRollRecorder;
 import uk.ac.mmu.game.domain.game.Game;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
 import uk.ac.mmu.game.domain.game.state.gameturn.ComprehensiveGameTurn;
-import uk.ac.mmu.game.domain.hitcondition.HitsForfeitTurn;
-import uk.ac.mmu.game.domain.hitcondition.PieceCollisionService;
 import uk.ac.mmu.game.domain.pieces.GamePiece;
 import uk.ac.mmu.game.domain.pieces.Piece;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerLeftOrigin;
@@ -25,8 +23,10 @@ import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerRightOrigin;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.UpperLeftOrigin;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.UpperRightOrigin;
-import uk.ac.mmu.game.domain.wincondition.ExactHit;
-import uk.ac.mmu.game.domain.wincondition.WinEvaluationService;
+import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
+import uk.ac.mmu.game.domain.rules.hitcondition.HitsForfeitTurn;
+import uk.ac.mmu.game.domain.rules.wincondition.ExactHit;
+import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
 import uk.ac.mmu.game.infrastructure.output.ConsolePrinter;
 import uk.ac.mmu.game.infrastructure.random.JavaStlRandom;
 
@@ -74,12 +74,12 @@ public class GameApplication {
 		/*
 			Win Condition Ininitalisation		
 		*/
-		WinEvaluationService winEvaluator = new ExactHit();
+		WinCondition winEvaluator = new ExactHit();
 
 		/*
 			Hit Condition Initialisation
 		*/
-		PieceCollisionService collisionHandler = new HitsForfeitTurn();
+		CollisionCondition collisionHandler = new HitsForfeitTurn();
 
 		GameEventPublisher publisher = new GameEventPublisher();
 		publisher.registerNewSubscriber(new ConsolePrinter());

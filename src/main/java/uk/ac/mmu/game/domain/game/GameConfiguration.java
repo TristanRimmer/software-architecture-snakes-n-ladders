@@ -3,12 +3,12 @@ package uk.ac.mmu.game.domain.game;
 import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 import uk.ac.mmu.game.domain.game.state.gameturn.GameTurn;
-import uk.ac.mmu.game.domain.hitcondition.PieceCollisionService;
-import uk.ac.mmu.game.domain.wincondition.WinEvaluationService;
+import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
+import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
 
 public record GameConfiguration(
-    WinEvaluationService winEvaluator,
-    PieceCollisionService pieceCollisionService,
+    WinCondition winEvaluator,
+    CollisionCondition pieceCollisionService,
     DiceRolling diceRoller,
     Board board,
     GameTurn turnSequence

@@ -9,12 +9,12 @@ import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.events.types.ArbitraryMessage;
 import uk.ac.mmu.game.domain.events.types.DiceRolled;
 import uk.ac.mmu.game.domain.events.types.PieceMove;
-import uk.ac.mmu.game.domain.hitcondition.CollisionStatus;
-import uk.ac.mmu.game.domain.hitcondition.PieceCollisionService;
 import uk.ac.mmu.game.domain.pieces.Piece;
+import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
+import uk.ac.mmu.game.domain.rules.hitcondition.CollisionStatus;
+import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
+import uk.ac.mmu.game.domain.rules.wincondition.WinEvaluationStatus;
 import uk.ac.mmu.game.domain.util.GridPosition;
-import uk.ac.mmu.game.domain.wincondition.WinEvaluationService;
-import uk.ac.mmu.game.domain.wincondition.WinEvaluationStatus;
 
 /*
     This class isn't strictly necessary as its quite a close relationship to a directly concrete implementation,
@@ -27,7 +27,7 @@ public class ComprehensiveGameTurn implements GameTurn {
 
     @Override
     public boolean didNextTurnWinGame(Piece currentPiece, List<Piece> allPieces,
-            DiceRolling diceRoller, PieceCollisionService collisionHandler, WinEvaluationService winEvaluator,
+            DiceRolling diceRoller, CollisionCondition collisionHandler, WinCondition winEvaluator,
             Board board, GameEventPublisher publisher) {
         /*
             Store some initial position data about this and other pieces

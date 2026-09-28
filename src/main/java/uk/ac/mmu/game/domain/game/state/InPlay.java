@@ -10,9 +10,9 @@ import uk.ac.mmu.game.domain.events.types.PieceWon;
 import uk.ac.mmu.game.domain.events.types.TurnChange;
 import uk.ac.mmu.game.domain.game.Game;
 import uk.ac.mmu.game.domain.game.state.gameturn.GameTurn;
-import uk.ac.mmu.game.domain.hitcondition.PieceCollisionService;
 import uk.ac.mmu.game.domain.pieces.Piece;
-import uk.ac.mmu.game.domain.wincondition.WinEvaluationService;
+import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
+import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
 
 public final class InPlay implements GameState {
     @Override
@@ -20,8 +20,8 @@ public final class InPlay implements GameState {
         // Local references to make the main loop neater
         final List<Piece> pieces = context.getPieces();
         final DiceRolling diceRoller = context.getConfig().diceRoller();
-        final PieceCollisionService collisionHandler = context.getConfig().pieceCollisionService();
-        final WinEvaluationService winEvaluator = context.getConfig().winEvaluator();
+        final CollisionCondition collisionHandler = context.getConfig().pieceCollisionService();
+        final WinCondition winEvaluator = context.getConfig().winEvaluator();
         final Board board = context.getConfig().board();
         final GameTurn turnSequence = context.getConfig().turnSequence();
 

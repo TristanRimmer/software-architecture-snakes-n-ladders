@@ -1,8 +1,8 @@
-package uk.ac.mmu.game.domain.wincondition;
+package uk.ac.mmu.game.domain.rules.wincondition;
 
 import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.pieces.Piece;
 
-public interface WinEvaluationService {
+public interface WinCondition {
     WinEvaluationStatus evaluateWinStatus(Piece piece, Board boardProperties);
 }
