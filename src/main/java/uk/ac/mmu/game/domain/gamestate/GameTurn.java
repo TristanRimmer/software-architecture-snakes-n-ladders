@@ -6,12 +6,12 @@ import uk.ac.mmu.game.domain.board.BoardService;
 import uk.ac.mmu.game.domain.dice.DiceRollingService;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.hitcondition.PieceCollisionService;
-import uk.ac.mmu.game.domain.pieces.PieceService;
+import uk.ac.mmu.game.domain.pieces.Piece;
 import uk.ac.mmu.game.domain.wincondition.WinEvaluationService;
 
 public interface GameTurn {
-    boolean didNextTurnWinGame(PieceService currentPiece,
-        List<PieceService> allPieces,
+    boolean didNextTurnWinGame(Piece currentPiece,
+        List<Piece> allPieces,
         DiceRollingService diceRoller,
         PieceCollisionService collisionHandler,
         WinEvaluationService winEvaluator,

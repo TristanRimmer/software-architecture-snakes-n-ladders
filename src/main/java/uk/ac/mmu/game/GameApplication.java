@@ -20,10 +20,10 @@ import uk.ac.mmu.game.domain.gamestate.Game;
 import uk.ac.mmu.game.domain.gamestate.GameConfiguration;
 import uk.ac.mmu.game.domain.hitcondition.HitsForfeitTurn;
 import uk.ac.mmu.game.domain.hitcondition.PieceCollisionService;
+import uk.ac.mmu.game.domain.pieces.GamePiece;
 import uk.ac.mmu.game.domain.pieces.LowerLeftOrigin;
 import uk.ac.mmu.game.domain.pieces.LowerRightOrigin;
 import uk.ac.mmu.game.domain.pieces.Piece;
-import uk.ac.mmu.game.domain.pieces.PieceService;
 import uk.ac.mmu.game.domain.pieces.PositionTrackingConverter;
 import uk.ac.mmu.game.domain.pieces.UpperLeftOrigin;
 import uk.ac.mmu.game.domain.pieces.UpperRightOrigin;
@@ -47,20 +47,20 @@ public class GameApplication {
 		/*
 			Piece initialisation
 		*/
-		ArrayList<PieceService> pieces = new ArrayList<>();
+		ArrayList<Piece> pieces = new ArrayList<>();
 
 		// Could implement a wicked factory here
 		PositionTrackingConverter pieceConverter = new LowerLeftOrigin();
-		pieces.add(new Piece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
+		pieces.add(new GamePiece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
 
 		pieceConverter = new UpperRightOrigin();
-		pieces.add(new Piece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
+		pieces.add(new GamePiece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
 
 		pieceConverter = new UpperLeftOrigin();
-		pieces.add(new Piece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
+		pieces.add(new GamePiece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
 
 		pieceConverter = new LowerRightOrigin();
-		pieces.add(new Piece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
+		pieces.add(new GamePiece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
 		
 		/*
 			Dice Rolling Initialisation

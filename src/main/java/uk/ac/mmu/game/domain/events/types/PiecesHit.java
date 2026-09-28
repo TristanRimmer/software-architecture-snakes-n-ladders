@@ -1,5 +1,5 @@
 package uk.ac.mmu.game.domain.events.types;
 
-import uk.ac.mmu.game.domain.pieces.PieceService;
+import uk.ac.mmu.game.domain.pieces.Piece;
 
-public record PiecesHit(PieceService pieceA, PieceService pieceB) implements GameEvent {}
+public record PiecesHit(Piece pieceA, Piece pieceB) implements GameEvent {}

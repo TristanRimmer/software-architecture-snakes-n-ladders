@@ -3,18 +3,18 @@ package uk.ac.mmu.game.domain.gamestate;
 import java.util.List;
 
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
-import uk.ac.mmu.game.domain.pieces.PieceService;
+import uk.ac.mmu.game.domain.pieces.Piece;
 
 public class Game {
     private GameState state;
 
     private final GameConfiguration config;
-    private final List<PieceService> pieces;
+    private final List<Piece> pieces;
     private final GameEventPublisher eventPublisher;
 
     public Game(
         GameConfiguration config,
-        List<PieceService> pieces,
+        List<Piece> pieces,
         GameEventPublisher eventPublisher
     ) {
         this.config = config;
@@ -36,7 +36,7 @@ public class Game {
     public GameConfiguration getConfig() {
         return this.config;
     }
-    public List<PieceService> getPieces() {
+    public List<Piece> getPieces() {
         return this.pieces;
     }
     public GameEventPublisher getEventPublisher() {

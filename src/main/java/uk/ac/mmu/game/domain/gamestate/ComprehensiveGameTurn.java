@@ -11,7 +11,7 @@ import uk.ac.mmu.game.domain.events.types.DiceRolled;
 import uk.ac.mmu.game.domain.events.types.PieceMove;
 import uk.ac.mmu.game.domain.hitcondition.CollisionStatus;
 import uk.ac.mmu.game.domain.hitcondition.PieceCollisionService;
-import uk.ac.mmu.game.domain.pieces.PieceService;
+import uk.ac.mmu.game.domain.pieces.Piece;
 import uk.ac.mmu.game.domain.shared.GridPosition;
 import uk.ac.mmu.game.domain.wincondition.WinEvaluationService;
 import uk.ac.mmu.game.domain.wincondition.WinEvaluationStatus;
@@ -26,7 +26,7 @@ import uk.ac.mmu.game.domain.wincondition.WinEvaluationStatus;
 public class ComprehensiveGameTurn implements GameTurn {
 
     @Override
-    public boolean didNextTurnWinGame(PieceService currentPiece, List<PieceService> allPieces,
+    public boolean didNextTurnWinGame(Piece currentPiece, List<Piece> allPieces,
             DiceRollingService diceRoller, PieceCollisionService collisionHandler, WinEvaluationService winEvaluator,
             BoardService board, GameEventPublisher publisher) {
         /*
@@ -35,7 +35,7 @@ public class ComprehensiveGameTurn implements GameTurn {
         GridPosition initialPosition = currentPiece.getCurrentPosition();
         ArrayList<GridPosition> allPositions = new ArrayList<>();
 
-        for (PieceService p : allPieces) {
+        for (Piece p : allPieces) {
             if (p != currentPiece)
                 allPositions.add(p.getCurrentPosition());
         }
