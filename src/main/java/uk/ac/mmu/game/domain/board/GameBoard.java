@@ -2,8 +2,10 @@ package uk.ac.mmu.game.domain.board;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-import uk.ac.mmu.game.domain.shared.GridPosition;
+import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
+import uk.ac.mmu.game.domain.util.GridPosition;
 
 public class GameBoard implements Board {
     int width;
@@ -18,7 +20,7 @@ public class GameBoard implements Board {
         this.specialPositionsList = specialPositions;
 
         /*
-            This implementation of Board uses a hashmap of indexes for more performant accessing of special positions
+            This implementation of Board uses a hashmap of indexes to make the pieceHasLandedOnSpecialSpot more simplisitc
         */
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -30,7 +32,7 @@ public class GameBoard implements Board {
         int currentIndex = 0;
 
         for (SpecialLinkedPositions specialPos : this.specialPositionsList) {
-            ArrayList<GridPosition> relevantPositions = specialPos.getListOfSpecialPositions();
+            List<GridPosition> relevantPositions = specialPos.getListOfSpecialPositions();
 
             for (GridPosition pos : relevantPositions) {
                 this.specialPositionsMap.put(pos, currentIndex);

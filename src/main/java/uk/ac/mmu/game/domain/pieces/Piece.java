@@ -1,6 +1,6 @@
 package uk.ac.mmu.game.domain.pieces;
 
-import uk.ac.mmu.game.domain.shared.GridPosition;
+import uk.ac.mmu.game.domain.util.GridPosition;
 
 public interface Piece {
     // Given an increment, it should propose the new position on the grid of the piece

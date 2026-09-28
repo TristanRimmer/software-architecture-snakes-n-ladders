@@ -3,7 +3,7 @@ package uk.ac.mmu.game.domain.hitcondition;
 import java.util.ArrayList;
 
 import uk.ac.mmu.game.domain.pieces.Piece;
-import uk.ac.mmu.game.domain.shared.GridPosition;
+import uk.ac.mmu.game.domain.util.GridPosition;
 
 public class HitsDoNothing implements PieceCollisionService {
     @Override

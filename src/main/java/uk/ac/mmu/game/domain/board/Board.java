@@ -1,6 +1,6 @@
 package uk.ac.mmu.game.domain.board;
 
-import uk.ac.mmu.game.domain.shared.GridPosition;
+import uk.ac.mmu.game.domain.util.GridPosition;
 
 public interface Board {
     boolean pieceHasLandedOnSpecialSpot(GridPosition position);

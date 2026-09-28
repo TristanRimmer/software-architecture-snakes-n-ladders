@@ -1,6 +1,7 @@
 package uk.ac.mmu.game.domain.pieces;
 
-import uk.ac.mmu.game.domain.shared.GridPosition;
+import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
+import uk.ac.mmu.game.domain.util.GridPosition;
 
 public class GamePiece implements Piece {
     PositionTrackingConverter converter;

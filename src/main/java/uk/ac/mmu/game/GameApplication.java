@@ -8,25 +8,23 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.board.GameBoard;
-import uk.ac.mmu.game.domain.board.SpecialLinkedPositions;
-import uk.ac.mmu.game.domain.dice.DiceRoller;
-import uk.ac.mmu.game.domain.dice.DiceRollingService;
-import uk.ac.mmu.game.domain.dice.NextDiceRoll;
-import uk.ac.mmu.game.domain.dice.SingleDice;
+import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
+import uk.ac.mmu.game.domain.dice.DiceRolling;
+import uk.ac.mmu.game.domain.dice.variations.SingleDice;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.events.eventlistener.DiceRollRecorder;
-import uk.ac.mmu.game.domain.gamestate.ComprehensiveGameTurn;
-import uk.ac.mmu.game.domain.gamestate.Game;
-import uk.ac.mmu.game.domain.gamestate.GameConfiguration;
+import uk.ac.mmu.game.domain.game.Game;
+import uk.ac.mmu.game.domain.game.GameConfiguration;
+import uk.ac.mmu.game.domain.game.state.gameturn.ComprehensiveGameTurn;
 import uk.ac.mmu.game.domain.hitcondition.HitsForfeitTurn;
 import uk.ac.mmu.game.domain.hitcondition.PieceCollisionService;
 import uk.ac.mmu.game.domain.pieces.GamePiece;
-import uk.ac.mmu.game.domain.pieces.LowerLeftOrigin;
-import uk.ac.mmu.game.domain.pieces.LowerRightOrigin;
 import uk.ac.mmu.game.domain.pieces.Piece;
-import uk.ac.mmu.game.domain.pieces.PositionTrackingConverter;
-import uk.ac.mmu.game.domain.pieces.UpperLeftOrigin;
-import uk.ac.mmu.game.domain.pieces.UpperRightOrigin;
+import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerLeftOrigin;
+import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerRightOrigin;
+import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
+import uk.ac.mmu.game.domain.pieces.positiontrackers.UpperLeftOrigin;
+import uk.ac.mmu.game.domain.pieces.positiontrackers.UpperRightOrigin;
 import uk.ac.mmu.game.domain.wincondition.ExactHit;
 import uk.ac.mmu.game.domain.wincondition.WinEvaluationService;
 import uk.ac.mmu.game.infrastructure.output.ConsolePrinter;
@@ -65,16 +63,14 @@ public class GameApplication {
 		/*
 			Dice Rolling Initialisation
 		*/
-		NextDiceRoll chosenDiceImpl = new SingleDice(new JavaStlRandom(), 6);
-		// NextDiceRoll chosenDiceImpl = new DiceStreamFixed(
+		DiceRolling diceRoller = new SingleDice(new JavaStlRandom(), 6);
+		// DiceRolling diceRoller = new DiceStreamFixed(
 		// 	new ArrayList<>(
 		// 		List.of(5, 5, 4, 5, 2, 1, 2, 1, 4, 3, 2, 3, 5, 3, 3, 2, 2, 6, 2, 4, 3, 4, 2, 4, 6, 1, 5, 5)
 		// 	 	//List.of(1, 1, 5, 2, 5, 3, 2, 3, 6, 5, 2, 6, 6, 6, 5, 1, 6, 1, 2, 6, 4, 1, 6, 1, 5, 3)
 		// 		//List.of(6, 6, 3, 5, 2, 5, 6, 2, 6, 6, 4, 2, 4, 4, 3)
 		// 	)
 		// );
-		DiceRollingService diceRoller = new DiceRoller(chosenDiceImpl);
-
 		/*
 			Win Condition Ininitalisation		
 		*/
