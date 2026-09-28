@@ -1,15 +1,14 @@
 package uk.ac.mmu.game.gamestate;
 
-import uk.ac.mmu.game.output.StylisedPrinter;
+import uk.ac.mmu.game.observer.events.ArbitraryMessage;
+import uk.ac.mmu.game.observer.events.GameStateTransition;
 
 public final class GameOver implements GameState {
 
     @Override
     public void execute(Game context) {
-                
-        StylisedPrinter.printBanner(context.getOutputHandler(), "Game Over");
-
-        context.getOutputHandler().println("TODO: Gathering data from the game just gone..");
+        context.getEventPublisher().publish(new GameStateTransition("Game Over"));
+        context.getEventPublisher().publish(new ArbitraryMessage("TODO: Gathering data from the game just gone.."));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package uk.ac.mmu.game;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,14 +11,14 @@ import uk.ac.mmu.game.board.BoardService;
 import uk.ac.mmu.game.board.SpecialPositionService;
 import uk.ac.mmu.game.diceroller.DiceRoller;
 import uk.ac.mmu.game.diceroller.DiceRollingService;
+import uk.ac.mmu.game.diceroller.DiceStreamFixed;
 import uk.ac.mmu.game.diceroller.NextDiceRoll;
-import uk.ac.mmu.game.diceroller.SingleDice;
 import uk.ac.mmu.game.gamestate.Game;
 import uk.ac.mmu.game.hitcondition.HitsForfeitTurn;
 import uk.ac.mmu.game.hitcondition.PieceCollisionService;
-import uk.ac.mmu.game.output.SystemOut;
-import uk.ac.mmu.game.output.TextOutputHandler;
-import uk.ac.mmu.game.output.TextOutputTracker;
+import uk.ac.mmu.game.observer.GameEventPublisher;
+import uk.ac.mmu.game.observer.subscribers.ConsolePrinter;
+import uk.ac.mmu.game.observer.subscribers.DiceRollRecorder;
 import uk.ac.mmu.game.pieces.LowerLeftOrigin;
 import uk.ac.mmu.game.pieces.LowerRightOrigin;
 import uk.ac.mmu.game.pieces.Piece;
@@ -69,13 +70,14 @@ public class GameApplication {
 		/*
 			Dice Rolling Initialisation
 		*/
-		NextDiceRoll chosenDiceImpl = new SingleDice(6);
-		// NextDiceRoll chosenDiceImpl = new DiceStreamFixed(
-		// 	new ArrayList<>(
-		// 	 	List.of(1, 1, 5, 2, 5, 3, 2, 3, 6, 5, 2, 6, 6, 6, 5, 1, 6, 1, 2, 6, 4, 1, 6, 1, 5, 3)
-		// 		//List.of(6, 6, 3, 5, 2, 5, 6, 2, 6, 6, 4, 2, 4, 4, 3)
-		// 	)
-		// );
+		// NextDiceRoll chosenDiceImpl = new SingleDice(6);
+		NextDiceRoll chosenDiceImpl = new DiceStreamFixed(
+			new ArrayList<>(
+				List.of(5, 5, 4, 5, 2, 1, 2, 1, 4, 3, 2, 3, 5, 3, 3, 2, 2, 6, 2, 4, 3, 4, 2, 4, 6, 1, 5, 5)
+			 	//List.of(1, 1, 5, 2, 5, 3, 2, 3, 6, 5, 2, 6, 6, 6, 5, 1, 6, 1, 2, 6, 4, 1, 6, 1, 5, 3)
+				//List.of(6, 6, 3, 5, 2, 5, 6, 2, 6, 6, 4, 2, 4, 4, 3)
+			)
+		);
 		DiceRollingService diceRoller = new DiceRoller(chosenDiceImpl);
 
 		/*
@@ -88,13 +90,17 @@ public class GameApplication {
 		*/
 		PieceCollisionService collisionHandler = new HitsForfeitTurn();
 
-		TextOutputHandler textOutput = new TextOutputTracker(new SystemOut());
+		GameEventPublisher publisher = new GameEventPublisher();
+		publisher.registerNewSubscriber(new ConsolePrinter());
 
-		Game game = new Game(board, pieces, diceRoller, winEvaluator, collisionHandler, textOutput);
+		DiceRollRecorder diceRollTracker = new DiceRollRecorder();
+		publisher.registerNewSubscriber(diceRollTracker);
+
+		Game game = new Game(board, pieces, diceRoller, winEvaluator, collisionHandler, publisher);
 
 		game.play();
 
-		ArrayList<Integer> diceStream = diceRoller.getDiceRollHistory();
+		ArrayList<Integer> diceStream = diceRollTracker.getListOfDiceRolls();
 
 		System.out.println("Dice Roll History: ");
 		String diceRollSequence = "| ";

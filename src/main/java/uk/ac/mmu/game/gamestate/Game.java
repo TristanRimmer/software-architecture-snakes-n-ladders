@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import uk.ac.mmu.game.board.BoardService;
 import uk.ac.mmu.game.diceroller.DiceRollingService;
 import uk.ac.mmu.game.hitcondition.PieceCollisionService;
-import uk.ac.mmu.game.output.TextOutputHandler;
+import uk.ac.mmu.game.observer.GameEventPublisher;
 import uk.ac.mmu.game.pieces.PieceService;
 import uk.ac.mmu.game.wincondition.WinEvaluationService;
 
@@ -18,9 +18,7 @@ public class Game {
     private DiceRollingService diceRoller;
     private WinEvaluationService winEvaluator;
     private PieceCollisionService collisionService;
-    // I/O
-    private TextOutputHandler textOutputHandler;
-    // TODO: input 
+    private GameEventPublisher eventPublisher;
 
     public Game(
         BoardService board, 
@@ -28,14 +26,14 @@ public class Game {
         DiceRollingService diceRoller, 
         WinEvaluationService winEvaluator, 
         PieceCollisionService collisionService,
-        TextOutputHandler outputHandler
+        GameEventPublisher eventPublisher
     ) {
         this.board = board;
         this.pieces = pieces;
         this.diceRoller = diceRoller;
         this.winEvaluator = winEvaluator;
         this.collisionService = collisionService;
-        this.textOutputHandler = outputHandler;
+        this.eventPublisher = eventPublisher;
     }
 
     public void play() {
@@ -64,7 +62,7 @@ public class Game {
     public PieceCollisionService getCollisionService() {
         return this.collisionService;
     }
-    public TextOutputHandler getOutputHandler() {
-        return this.textOutputHandler;
+    public GameEventPublisher getEventPublisher() {
+        return this.eventPublisher;
     }
 }
