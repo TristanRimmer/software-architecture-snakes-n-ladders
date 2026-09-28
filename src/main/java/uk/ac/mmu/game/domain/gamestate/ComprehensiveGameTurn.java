@@ -1,0 +1,92 @@
+package uk.ac.mmu.game.domain.gamestate;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import uk.ac.mmu.game.domain.board.BoardService;
+import uk.ac.mmu.game.domain.dice.DiceRollingService;
+import uk.ac.mmu.game.domain.events.GameEventPublisher;
+import uk.ac.mmu.game.domain.events.types.ArbitraryMessage;
+import uk.ac.mmu.game.domain.events.types.DiceRolled;
+import uk.ac.mmu.game.domain.events.types.PieceMove;
+import uk.ac.mmu.game.domain.hitcondition.CollisionStatus;
+import uk.ac.mmu.game.domain.hitcondition.PieceCollisionService;
+import uk.ac.mmu.game.domain.pieces.PieceService;
+import uk.ac.mmu.game.domain.shared.GridPosition;
+import uk.ac.mmu.game.domain.wincondition.WinEvaluationService;
+import uk.ac.mmu.game.domain.wincondition.WinEvaluationStatus;
+
+/*
+    This class isn't strictly necessary as its quite a close relationship to a directly concrete implementation,
+    however for the purposes of making the InPlay state a bit more simplistic its worth it
+
+    It also opens the doors for interesting opportunities, like stacking special pieces (a chain of them), or multiple
+    dice rolls per person, etc. All of that is nonsensical, of course, but its available now without changing another class!
+*/
+public class ComprehensiveGameTurn implements GameTurn {
+
+    @Override
+    public boolean didNextTurnWinGame(PieceService currentPiece, List<PieceService> allPieces,
+            DiceRollingService diceRoller, PieceCollisionService collisionHandler, WinEvaluationService winEvaluator,
+            BoardService board, GameEventPublisher publisher) {
+        /*
+            Store some initial position data about this and other pieces
+        */
+        GridPosition initialPosition = currentPiece.getCurrentPosition();
+        ArrayList<GridPosition> allPositions = new ArrayList<>();
+
+        for (PieceService p : allPieces) {
+            if (p != currentPiece)
+                allPositions.add(p.getCurrentPosition());
+        }
+        
+        /*
+            Roll the dice and move the piece
+        */
+        int newDiceRoll = diceRoller.nextDiceRoll();
+        currentPiece.move(newDiceRoll);
+
+        publisher.publish(new DiceRolled(newDiceRoll));
+
+        /*
+            Has the piece just won?
+        */
+        WinEvaluationStatus winEvaluationStatus = winEvaluator.evaluateWinStatus(currentPiece, board);
+        if (winEvaluationStatus.equals(WinEvaluationStatus.WON)) {
+            return true;
+        } else if (winEvaluationStatus.equals(WinEvaluationStatus.CLOSECALL)) {
+            publisher.publish(new ArbitraryMessage("Piece nearly won, but the win rules prevented it."));
+        } // Otherwise, its just a continue
+        
+        /*
+            Does the piece need to move based on hit rules?    
+        */
+        CollisionStatus collisionStatus = collisionHandler.evaluateCollisions(currentPiece, initialPosition, currentPiece.getCurrentPosition(), allPositions);
+        if (collisionStatus.equals(CollisionStatus.MOVEDIDNTHAPPEN)) {
+            publisher.publish(new ArbitraryMessage("The piece's move did not happen because of the hit rules!"));
+        } // Otherwise the piece did move
+
+        /*
+            Did the piece land on a special spot?
+        */
+        if (board.pieceHasLandedOnSpecialSpot(currentPiece.getCurrentPosition())) {
+            publisher.publish(new ArbitraryMessage("The piece landed on a special spot!"));
+            
+            currentPiece.setPosition(
+                board.getSpecialPositionBehaviour(currentPiece.getCurrentPosition())
+            );
+            /*
+                Does THIS need to be voided based on hit rules?
+            */
+            CollisionStatus secondCollisionStatus = collisionHandler.evaluateCollisions(currentPiece, initialPosition, currentPiece.getCurrentPosition(), allPositions);
+            if (secondCollisionStatus.equals(CollisionStatus.MOVEDIDNTHAPPEN)) {
+                publisher.publish(
+                    new ArbitraryMessage(
+                        "The piece's move did not happen, as a result of the special spot's behaviour and the chosen hit rules!"));
+            } // Otherwise the piece did move
+        }
+        publisher.publish(new PieceMove(initialPosition, currentPiece.getCurrentPosition()));
+        
+        return false;
+    }
+}
