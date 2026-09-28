@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import uk.ac.mmu.game.board.BoardService;
 import uk.ac.mmu.game.diceroller.DiceRollingService;
+import uk.ac.mmu.game.hitcondition.CollisionStatus;
 import uk.ac.mmu.game.hitcondition.PieceCollisionService;
 import uk.ac.mmu.game.observer.GameEventPublisher;
 import uk.ac.mmu.game.observer.events.ArbitraryMessage;
@@ -50,7 +51,7 @@ public final class InPlay implements GameState {
 			ArrayList<GridPosition> allPositions = new ArrayList<>();
 
 			for (PieceService p : pieces) {
-				if (p != piece) // Memory Address Comparison
+				if (p != piece)
 					allPositions.add(p.getCurrentPosition());
 			}
             
@@ -66,7 +67,6 @@ public final class InPlay implements GameState {
                 Has the piece just won?
             */
             WinEvaluationStatus winEvaluationStatus = winEvaluator.evaluateWinStatus(piece, board);
-
 			if (winEvaluationStatus.equals(WinEvaluationStatus.WON)) {
                 publisher.publish(new PieceWon(piece, pieceNum));
 				break;
@@ -76,13 +76,11 @@ public final class InPlay implements GameState {
 			
             /*
                 Does the piece need to move based on hit rules?    
-                TODO: refactor to wwork like WinEvaluationStatus so the publisher can be more explicit
             */
-			piece.setPosition(
-				collisionHandler.canPieceOccupyNewSpace(
-					allPositions, 
-					initialPosition, 
-					piece.getCurrentPosition()));
+            CollisionStatus collisionStatus = collisionHandler.evaluateCollisions(piece, initialPosition, piece.getCurrentPosition(), allPositions);
+            if (collisionStatus.equals(CollisionStatus.MOVEDIDNTHAPPEN)) {
+                publisher.publish(new ArbitraryMessage("The piece's move did not happen because of the hit rules!"));
+            } // Otherwise the piece did move
 
             /*
                 Did the piece land on a special spot?
@@ -96,11 +94,12 @@ public final class InPlay implements GameState {
                 /*
                     Does THIS need to be voided based on hit rules?
                 */
-                piece.setPosition(
-                    collisionHandler.canPieceOccupyNewSpace(
-                        allPositions, 
-                        initialPosition, 
-                        piece.getCurrentPosition()));
+                CollisionStatus secondCollisionStatus = collisionHandler.evaluateCollisions(piece, initialPosition, piece.getCurrentPosition(), allPositions);
+                if (secondCollisionStatus.equals(CollisionStatus.MOVEDIDNTHAPPEN)) {
+                    publisher.publish(
+                        new ArbitraryMessage(
+                            "The piece's move did not happen, as a result of the special spot's behaviour and the chosen hit rules!"));
+                } // Otherwise the piece did move
             }
             publisher.publish(new PieceMove(initialPosition, piece.getCurrentPosition()));
 		}

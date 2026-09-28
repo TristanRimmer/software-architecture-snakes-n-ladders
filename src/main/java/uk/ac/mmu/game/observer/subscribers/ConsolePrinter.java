@@ -36,7 +36,7 @@ public class ConsolePrinter implements GameEventSubscriber {
         System.out.println("=> The piece has collided with another one at " + piecesHit.pieceB().getCurrentPosition());
 
        if (state instanceof PieceWon pieceWon)
-        System.out.println("=> The peice has landed on " + pieceWon.piece().getCurrentPosition() + " and has won the game!"); 
+        System.out.println("=> The piece has landed on " + pieceWon.piece().getCurrentPosition() + " and has won the game!"); 
 
        if (state instanceof TurnChange pieceChange)
         StylisedPrinter.printSubheading(stylisedPrinterIOMechanism, "Piece " + pieceChange.pieceNumber() + "'s Turn");

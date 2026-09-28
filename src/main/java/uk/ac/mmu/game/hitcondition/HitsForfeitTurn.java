@@ -2,6 +2,7 @@ package uk.ac.mmu.game.hitcondition;
 
 import java.util.ArrayList;
 
+import uk.ac.mmu.game.pieces.PieceMoveset;
 import uk.ac.mmu.game.shared.GridPosition;
 
 public class HitsForfeitTurn implements PieceCollisionService {
@@ -18,4 +19,18 @@ public class HitsForfeitTurn implements PieceCollisionService {
         return proposed;
     }
 
+    @Override
+    public CollisionStatus evaluateCollisions(PieceMoveset piece, GridPosition oldPos, GridPosition proposedPos,
+            ArrayList<GridPosition> allCurrentPositions) {
+        for (GridPosition p : allCurrentPositions) {
+            if (p.equals(proposedPos)) {
+                piece.setPosition(oldPos);
+                return CollisionStatus.MOVEDIDNTHAPPEN;
+            }
+        }
+        
+        piece.setPosition(proposedPos);
+
+        return CollisionStatus.MOVEHAPPENED;
+    }
 }
