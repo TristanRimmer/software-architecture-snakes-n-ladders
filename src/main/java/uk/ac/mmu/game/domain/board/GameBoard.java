@@ -1,6 +1,5 @@
 package uk.ac.mmu.game.domain.board;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,11 +9,11 @@ import uk.ac.mmu.game.domain.util.GridPosition;
 public class GameBoard implements Board {
     int width;
     int height;
-    ArrayList<SpecialLinkedPositions> specialPositionsList;
+    List<SpecialLinkedPositions> specialPositionsList;
     // Note: this works because GridPosition implements a proper equals()
     HashMap<GridPosition, Integer> specialPositionsMap = new HashMap<>();
 
-    public GameBoard(int width, int height, ArrayList<SpecialLinkedPositions> specialPositions) {
+    public GameBoard(int width, int height, List<SpecialLinkedPositions> specialPositions) {
         this.width = width;
         this.height = height;
         this.specialPositionsList = specialPositions;
