@@ -26,8 +26,7 @@ public class Game {
         this.state = new Ready();
         
         while(!this.state.isEndOfChain()) {
-            this.state.execute(this);
-            this.state = this.state.progessState();
+            this.state = this.state.execute(this);
         }
         // isEndOfChain terminates before that state gets executed, so run it one more time
         this.state.execute(this);

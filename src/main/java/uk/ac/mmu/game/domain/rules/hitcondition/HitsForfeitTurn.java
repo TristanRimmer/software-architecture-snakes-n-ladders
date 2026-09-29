@@ -1,6 +1,5 @@
 package uk.ac.mmu.game.domain.rules.hitcondition;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.mmu.game.domain.pieces.Piece;

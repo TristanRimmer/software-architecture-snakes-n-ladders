@@ -9,7 +9,7 @@ import uk.ac.mmu.game.domain.game.Game;
 public final class Ready implements GameState {
 
     @Override
-    public void execute(Game context) {
+    public GameState execute(Game context) {
         GameEventPublisher output = context.getEventPublisher();
 
         output.publish(new ArbitraryHeader("Game Information"));
@@ -25,11 +25,8 @@ public final class Ready implements GameState {
         output.publish(new ArbitraryMessage("-> Piece Hit Rules: TO_STRING TODO"));
         output.publish(new ArbitraryMessage("-> Win Condition Rules: TO_STRING TODO"));
         output.publish(new ArbitraryMessage("-> Dice Set: TO_STRING TODO"));
-    }
 
-    @Override
-    public GameState progessState() {
-        return new InPlay();    
+        return new InPlay();
     }
 
     @Override

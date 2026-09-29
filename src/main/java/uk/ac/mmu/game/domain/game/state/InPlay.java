@@ -15,7 +15,7 @@ import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
 
 public final class InPlay implements GameState {
     @Override
-    public void execute(Game context) {
+    public GameOver execute(Game context) {
         // Local references to make the main loop neater
         final PieceContainer pieces = context.getPieces();
         final DiceRolling diceRoller = context.getConfig().diceRoller();
@@ -59,10 +59,7 @@ public final class InPlay implements GameState {
 		} while(!isGameWon);
 
         publisher.publish(new PieceWon(currentPiece, currentPieceNumber));
-    }
 
-    @Override
-    public GameState progessState() {
         return new GameOver();
     }
 
