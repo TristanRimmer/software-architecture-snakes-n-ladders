@@ -16,7 +16,7 @@ public final class Ready implements GameState {
 
         Board board = context.getConfig().board();
 
-        int numberOfPlayers = context.getPieces().size();
+        int numberOfPlayers = context.getPieces().getNumPieces();
         int boardWidth = board.getBoardWidth();
         int boardHeight = board.getBoardHeight();
 

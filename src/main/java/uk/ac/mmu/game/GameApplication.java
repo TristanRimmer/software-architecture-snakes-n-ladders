@@ -17,7 +17,8 @@ import uk.ac.mmu.game.domain.game.Game;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
 import uk.ac.mmu.game.domain.game.state.gameturn.ComprehensiveGameTurn;
 import uk.ac.mmu.game.domain.pieces.GamePiece;
-import uk.ac.mmu.game.domain.pieces.Piece;
+import uk.ac.mmu.game.domain.pieces.container.LockingPieceContainer;
+import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerLeftOrigin;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerRightOrigin;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
@@ -45,20 +46,20 @@ public class GameApplication {
 		/*
 			Piece initialisation
 		*/
-		ArrayList<Piece> pieces = new ArrayList<>();
+		PieceContainer pieces = new LockingPieceContainer();
 
 		// Could implement a wicked factory here
 		PositionTrackingConverter pieceConverter = new LowerLeftOrigin();
-		pieces.add(new GamePiece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
+		pieces.registerNewPiece(new GamePiece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
 
 		pieceConverter = new UpperRightOrigin();
-		pieces.add(new GamePiece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
+		pieces.registerNewPiece(new GamePiece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
 
 		pieceConverter = new UpperLeftOrigin();
-		pieces.add(new GamePiece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
+		pieces.registerNewPiece(new GamePiece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
 
 		pieceConverter = new LowerRightOrigin();
-		pieces.add(new GamePiece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
+		pieces.registerNewPiece(new GamePiece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
 		
 		/*
 			Dice Rolling Initialisation

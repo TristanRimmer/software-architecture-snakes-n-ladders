@@ -1,6 +1,5 @@
 package uk.ac.mmu.game.domain.game.state.gameturn;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.mmu.game.domain.board.Board;
@@ -12,6 +11,7 @@ import uk.ac.mmu.game.domain.events.types.PieceMove;
 import uk.ac.mmu.game.domain.events.types.SpecialPositionMovedPiece;
 import uk.ac.mmu.game.domain.events.types.WinConditionPreventedWin;
 import uk.ac.mmu.game.domain.pieces.Piece;
+import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
 import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
 import uk.ac.mmu.game.domain.rules.hitcondition.CollisionStatus;
 import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
@@ -28,19 +28,14 @@ import uk.ac.mmu.game.domain.util.GridPosition;
 public class ComprehensiveGameTurn implements GameTurn {
 
     @Override
-    public boolean didNextTurnWinGame(Piece currentPiece, List<Piece> allPieces,
+    public boolean didNextTurnWinGame(Piece currentPiece, PieceContainer allPieces,
             DiceRolling diceRoller, CollisionCondition collisionHandler, WinCondition winEvaluator,
             Board board, GameEventPublisher publisher) {
         /*
             Store some initial position data about this and other pieces
         */
         GridPosition initialPosition = currentPiece.getCurrentPosition();
-        ArrayList<GridPosition> allPositions = new ArrayList<>();
-
-        for (Piece p : allPieces) {
-            if (p != currentPiece)
-                allPositions.add(p.getCurrentPosition());
-        }
+        List<GridPosition> allPositions = allPieces.getOtherPiecesPositions();
         
         /*
             Roll the dice and move the piece

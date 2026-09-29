@@ -1,22 +1,20 @@
 package uk.ac.mmu.game.domain.game;
 
-import java.util.List;
-
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.game.state.GameState;
 import uk.ac.mmu.game.domain.game.state.Ready;
-import uk.ac.mmu.game.domain.pieces.Piece;
+import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
 
 public class Game {
     private GameState state;
 
     private final GameConfiguration config;
-    private final List<Piece> pieces;
+    private final PieceContainer pieces;
     private final GameEventPublisher eventPublisher;
 
     public Game(
         GameConfiguration config,
-        List<Piece> pieces,
+        PieceContainer pieces,
         GameEventPublisher eventPublisher
     ) {
         this.config = config;
@@ -38,7 +36,7 @@ public class Game {
     public GameConfiguration getConfig() {
         return this.config;
     }
-    public List<Piece> getPieces() {
+    public PieceContainer getPieces() {
         return this.pieces;
     }
     public GameEventPublisher getEventPublisher() {

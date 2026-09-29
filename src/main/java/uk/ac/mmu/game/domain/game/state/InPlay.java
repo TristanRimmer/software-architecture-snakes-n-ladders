@@ -1,7 +1,5 @@
 package uk.ac.mmu.game.domain.game.state;
 
-import java.util.List;
-
 import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
@@ -11,6 +9,7 @@ import uk.ac.mmu.game.domain.events.types.TurnChange;
 import uk.ac.mmu.game.domain.game.Game;
 import uk.ac.mmu.game.domain.game.state.gameturn.GameTurn;
 import uk.ac.mmu.game.domain.pieces.Piece;
+import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
 import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
 import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
 
@@ -18,7 +17,7 @@ public final class InPlay implements GameState {
     @Override
     public void execute(Game context) {
         // Local references to make the main loop neater
-        final List<Piece> pieces = context.getPieces();
+        final PieceContainer pieces = context.getPieces();
         final DiceRolling diceRoller = context.getConfig().diceRoller();
         final CollisionCondition collisionHandler = context.getConfig().pieceCollisionService();
         final WinCondition winEvaluator = context.getConfig().winEvaluator();
@@ -37,10 +36,10 @@ public final class InPlay implements GameState {
 
 		do {
             /*
-                Determine whose piece's turn it is
+                Determine whose turn it is
              */
-			currentPieceNumber = this.getNextPieceIndex(numTurns, pieces.size());
-			currentPiece = pieces.get(currentPieceNumber);
+			currentPieceNumber = this.getNextPieceIndex(numTurns, pieces.getNumPieces());
+            currentPiece = pieces.getNextPiece();
             numTurns++;
 
             publisher.publish(new TurnChange(currentPieceNumber));

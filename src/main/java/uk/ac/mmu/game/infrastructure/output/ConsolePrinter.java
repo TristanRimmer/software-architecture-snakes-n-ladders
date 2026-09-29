@@ -33,7 +33,7 @@ public class ConsolePrinter implements GameEventSubscriber {
        if (state instanceof PieceMove pieceMove)
         this.stylisedPrinterIOMechanism.println((
             pieceMove.oldPos().equals(pieceMove.newPos()) ? 
-                "The piece has ended its turn in the same place, at" + pieceMove.newPos()
+                "The piece has ended its turn in the same place, at " + pieceMove.newPos()
             :   "=> The Piece has moved from " + pieceMove.oldPos() + " to " + pieceMove.newPos()
         ));
 
