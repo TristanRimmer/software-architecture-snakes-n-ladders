@@ -6,7 +6,7 @@ import uk.ac.mmu.game.domain.game.GameStore;
 
 public interface GameRepository {
     void saveGame(GameStore gameData);
-    
+
     GameStore loadGame(int gameID) throws GameIDInvalidException;
 
     List<String> getSavedGameOptions();

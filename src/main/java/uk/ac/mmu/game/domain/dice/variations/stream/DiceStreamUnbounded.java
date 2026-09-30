@@ -1,6 +1,6 @@
 package uk.ac.mmu.game.domain.dice.variations.stream;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 
@@ -8,7 +8,7 @@ public class DiceStreamUnbounded implements DiceRolling {
     DiceRollFromStream diceRollStream;
     DiceRolling backupRoller;
 
-    public DiceStreamUnbounded(ArrayList<Integer> stream, DiceRolling backup) {
+    public DiceStreamUnbounded(List<Integer> stream, DiceRolling backup) {
         this.diceRollStream = new DiceRollFromStream(stream);
         this.backupRoller = backup;
     }

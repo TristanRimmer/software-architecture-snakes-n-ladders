@@ -6,11 +6,11 @@ import java.util.List;
 import uk.ac.mmu.game.domain.util.GridPosition;
 
 
-public class Teleporter implements SpecialLinkedPositions{
+public class TwoWayTeleporter implements SpecialLinkedPositions{
     GridPosition positionOne;
     GridPosition positionTwo;
 
-    public Teleporter(GridPosition posA, GridPosition posB) {
+    public TwoWayTeleporter(GridPosition posA, GridPosition posB) {
         this.positionOne = posA;
         this.positionTwo = posB;
     }

@@ -1,13 +1,13 @@
 package uk.ac.mmu.game.domain.dice.variations.stream;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 
 public class DiceStreamFixed implements DiceRolling {
     DiceRollFromStream diceRollStream;
 
-    public DiceStreamFixed(ArrayList<Integer> stream) {
+    public DiceStreamFixed(List<Integer> stream) {
         this.diceRollStream = new DiceRollFromStream(stream);
     }
     

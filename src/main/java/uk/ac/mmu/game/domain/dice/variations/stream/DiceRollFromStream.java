@@ -1,13 +1,13 @@
 package uk.ac.mmu.game.domain.dice.variations.stream;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 public class DiceRollFromStream {    
-    ArrayList<Integer> stream;
+    List<Integer> stream;
     int currentDiceRollIndex;
 
-    public DiceRollFromStream(ArrayList<Integer> stream) {
+    public DiceRollFromStream(List<Integer> stream) {
         this.stream = stream;
         this.currentDiceRollIndex = 0;
     }
