@@ -4,8 +4,10 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.util.GridPosition;
 
-public interface SpecialLinkedPositions {
+public sealed interface SpecialLinkedPositions permits OneWayTeleporter, TwoWayTeleporter {
     boolean hasLandedOnThis(GridPosition landedPos);
+
     GridPosition getPositionAfterSpecialBehaviour(GridPosition landedPos);
+
     List<GridPosition> getListOfSpecialPositions();
 }

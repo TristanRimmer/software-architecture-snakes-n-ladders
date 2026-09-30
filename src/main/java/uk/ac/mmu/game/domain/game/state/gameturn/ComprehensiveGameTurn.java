@@ -25,63 +25,64 @@ import uk.ac.mmu.game.domain.util.GridPosition;
     It also opens the doors for interesting opportunities, like stacking special pieces (a chain of them), or multiple
     dice rolls per person, etc. All of that is nonsensical, of course, but its available now without changing another class!
 */
-public class ComprehensiveGameTurn implements GameTurn {
+public final class ComprehensiveGameTurn implements GameTurn {
 
     @Override
     public boolean didNextTurnWinGame(Piece currentPiece, PieceContainer allPieces,
             DiceRolling diceRoller, CollisionCondition collisionHandler, WinCondition winEvaluator,
             Board board, GameEventPublisher publisher) {
         /*
-            Store some initial position data about this and other pieces
-        */
+         * Store some initial position data about this and other pieces
+         */
         GridPosition initialPosition = currentPiece.getCurrentPosition();
         List<GridPosition> allPositions = allPieces.getOtherPiecesPositions();
-        
+
         /*
-            Roll the dice and move the piece
-        */
+         * Roll the dice and move the piece
+         */
         int newDiceRoll = diceRoller.nextDiceRoll();
         currentPiece.move(newDiceRoll);
 
         publisher.publish(new DiceRolled(newDiceRoll));
 
         /*
-            Has the piece just won?
-        */
+         * Has the piece just won?
+         */
         WinEvaluationStatus winEvaluationStatus = winEvaluator.evaluateWinStatus(currentPiece, board);
         if (winEvaluationStatus == WinEvaluationStatus.WON) {
             return true;
         } else if (winEvaluationStatus == WinEvaluationStatus.CLOSECALL) {
             publisher.publish(new WinConditionPreventedWin());
         } // Otherwise, its just a continue
-        
+
         /*
-            Does the piece need to move based on hit rules?    
-        */
-        CollisionStatus collisionStatus = collisionHandler.evaluateCollisions(currentPiece, initialPosition, currentPiece.getCurrentPosition(), allPositions);
+         * Does the piece need to move based on hit rules?
+         */
+        CollisionStatus collisionStatus = collisionHandler.evaluateCollisions(currentPiece, initialPosition,
+                currentPiece.getCurrentPosition(), allPositions);
         if (collisionStatus == CollisionStatus.MOVEDIDNTHAPPEN) {
             publisher.publish(new HitConditionsPreventedMove());
         } // Otherwise the piece did move
 
         /*
-            Did the piece land on a special spot?
-        */
+         * Did the piece land on a special spot?
+         */
         if (board.pieceHasLandedOnSpecialSpot(currentPiece.getCurrentPosition())) {
             publisher.publish(new SpecialPositionMovedPiece());
-            
+
             currentPiece.setPosition(
-                board.getSpecialPositionBehaviour(currentPiece.getCurrentPosition())
-            );
+                    board.getSpecialPositionBehaviour(currentPiece.getCurrentPosition()));
             /*
-                Does THIS need to be voided based on hit rules?
-            */
-            CollisionStatus secondCollisionStatus = collisionHandler.evaluateCollisions(currentPiece, initialPosition, currentPiece.getCurrentPosition(), allPositions);
+             * Does THIS need to be voided based on hit rules?
+             */
+            CollisionStatus secondCollisionStatus = collisionHandler.evaluateCollisions(currentPiece, initialPosition,
+                    currentPiece.getCurrentPosition(), allPositions);
             if (secondCollisionStatus == CollisionStatus.MOVEDIDNTHAPPEN) {
                 publisher.publish(new HitConditionsPreventedMove());
             } // Otherwise the piece did move
         }
         publisher.publish(new PieceMove(initialPosition, currentPiece.getCurrentPosition()));
-        
+
         return false;
     }
 }

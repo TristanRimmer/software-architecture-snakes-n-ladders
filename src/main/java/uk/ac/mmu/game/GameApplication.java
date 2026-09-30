@@ -128,5 +128,7 @@ public class GameApplication {
 			diceRollSequence = diceRollSequence + i + ", ";
 		}
 		System.out.println(diceRollSequence + " |");
+
+		repository.saveGame(storedGame);
 	}
 }

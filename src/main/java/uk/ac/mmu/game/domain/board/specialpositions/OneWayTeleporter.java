@@ -5,7 +5,7 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.util.GridPosition;
 
-public class OneWayTeleporter implements SpecialLinkedPositions{
+public final class OneWayTeleporter implements SpecialLinkedPositions {
     private final GridPosition teleportsFromHere;
     private final GridPosition teleportsToHere;
 

@@ -40,7 +40,13 @@ import uk.ac.mmu.game.domain.rules.wincondition.CrossTheFinishline;
 import uk.ac.mmu.game.domain.rules.wincondition.ExactHit;
 import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
 import uk.ac.mmu.game.domain.util.GridPosition;
+import uk.ac.mmu.game.domain.util.ImplFactoryException;
 import uk.ac.mmu.game.infrastructure.random.JavaStlRandom;
+import uk.ac.mmu.game.infrastructure.serialisation.GameTurnSerialiser;
+import uk.ac.mmu.game.infrastructure.serialisation.HitConditionSerialiser;
+import uk.ac.mmu.game.infrastructure.serialisation.PositionTrackingConverterSerialiser;
+import uk.ac.mmu.game.infrastructure.serialisation.SpecialPositionSerialiser;
+import uk.ac.mmu.game.infrastructure.serialisation.WinConditionSerialiser;
 import uk.ac.mmu.game.usecase.GameIDInvalidException;
 import uk.ac.mmu.game.usecase.GameRepository;
 
@@ -58,12 +64,24 @@ public class FileSystemGameRepository implements GameRepository {
     }
 
     private static final String USER_HOME_DIRECTORY = System.getProperty("user.home");
-
-    // In other words, the current working directory
     private static final String BACKUP_HOME_DIRECTORY = "";
-
     private static final String DIRECTORY_OF_SAVES = "MMU_24854995_SandL";
     private static final String SAVE_FILE_CUSTOM_EXTENSION = "sandl";
+
+    // Regarding File Reading, there are some key words that were previously magic
+    private static final String GAME_SAVE_FILE_HEADER = "24854995_Game_Save";
+    private static final String BOARD_SIZE_HEADER = "BoardSize";
+    private static final String SPECIAL_POSITION_HEADER = "NumSpecialPositions";
+    private static final String HIT_CONDITION_HEADER = "HitCondition";
+    private static final String WIN_CONDITION_HEADER = "WinCondition";
+    private static final String DICE_RULE_HEADER = "DiceRule";
+    private static final String DICE_RULE_STRICT = "Strict";
+    private static final String DICE_RULE_LENIENT = "Lenient";
+
+    private static final String DICE_ROLLS_HEADER = "DiceRolls";
+    private static final String PIECES_HEADER = "NumPieces";
+    private static final String TURN_SEQUENCE_HEADER = "TurnSequence";
+    // TODO: Random Number Generator
 
     private final Path pathToDirectory;
     private List<String> listOfSavesAsFiles;
@@ -177,8 +195,6 @@ public class FileSystemGameRepository implements GameRepository {
             String currentLine;
 
             while ((currentLine = reader.readLine()) != null) {
-                System.out.println(currentLine);
-
                 List<String> pieces = splitter.apply(currentLine);
 
                 if (pieces.isEmpty()) {
@@ -188,12 +204,12 @@ public class FileSystemGameRepository implements GameRepository {
 
                 String header = pieces.getFirst().strip();
 
-                if (numScannedLines == 0 && !header.equals("24854995_GAME_SAVE"))
+                if (numScannedLines == 0 && !header.equals(GAME_SAVE_FILE_HEADER))
                     throw new FileSystemInternalError(file.getFileName().toString(),
                             "First Line Identifier Invalid, got " + header);
 
                 switch (header) {
-                    case "BoardSize" -> {
+                    case BOARD_SIZE_HEADER -> {
                         if (pieces.size() != 3)
                             throw new FileSystemInternalError(file.getFileName().toString(),
                                     "Improper Board Size configuration");
@@ -207,74 +223,62 @@ public class FileSystemGameRepository implements GameRepository {
 
                         boardWidth = xSize;
                         boardHeight = ySize;
-
                         boardSizeSet = true;
+
                         break;
                     }
-                    case "HitCondition" -> {
+                    case HIT_CONDITION_HEADER -> {
                         if (pieces.size() != 2)
                             throw new FileSystemInternalError(file.getFileName().toString(),
                                     "Improper Hit Condition configuration");
-
-                        switch (pieces.get(1)) {
-                            case "HitsDontCount" -> hitCondition = new HitsDoNothing();
-                            case "HitsForfeitTurn" -> hitCondition = new HitsForfeitTurn();
-                            default -> throw new FileSystemInternalError(file.getFileName().toString(),
+                        try {
+                            hitCondition = HitConditionSerialiser.getImplementationFromString(pieces.get(1));
+                            hitConditionSet = true;
+                        } catch (ImplFactoryException e) {
+                            throw new FileSystemInternalError(file.getFileName().toString(),
                                     " WinConditionInitialisationException WinConditionInitialisationExceptionInvalid HitCondition option");
                         }
-
-                        hitConditionSet = true;
                         break;
                     }
-                    case "DiceRule" -> {
+                    case DICE_RULE_HEADER -> {
                         if (pieces.size() != 2)
                             throw new FileSystemInternalError(file.getFileName().toString(),
                                     "Improper Dice Rule Configuration");
 
                         switch (pieces.get(1)) {
-                            case "Strict" -> diceRulesetIsStrict = true;
-                            case "Lenient" -> diceRulesetIsStrict = false;
+                            case DICE_RULE_STRICT -> diceRulesetIsStrict = true;
+                            case DICE_RULE_LENIENT -> diceRulesetIsStrict = false;
                             default -> throw new FileSystemInternalError(file.getFileName().toString(),
                                     "Invalid Dice Rule Option");
                         }
                     }
-                    case "WinCondition" -> {
+                    case WIN_CONDITION_HEADER -> {
                         if (pieces.size() != 2)
                             throw new FileSystemInternalError(file.getFileName().toString(),
                                     "Improper Win Condition Configuration");
-
-                        // TODO: perhaps for things like this, rather than doing it as a switch have a
-                        // final
-                        // class that takes in a string and eithe throws an error or returns the
-                        // structure for you (a factory lol just say that)
-                        switch (pieces.get(1)) {
-                            case "CrossTheFinishLine" -> winCondition = new CrossTheFinishline();
-                            case "ExactHit" -> winCondition = new ExactHit();
-                            default -> throw new FileSystemInternalError(file.getFileName().toString(),
-                                    "Invalid win condition option");
+                        try {
+                            winCondition = WinConditionSerialiser.getImplementationFromString(pieces.get(1));
+                            winConditionSet = true;
+                        } catch (ImplFactoryException e) {
+                            throw new FileSystemInternalError(file.getFileName().toString(),
+                                    "Invalid Win Condition Option");
                         }
-
-                        winConditionSet = true;
                         break;
                     }
-                    case "TurnSequence" -> {
+                    case TURN_SEQUENCE_HEADER -> {
                         if (pieces.size() != 2)
                             throw new FileSystemInternalError(file.getFileName().toString(),
                                     "Invalid turn sequence configuration");
-
-                        // TODO: perhaps for things like this, rather than doing it as a switch have a
-                        // final
-                        // class that takes in a string and eithe throws an error or returns the
-                        // structure for you (a factory lol just say that)
-                        switch (pieces.get(1)) {
-                            case "Default" -> turnSequence = new ComprehensiveGameTurn();
-                            default -> throw new FileSystemInternalError(file.getFileName().toString(),
+                        try {
+                            turnSequence = GameTurnSerialiser.getImplementationFromString(pieces.get(1));
+                            turnSequenceSet = true;
+                        } catch (ImplFactoryException e) {
+                            throw new FileSystemInternalError(file.getFileName().toString(),
                                     "Invalid Turn Sequence option");
                         }
-                        turnSequenceSet = true;
                         break;
                     }
-                    case "DiceRolls", "NumPieces", "NumSpecialPositions" -> {
+                    case DICE_ROLLS_HEADER, PIECES_HEADER, SPECIAL_POSITION_HEADER -> {
                         if (pieces.size() != 2)
                             throw new FileSystemInternalError(file.getFileName().toString(),
                                     "Improper Configuration for " + pieces.getFirst());
@@ -290,9 +294,9 @@ public class FileSystemGameRepository implements GameRepository {
 
                         if (numLines == 0) {
                             switch (pieces.get(0)) {
-                                case "NumSpecialPositions" -> specialPositionsSet = true;
-                                case "NumPieces" -> piecesSet = true;
-                                case "DiceRolls" -> diceRollsSet = true;
+                                case SPECIAL_POSITION_HEADER -> specialPositionsSet = true;
+                                case PIECES_HEADER -> piecesSet = true;
+                                case DICE_ROLLS_HEADER -> diceRollsSet = true;
                                 default -> throw new FileSystemInternalError(file.getFileName().toString(),
                                         "Invalid Multi-Line specification");
                             }
@@ -300,96 +304,76 @@ public class FileSystemGameRepository implements GameRepository {
                         break;
                     }
                     default -> {
-                        // It may just be white space/nothign of importance
-                        if (multiLineNum != 0 && !multiLineHeader.isEmpty()) {
-                            // We're in a multi-line list
-                            switch (multiLineHeader) {
-                                case "DiceRolls" -> {
-                                    Integer diceRoll = stringToUnsignedInt.apply(pieces.get(0));
+                        if (multiLineNum == 0 || multiLineHeader.isEmpty()) {
+                            numScannedLines++;
+                            continue;
+                        }
+                        // We're in a multi-line list
+                        switch (multiLineHeader) {
+                            case DICE_ROLLS_HEADER -> {
+                                Integer diceRoll = stringToUnsignedInt.apply(pieces.get(0));
 
-                                    if (diceRoll <= 0)
-                                        throw new FileSystemInternalError(file.getFileName().toString(),
-                                                "Improper Dice Number Value");
+                                if (diceRoll <= 0)
+                                    throw new FileSystemInternalError(file.getFileName().toString(),
+                                            "Improper Dice Number Value");
 
-                                    diceRolls.add(diceRoll);
+                                diceRolls.add(diceRoll);
 
-                                    System.out.println("Got Here!!!");
-                                    if (diceRolls.size() == multiLineNum) {
-                                        multiLineNum = 0;
-                                        multiLineHeader = "";
-                                        diceRollsSet = true;
-                                        break;
-                                    }
+                                if (diceRolls.size() == multiLineNum) {
+                                    multiLineNum = 0;
+                                    multiLineHeader = "";
+                                    diceRollsSet = true;
                                     break;
                                 }
-                                case "NumPieces" -> {
-                                    // TODO: perhaps for things like this, rather than doing it as a switch have a
-                                    // final
-                                    // class that takes in a string and eithe throws an error or returns the
-                                    // structure for you (a factory lol just say that)
-                                    switch (pieces.get(0)) {
-                                        case "LowerLeft" -> pieceSets.add(new LowerLeftOrigin());
-                                        case "LowerRight" -> pieceSets.add(new LowerRightOrigin());
-                                        case "UpperLeft" -> pieceSets.add(new UpperLeftOrigin());
-                                        case "UpperRight" -> pieceSets.add(new UpperRightOrigin());
-                                        default -> throw new FileSystemInternalError(file.getFileName().toString(),
-                                                "Invalid Piece Movement Pattern");
-                                    }
-                                    System.out.println("Got Here!!");
-                                    if (pieceSets.size() == multiLineNum) {
-                                        System.out.println("Got Here!! asdhioashdio");
-                                        multiLineNum = 0;
-                                        multiLineHeader = "";
-                                        piecesSet = true;
-                                        break;
-                                    }
-                                    break;
-                                }
-                                case "NumSpecialPositions" -> {
-                                    if (pieces.size() != 5)
-                                        throw new FileSystemInternalError(file.getFileName().toString(),
-                                                "Improper Special Position Description");
-
-                                    Integer x1 = stringToUnsignedInt.apply(pieces.get(1));
-                                    Integer y1 = stringToUnsignedInt.apply(pieces.get(2));
-                                    Integer x2 = stringToUnsignedInt.apply(pieces.get(3));
-                                    Integer y2 = stringToUnsignedInt.apply(pieces.get(4));
-
-                                    if (x1 < 0 || y1 < 0 || x2 < 0 || y2 < 0)
-                                        throw new FileSystemInternalError(file.getFileName().toString(),
-                                                "Improper special position coordinate specification");
-
-                                    // TODO: perhaps for things like this, rather than doing it as a switch have a
-                                    // final
-                                    // class that takes in a string and eithe throws an error or returns the
-                                    // structure for you (a factory lol just say that)
-                                    switch (pieces.get(0)) {
-                                        case "OneWayTeleporter" ->
-                                            specialPositions.add(new OneWayTeleporter(new GridPosition(x1, y1),
-                                                    new GridPosition(x2, y2)));
-                                        case "TwoWayTeleporter" ->
-                                            specialPositions.add(new TwoWayTeleporter(new GridPosition(x1, y1),
-                                                    new GridPosition(x2, y2)));
-                                        default -> throw new FileSystemInternalError(file.getFileName().toString(),
-                                                "Invalid Special Position Option");
-                                    }
-
-                                    System.out.println("Got Here!");
-                                    if (specialPositions.size() == multiLineNum) {
-                                        System.out.println("Got Here! asdhioashdio");
-                                        multiLineNum = 0;
-                                        multiLineHeader = "";
-                                        specialPositionsSet = true;
-                                        break;
-                                    }
-                                    break;
-                                }
-                                default -> throw new FileSystemInternalError(file.getFileName().toString(),
-                                        "Invalid Multi-Line specification");
+                                break;
                             }
-                        } else if (!multiLineHeader.isEmpty()) {
-                            multiLineHeader = "";
-                            System.out.println("asduiohkasdiosadHere");
+                            case PIECES_HEADER -> {
+                                try {
+                                    pieceSets.add(PositionTrackingConverterSerialiser
+                                            .getImplementationFromString(pieces.get(0)));
+                                } catch (ImplFactoryException e) {
+                                    throw new FileSystemInternalError(file.getFileName().toString(),
+                                            "Invalid Piece Movement Pattern: " + e);
+                                }
+                                if (pieceSets.size() == multiLineNum) {
+                                    multiLineNum = 0;
+                                    multiLineHeader = "";
+                                    piecesSet = true;
+                                    break;
+                                }
+                                break;
+                            }
+                            case SPECIAL_POSITION_HEADER -> {
+                                if (pieces.size() != 5)
+                                    throw new FileSystemInternalError(file.getFileName().toString(),
+                                            "Improper Special Position Description");
+
+                                Integer x1 = stringToUnsignedInt.apply(pieces.get(1));
+                                Integer y1 = stringToUnsignedInt.apply(pieces.get(2));
+                                Integer x2 = stringToUnsignedInt.apply(pieces.get(3));
+                                Integer y2 = stringToUnsignedInt.apply(pieces.get(4));
+
+                                if (x1 < 0 || y1 < 0 || x2 < 0 || y2 < 0)
+                                    throw new FileSystemInternalError(file.getFileName().toString(),
+                                            "Improper special position coordinate specification");
+                                try {
+                                    specialPositions.add(SpecialPositionSerialiser
+                                            .getImplementationFromString(pieces.get(0), new GridPosition(x1, y1),
+                                                    new GridPosition(x2, y2)));
+                                } catch (ImplFactoryException e) {
+                                    throw new FileSystemInternalError(file.getFileName().toString(),
+                                            "Invalid Piece Movement Pattern: " + e);
+                                }
+                                if (specialPositions.size() == multiLineNum) {
+                                    multiLineNum = 0;
+                                    multiLineHeader = "";
+                                    specialPositionsSet = true;
+                                    break;
+                                }
+                                break;
+                            }
+                            default -> throw new FileSystemInternalError(file.getFileName().toString(),
+                                    "Invalid Multi-Line specification");
                         }
                     }
                 }
@@ -401,13 +385,14 @@ public class FileSystemGameRepository implements GameRepository {
 
         if (!boardSizeSet || !winConditionSet || !hitConditionSet || !piecesSet || !specialPositionsSet
                 || !diceRollsSet || !turnSequenceSet) {
-            System.out.println(boardSizeSet);
-            System.out.println(winConditionSet);
-            System.out.println(hitConditionSet);
-            System.out.println(piecesSet);
-            System.out.println(specialPositionsSet);
-            System.out.println(diceRollsSet);
-            System.out.println(turnSequenceSet);
+            System.out.println("Board Configuration correct: " + boardSizeSet);
+            System.out.println("Win Condition correct: " + winConditionSet);
+            System.out.println("Hit Condition correct: " + hitConditionSet);
+            System.out.println("Piece Configuration correct: " + piecesSet);
+            System.out.println("Board Special Position Configuration correct: " + specialPositionsSet);
+            System.out.println("Dice Rolls Loaded correct: " + diceRollsSet);
+            System.out.println("Turn Sequence configuration correct: " + turnSequenceSet);
+
             throw new FileSystemInternalError(file.getFileName().toString(),
                     "Game File did not specify all required configurations");
         }
@@ -453,26 +438,32 @@ public class FileSystemGameRepository implements GameRepository {
         Path newFile = this.mapFileNameToPath(fileName);
 
         try (BufferedWriter writer = Files.newBufferedWriter(newFile)) {
-            writer.write("24854995_GAME_SAVE");
+            writer.write(GAME_SAVE_FILE_HEADER);
             writer.newLine();
 
-            writer.write("BoardSize " + config.board().getBoardWidth() + " " + config.board().getBoardHeight());
+            writer.write(
+                    BOARD_SIZE_HEADER + " " + config.board().getBoardWidth() + " " + config.board().getBoardHeight());
             writer.newLine();
 
-            writer.write("NumSpecialPositions 0");
+            writer.write(SPECIAL_POSITION_HEADER + " " + 0);
             writer.newLine();
 
-            // TODO: this
-            writer.write("HitCondition " + CollisionCondition.getStringFromImplementation(config.collisionEvaluator()));
+            writer.write(HIT_CONDITION_HEADER +
+                    " " + HitConditionSerialiser.getStringFromImplementation(config.collisionEvaluator()));
             writer.newLine();
 
-            writer.write("WinCondition " + WinCondition.getStringFromImplementation(config.winEvaluator()));
+            writer.write(WIN_CONDITION_HEADER + " "
+                    + WinConditionSerialiser.getStringFromImplementation(config.winEvaluator()));
             writer.newLine();
 
-            writer.write("DiceRule Strict");
+            writer.write(
+                    TURN_SEQUENCE_HEADER + " " + GameTurnSerialiser.getStringFromImplementation(config.turnSequence()));
             writer.newLine();
 
-            writer.write("DiceRolls " + gameData.diceRolls().size());
+            writer.write(DICE_RULE_HEADER + " " + DICE_RULE_STRICT);
+            writer.newLine();
+
+            writer.write(DICE_ROLLS_HEADER + " " + gameData.diceRolls().size());
             writer.newLine();
 
             for (Integer roll : gameData.diceRolls()) {
@@ -480,11 +471,12 @@ public class FileSystemGameRepository implements GameRepository {
                 writer.newLine();
             }
 
-            writer.write("NumPieces " + gameData.pieces().getNumPieces());
+            writer.write(PIECES_HEADER + " " + gameData.pieces().getNumPieces());
             writer.newLine();
 
             for (Piece piece : gameData.pieces().getPiecesInOriginalOrder()) {
-                writer.write(PositionTrackingConverter.getStringFromImplementation(piece.getTrackingConverter()));
+                writer.write(
+                        PositionTrackingConverterSerialiser.getStringFromImplementation(piece.getTrackingConverter()));
                 writer.newLine();
             }
         } catch (IOException e) {
