@@ -13,31 +13,20 @@ import java.util.stream.Stream;
 
 import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.board.GameBoard;
-import uk.ac.mmu.game.domain.board.specialpositions.OneWayTeleporter;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
-import uk.ac.mmu.game.domain.board.specialpositions.TwoWayTeleporter;
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 import uk.ac.mmu.game.domain.dice.variations.SingleDice;
 import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamFixed;
 import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamUnbounded;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
 import uk.ac.mmu.game.domain.game.GameStore;
-import uk.ac.mmu.game.domain.game.state.gameturn.ComprehensiveGameTurn;
 import uk.ac.mmu.game.domain.game.state.gameturn.GameTurn;
 import uk.ac.mmu.game.domain.pieces.GamePiece;
 import uk.ac.mmu.game.domain.pieces.Piece;
 import uk.ac.mmu.game.domain.pieces.container.LockingPieceContainer;
 import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
-import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerLeftOrigin;
-import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerRightOrigin;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
-import uk.ac.mmu.game.domain.pieces.positiontrackers.UpperLeftOrigin;
-import uk.ac.mmu.game.domain.pieces.positiontrackers.UpperRightOrigin;
 import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
-import uk.ac.mmu.game.domain.rules.hitcondition.HitsDoNothing;
-import uk.ac.mmu.game.domain.rules.hitcondition.HitsForfeitTurn;
-import uk.ac.mmu.game.domain.rules.wincondition.CrossTheFinishline;
-import uk.ac.mmu.game.domain.rules.wincondition.ExactHit;
 import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
 import uk.ac.mmu.game.domain.util.GridPosition;
 import uk.ac.mmu.game.domain.util.ImplFactoryException;
@@ -510,12 +499,12 @@ public class FileSystemGameRepository implements GameRepository {
     }
 
     private Path mapFileNameToPath(String path) {
-        return Path.of(this.pathToDirectory + "/" + path + "." + this.SAVE_FILE_CUSTOM_EXTENSION);
+        return Path.of(this.pathToDirectory + "/" + path + "." + SAVE_FILE_CUSTOM_EXTENSION);
     }
 
     private String getNameFromFile(String fileName) {
         return fileName.substring(
                 0,
-                fileName.length() - this.SAVE_FILE_CUSTOM_EXTENSION.length() - 1);
+                fileName.length() - SAVE_FILE_CUSTOM_EXTENSION.length() - 1);
     }
 }

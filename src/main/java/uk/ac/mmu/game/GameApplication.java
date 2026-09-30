@@ -6,32 +6,12 @@ import java.util.List;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import uk.ac.mmu.game.domain.board.Board;
-import uk.ac.mmu.game.domain.board.GameBoard;
-import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
-import uk.ac.mmu.game.domain.dice.DiceRolling;
-import uk.ac.mmu.game.domain.dice.variations.SingleDice;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.events.eventlistener.DiceRollRecorder;
 import uk.ac.mmu.game.domain.game.Game;
-import uk.ac.mmu.game.domain.game.GameConfiguration;
 import uk.ac.mmu.game.domain.game.GameStore;
-import uk.ac.mmu.game.domain.game.state.gameturn.ComprehensiveGameTurn;
-import uk.ac.mmu.game.domain.pieces.GamePiece;
-import uk.ac.mmu.game.domain.pieces.container.LockingPieceContainer;
-import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
-import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerLeftOrigin;
-import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerRightOrigin;
-import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
-import uk.ac.mmu.game.domain.pieces.positiontrackers.UpperLeftOrigin;
-import uk.ac.mmu.game.domain.pieces.positiontrackers.UpperRightOrigin;
-import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
-import uk.ac.mmu.game.domain.rules.hitcondition.HitsForfeitTurn;
-import uk.ac.mmu.game.domain.rules.wincondition.ExactHit;
-import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
 import uk.ac.mmu.game.infrastructure.output.ConsolePrinter;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystemGameRepository;
-import uk.ac.mmu.game.infrastructure.random.JavaStlRandom;
 import uk.ac.mmu.game.usecase.GameIDInvalidException;
 import uk.ac.mmu.game.usecase.GameRepository;
 
@@ -107,14 +87,9 @@ public class GameApplication {
 		try {
 			storedGame = repository.loadGame(0);
 		} catch (GameIDInvalidException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
-
-		// GameConfiguration config = new GameConfiguration(winEvaluator,
-		// collisionHandler, diceRoller, board,
-		// new ComprehensiveGameTurn());
 
 		Game game = new Game(storedGame.configuration(), storedGame.pieces(), publisher);
 

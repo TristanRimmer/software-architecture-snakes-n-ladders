@@ -13,7 +13,7 @@ public class SelectionMenu {
         for (String opt : options) {
             index++;
             output.println(index + " - " + opt);
-        } 
+        }
 
         boolean chosen = false;
 
@@ -21,12 +21,13 @@ public class SelectionMenu {
             int choice = input.getNextInt("Please enter a valid number", output);
 
             try {
+                @SuppressWarnings("unused")
                 String _boundsTest = options.get(choice - 1);
 
                 return choice - 1;
             } catch (IndexOutOfBoundsException _e) {
                 output.println("Please choose an option in the correct range");
-            } 
+            }
         }
 
         return -1;
