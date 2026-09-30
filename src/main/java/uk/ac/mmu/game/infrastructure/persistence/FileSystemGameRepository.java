@@ -122,7 +122,8 @@ public class FileSystemGameRepository implements GameRepository {
                 if (!file.getFileName().toString().endsWith("." + SAVE_FILE_CUSTOM_EXTENSION))
                     continue;
 
-                this.listOfSavesAsFiles.add(file.getFileName().toString());
+                // A bit ugly - just trimming the extension and . off
+                this.listOfSavesAsFiles.add(this.getNameFromFile(file.getFileName().toString()));
             }
         } catch (IOException e) {
             throw new FileSystemGameRepositoryRuntimeError(
@@ -409,7 +410,8 @@ public class FileSystemGameRepository implements GameRepository {
             pieceContainer.registerNewPiece(new GamePiece(p, boardWidth, boardHeight));
         }
 
-        return new GameStore(configuration, pieceContainer, diceRolls, file.getFileName().toString());
+        return new GameStore(configuration, pieceContainer, diceRolls,
+                this.getNameFromFile(file.getFileName().toString()));
     }
 
     @Override
@@ -419,14 +421,15 @@ public class FileSystemGameRepository implements GameRepository {
         GameConfiguration config = gameData.configuration();
 
         // Initial check to see if it needs an additional extension
-        boolean fileNameIsntUnique = this.listOfSavesAsFiles.contains(
-                this.mapFileNameToPath(fileName).getFileName().toString());
+        boolean fileNameIsntUnique = this.listOfSavesAsFiles.contains(fileName);
+
+        System.out.println(this.listOfSavesAsFiles.getLast() + ", " + fileName);
 
         int copyNumber = fileNameIsntUnique ? 1 : 0;
 
         while (fileNameIsntUnique) {
             if (this.listOfSavesAsFiles.contains(
-                    this.mapFileNameToPath(fileName + " (" + copyNumber + ")").getFileName().toString())) {
+                    fileName + " (" + copyNumber + ")")) {
                 copyNumber += 1;
             } else {
                 fileNameIsntUnique = false;
@@ -495,7 +498,7 @@ public class FileSystemGameRepository implements GameRepository {
         String file = this.listOfSavesAsFiles.get(gameID);
 
         try {
-            return this.serialiseGameFileToGameStore(Path.of(this.pathToDirectory + "/" + file));
+            return this.serialiseGameFileToGameStore(this.mapFileNameToPath(file));
         } catch (FileSystemInternalError e) {
             throw new GameIDInvalidException("Game Was unable to be serialised: " + e.path + " due to " + e.reason);
         }
@@ -508,5 +511,11 @@ public class FileSystemGameRepository implements GameRepository {
 
     private Path mapFileNameToPath(String path) {
         return Path.of(this.pathToDirectory + "/" + path + "." + this.SAVE_FILE_CUSTOM_EXTENSION);
+    }
+
+    private String getNameFromFile(String fileName) {
+        return fileName.substring(
+                0,
+                fileName.length() - this.SAVE_FILE_CUSTOM_EXTENSION.length() - 1);
     }
 }
