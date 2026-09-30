@@ -3,7 +3,7 @@ package uk.ac.mmu.game.domain.rules.wincondition;
 import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.pieces.Piece;
 
-public class ExactHit implements WinCondition {
+public final class ExactHit implements WinCondition {
     @Override
     public WinEvaluationStatus evaluateWinStatus(Piece piece, Board boardProperties) {
         int currentDisplacement = piece.getDisplacement();

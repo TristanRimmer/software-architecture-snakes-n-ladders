@@ -5,7 +5,7 @@ import java.util.List;
 import uk.ac.mmu.game.domain.pieces.Piece;
 import uk.ac.mmu.game.domain.util.GridPosition;
 
-public class HitsDoNothing implements CollisionCondition {
+public final class HitsDoNothing implements CollisionCondition {
     @Override
     public CollisionStatus evaluateCollisions(Piece piece, GridPosition oldPos, GridPosition proposedPos,
             List<GridPosition> allCurrentPositions) {

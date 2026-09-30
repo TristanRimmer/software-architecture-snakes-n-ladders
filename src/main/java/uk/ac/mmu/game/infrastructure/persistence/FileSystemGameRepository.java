@@ -9,7 +9,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import uk.ac.mmu.game.domain.board.Board;
@@ -26,6 +25,7 @@ import uk.ac.mmu.game.domain.game.GameStore;
 import uk.ac.mmu.game.domain.game.state.gameturn.ComprehensiveGameTurn;
 import uk.ac.mmu.game.domain.game.state.gameturn.GameTurn;
 import uk.ac.mmu.game.domain.pieces.GamePiece;
+import uk.ac.mmu.game.domain.pieces.Piece;
 import uk.ac.mmu.game.domain.pieces.container.LockingPieceContainer;
 import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerLeftOrigin;
@@ -48,10 +48,12 @@ public class FileSystemGameRepository implements GameRepository {
     // Private Error for failed serialisation
     private class FileSystemInternalError extends Exception {
         public String path;
+        public String reason;
 
-        public FileSystemInternalError(String path) {
-            super(path);
+        public FileSystemInternalError(String path, String reason) {
+            super(path + ", " + reason);
             this.path = path;
+            this.reason = reason;
         }
     }
 
@@ -175,25 +177,33 @@ public class FileSystemGameRepository implements GameRepository {
             String currentLine;
 
             while ((currentLine = reader.readLine()) != null) {
-                List<String> pieces = splitter.apply(currentLine);
-                if (pieces.isEmpty())
-                    continue;
+                System.out.println(currentLine);
 
-                String header = pieces.getFirst();
+                List<String> pieces = splitter.apply(currentLine);
+
+                if (pieces.isEmpty()) {
+                    numScannedLines++;
+                    continue;
+                }
+
+                String header = pieces.getFirst().strip();
 
                 if (numScannedLines == 0 && !header.equals("24854995_GAME_SAVE"))
-                    throw new FileSystemInternalError(file.getFileName().toString());
+                    throw new FileSystemInternalError(file.getFileName().toString(),
+                            "First Line Identifier Invalid, got " + header);
 
                 switch (header) {
                     case "BoardSize" -> {
                         if (pieces.size() != 3)
-                            throw new FileSystemInternalError(file.getFileName().toString());
+                            throw new FileSystemInternalError(file.getFileName().toString(),
+                                    "Improper Board Size configuration");
 
                         Integer xSize = stringToUnsignedInt.apply(pieces.get(1));
                         Integer ySize = stringToUnsignedInt.apply(pieces.get(2));
 
                         if (xSize <= 0 || ySize <= 0)
-                            throw new FileSystemInternalError(file.getFileName().toString());
+                            throw new FileSystemInternalError(file.getFileName().toString(),
+                                    "Board Size Dimensions are Improper");
 
                         boardWidth = xSize;
                         boardHeight = ySize;
@@ -203,12 +213,14 @@ public class FileSystemGameRepository implements GameRepository {
                     }
                     case "HitCondition" -> {
                         if (pieces.size() != 2)
-                            throw new FileSystemInternalError(file.getFileName().toString());
+                            throw new FileSystemInternalError(file.getFileName().toString(),
+                                    "Improper Hit Condition configuration");
 
                         switch (pieces.get(1)) {
                             case "HitsDontCount" -> hitCondition = new HitsDoNothing();
-                            case "HitsForfeitMove" -> hitCondition = new HitsForfeitTurn();
-                            default -> throw new FileSystemInternalError(file.getFileName().toString());
+                            case "HitsForfeitTurn" -> hitCondition = new HitsForfeitTurn();
+                            default -> throw new FileSystemInternalError(file.getFileName().toString(),
+                                    " WinConditionInitialisationException WinConditionInitialisationExceptionInvalid HitCondition option");
                         }
 
                         hitConditionSet = true;
@@ -216,17 +228,20 @@ public class FileSystemGameRepository implements GameRepository {
                     }
                     case "DiceRule" -> {
                         if (pieces.size() != 2)
-                            throw new FileSystemInternalError(file.getFileName().toString());
+                            throw new FileSystemInternalError(file.getFileName().toString(),
+                                    "Improper Dice Rule Configuration");
 
                         switch (pieces.get(1)) {
                             case "Strict" -> diceRulesetIsStrict = true;
                             case "Lenient" -> diceRulesetIsStrict = false;
-                            default -> throw new FileSystemInternalError(file.getFileName().toString());
+                            default -> throw new FileSystemInternalError(file.getFileName().toString(),
+                                    "Invalid Dice Rule Option");
                         }
                     }
                     case "WinCondition" -> {
                         if (pieces.size() != 2)
-                            throw new FileSystemInternalError(file.getFileName().toString());
+                            throw new FileSystemInternalError(file.getFileName().toString(),
+                                    "Improper Win Condition Configuration");
 
                         // TODO: perhaps for things like this, rather than doing it as a switch have a
                         // final
@@ -235,7 +250,8 @@ public class FileSystemGameRepository implements GameRepository {
                         switch (pieces.get(1)) {
                             case "CrossTheFinishLine" -> winCondition = new CrossTheFinishline();
                             case "ExactHit" -> winCondition = new ExactHit();
-                            default -> throw new FileSystemInternalError(file.getFileName().toString());
+                            default -> throw new FileSystemInternalError(file.getFileName().toString(),
+                                    "Invalid win condition option");
                         }
 
                         winConditionSet = true;
@@ -243,7 +259,8 @@ public class FileSystemGameRepository implements GameRepository {
                     }
                     case "TurnSequence" -> {
                         if (pieces.size() != 2)
-                            throw new FileSystemInternalError(file.getFileName().toString());
+                            throw new FileSystemInternalError(file.getFileName().toString(),
+                                    "Invalid turn sequence configuration");
 
                         // TODO: perhaps for things like this, rather than doing it as a switch have a
                         // final
@@ -251,22 +268,35 @@ public class FileSystemGameRepository implements GameRepository {
                         // structure for you (a factory lol just say that)
                         switch (pieces.get(1)) {
                             case "Default" -> turnSequence = new ComprehensiveGameTurn();
-                            default -> throw new FileSystemInternalError(file.getFileName().toString());
+                            default -> throw new FileSystemInternalError(file.getFileName().toString(),
+                                    "Invalid Turn Sequence option");
                         }
                         turnSequenceSet = true;
                         break;
                     }
                     case "DiceRolls", "NumPieces", "NumSpecialPositions" -> {
                         if (pieces.size() != 2)
-                            throw new FileSystemInternalError(file.getFileName().toString());
+                            throw new FileSystemInternalError(file.getFileName().toString(),
+                                    "Improper Configuration for " + pieces.getFirst());
 
                         Integer numLines = stringToUnsignedInt.apply(pieces.get(1));
 
-                        if (numLines <= 0)
-                            throw new FileSystemInternalError(file.getFileName().toString());
+                        if (numLines < 0)
+                            throw new FileSystemInternalError(file.getFileName().toString(),
+                                    "Improper number of entries specified for " + pieces.getFirst());
 
-                        multiLineHeader = pieces.get(0);
+                        multiLineHeader = numLines == 0 ? multiLineHeader : pieces.get(0);
                         multiLineNum = numLines;
+
+                        if (numLines == 0) {
+                            switch (pieces.get(0)) {
+                                case "NumSpecialPositions" -> specialPositionsSet = true;
+                                case "NumPieces" -> piecesSet = true;
+                                case "DiceRolls" -> diceRollsSet = true;
+                                default -> throw new FileSystemInternalError(file.getFileName().toString(),
+                                        "Invalid Multi-Line specification");
+                            }
+                        }
                         break;
                     }
                     default -> {
@@ -275,26 +305,24 @@ public class FileSystemGameRepository implements GameRepository {
                             // We're in a multi-line list
                             switch (multiLineHeader) {
                                 case "DiceRolls" -> {
+                                    Integer diceRoll = stringToUnsignedInt.apply(pieces.get(0));
+
+                                    if (diceRoll <= 0)
+                                        throw new FileSystemInternalError(file.getFileName().toString(),
+                                                "Improper Dice Number Value");
+
+                                    diceRolls.add(diceRoll);
+
+                                    System.out.println("Got Here!!!");
                                     if (diceRolls.size() == multiLineNum) {
                                         multiLineNum = 0;
                                         multiLineHeader = "";
                                         diceRollsSet = true;
                                         break;
                                     }
-                                    Integer diceRoll = stringToUnsignedInt.apply(pieces.get(0));
-
-                                    if (diceRoll <= 0)
-                                        throw new FileSystemInternalError(file.getFileName().toString());
-
-                                    diceRolls.add(diceRoll);
+                                    break;
                                 }
                                 case "NumPieces" -> {
-                                    if (pieceSets.size() == multiLineNum) {
-                                        multiLineNum = 0;
-                                        multiLineHeader = "";
-                                        piecesSet = true;
-                                        break;
-                                    }
                                     // TODO: perhaps for things like this, rather than doing it as a switch have a
                                     // final
                                     // class that takes in a string and eithe throws an error or returns the
@@ -304,18 +332,23 @@ public class FileSystemGameRepository implements GameRepository {
                                         case "LowerRight" -> pieceSets.add(new LowerRightOrigin());
                                         case "UpperLeft" -> pieceSets.add(new UpperLeftOrigin());
                                         case "UpperRight" -> pieceSets.add(new UpperRightOrigin());
-                                        default -> throw new FileSystemInternalError(file.getFileName().toString());
+                                        default -> throw new FileSystemInternalError(file.getFileName().toString(),
+                                                "Invalid Piece Movement Pattern");
                                     }
-                                }
-                                case "NumSpecialPositions" -> {
-                                    if (specialPositions.size() == multiLineNum) {
+                                    System.out.println("Got Here!!");
+                                    if (pieceSets.size() == multiLineNum) {
+                                        System.out.println("Got Here!! asdhioashdio");
                                         multiLineNum = 0;
                                         multiLineHeader = "";
-                                        specialPositionsSet = true;
+                                        piecesSet = true;
                                         break;
                                     }
+                                    break;
+                                }
+                                case "NumSpecialPositions" -> {
                                     if (pieces.size() != 5)
-                                        throw new FileSystemInternalError(file.getFileName().toString());
+                                        throw new FileSystemInternalError(file.getFileName().toString(),
+                                                "Improper Special Position Description");
 
                                     Integer x1 = stringToUnsignedInt.apply(pieces.get(1));
                                     Integer y1 = stringToUnsignedInt.apply(pieces.get(2));
@@ -323,7 +356,8 @@ public class FileSystemGameRepository implements GameRepository {
                                     Integer y2 = stringToUnsignedInt.apply(pieces.get(4));
 
                                     if (x1 < 0 || y1 < 0 || x2 < 0 || y2 < 0)
-                                        throw new FileSystemInternalError(file.getFileName().toString());
+                                        throw new FileSystemInternalError(file.getFileName().toString(),
+                                                "Improper special position coordinate specification");
 
                                     // TODO: perhaps for things like this, rather than doing it as a switch have a
                                     // final
@@ -336,27 +370,47 @@ public class FileSystemGameRepository implements GameRepository {
                                         case "TwoWayTeleporter" ->
                                             specialPositions.add(new TwoWayTeleporter(new GridPosition(x1, y1),
                                                     new GridPosition(x2, y2)));
-                                        default -> throw new FileSystemInternalError(file.getFileName().toString());
+                                        default -> throw new FileSystemInternalError(file.getFileName().toString(),
+                                                "Invalid Special Position Option");
                                     }
+
+                                    System.out.println("Got Here!");
+                                    if (specialPositions.size() == multiLineNum) {
+                                        System.out.println("Got Here! asdhioashdio");
+                                        multiLineNum = 0;
+                                        multiLineHeader = "";
+                                        specialPositionsSet = true;
+                                        break;
+                                    }
+                                    break;
                                 }
-                                default -> throw new FileSystemInternalError(file.getFileName().toString());
+                                default -> throw new FileSystemInternalError(file.getFileName().toString(),
+                                        "Invalid Multi-Line specification");
                             }
-                        } else {
-                            continue;
+                        } else if (!multiLineHeader.isEmpty()) {
+                            multiLineHeader = "";
+                            System.out.println("asduiohkasdiosadHere");
                         }
                     }
                 }
-
                 numScannedLines++;
             }
         } catch (IOException e) {
-            throw new FileSystemInternalError(file.getFileName().toString());
+            throw new FileSystemInternalError(file.getFileName().toString(), "Error Reading the game file");
         }
 
         if (!boardSizeSet || !winConditionSet || !hitConditionSet || !piecesSet || !specialPositionsSet
-                || !diceRollsSet || !turnSequenceSet)
-            throw new FileSystemInternalError(file.getFileName().toString());
-
+                || !diceRollsSet || !turnSequenceSet) {
+            System.out.println(boardSizeSet);
+            System.out.println(winConditionSet);
+            System.out.println(hitConditionSet);
+            System.out.println(piecesSet);
+            System.out.println(specialPositionsSet);
+            System.out.println(diceRollsSet);
+            System.out.println(turnSequenceSet);
+            throw new FileSystemInternalError(file.getFileName().toString(),
+                    "Game File did not specify all required configurations");
+        }
         Board board = new GameBoard(boardWidth, boardHeight, specialPositions);
         DiceRolling diceRoller = diceRulesetIsStrict ? new DiceStreamFixed(diceRolls)
                 : new DiceStreamUnbounded(diceRolls, new SingleDice(new JavaStlRandom(), 6));
@@ -405,19 +459,34 @@ public class FileSystemGameRepository implements GameRepository {
             writer.write("BoardSize " + config.board().getBoardWidth() + " " + config.board().getBoardHeight());
             writer.newLine();
 
-            writer.write("HitCondition");
+            writer.write("NumSpecialPositions 0");
             writer.newLine();
 
-            writer.write("WinCondition");
+            // TODO: this
+            writer.write("HitCondition " + CollisionCondition.getStringFromImplementation(config.collisionEvaluator()));
+            writer.newLine();
+
+            writer.write("WinCondition " + WinCondition.getStringFromImplementation(config.winEvaluator()));
             writer.newLine();
 
             writer.write("DiceRule Strict");
             writer.newLine();
+
             writer.write("DiceRolls " + gameData.diceRolls().size());
             writer.newLine();
 
-            writer.write("NumPieces " + gameData.pieces().getNumPieces());
+            for (Integer roll : gameData.diceRolls()) {
+                writer.write(Integer.toString(roll));
+                writer.newLine();
+            }
 
+            writer.write("NumPieces " + gameData.pieces().getNumPieces());
+            writer.newLine();
+
+            for (Piece piece : gameData.pieces().getPiecesInOriginalOrder()) {
+                writer.write(PositionTrackingConverter.getStringFromImplementation(piece.getTrackingConverter()));
+                writer.newLine();
+            }
         } catch (IOException e) {
             throw new FileSystemGameRepositoryRuntimeError("Failed to serialise recent game: " + e);
         }
@@ -434,9 +503,9 @@ public class FileSystemGameRepository implements GameRepository {
         String file = this.listOfSavesAsFiles.get(gameID);
 
         try {
-            return this.serialiseGameFileToGameStore(this.mapFileNameToPath(file));
+            return this.serialiseGameFileToGameStore(Path.of(this.pathToDirectory + "/" + file));
         } catch (FileSystemInternalError e) {
-            throw new GameIDInvalidException("Game Was unable to be serialised: " + e.path);
+            throw new GameIDInvalidException("Game Was unable to be serialised: " + e.path + " due to " + e.reason);
         }
     }
 

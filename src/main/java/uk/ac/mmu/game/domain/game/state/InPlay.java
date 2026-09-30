@@ -19,44 +19,43 @@ public final class InPlay implements GameState {
         // Local references to make the main loop neater
         final PieceContainer pieces = context.getPieces();
         final DiceRolling diceRoller = context.getConfig().diceRoller();
-        final CollisionCondition collisionHandler = context.getConfig().pieceCollisionService();
+        final CollisionCondition collisionHandler = context.getConfig().collisionEvaluator();
         final WinCondition winEvaluator = context.getConfig().winEvaluator();
         final Board board = context.getConfig().board();
         final GameTurn turnSequence = context.getConfig().turnSequence();
 
         final GameEventPublisher publisher = context.getEventPublisher();
-        
+
         publisher.publish(new GameStateTransition("In Play"));
 
         int numTurns = 0;
-        
+
         boolean isGameWon;
         Piece currentPiece;
         int currentPieceNumber;
 
-		do {
+        do {
             /*
-                Determine whose turn it is
+             * Determine whose turn it is
              */
-			currentPieceNumber = this.getNextPieceIndex(numTurns, pieces.getNumPieces());
+            currentPieceNumber = this.getNextPieceIndex(numTurns, pieces.getNumPieces());
             currentPiece = pieces.getNextPiece();
             numTurns++;
 
             publisher.publish(new TurnChange(currentPieceNumber));
 
             /*
-                Run this piece's turn
-            */
+             * Run this piece's turn
+             */
             isGameWon = turnSequence.didNextTurnWinGame(
-                currentPiece, 
-                pieces, 
-                diceRoller, 
-                collisionHandler, 
-                winEvaluator, 
-                board, 
-                publisher
-            );
-		} while(!isGameWon);
+                    currentPiece,
+                    pieces,
+                    diceRoller,
+                    collisionHandler,
+                    winEvaluator,
+                    board,
+                    publisher);
+        } while (!isGameWon);
 
         publisher.publish(new PieceWon(currentPiece, currentPieceNumber));
 

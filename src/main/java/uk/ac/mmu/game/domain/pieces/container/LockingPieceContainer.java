@@ -6,11 +6,12 @@ import java.util.List;
 import uk.ac.mmu.game.domain.pieces.Piece;
 import uk.ac.mmu.game.domain.util.GridPosition;
 
-
 /**
- * LockingPieceContainer - contains a list of the registered pieces, also locking once play has begun so no more pieces can be registered.
+ * LockingPieceContainer - contains a list of the registered pieces, also
+ * locking once play has begun so no more pieces can be registered.
  * 
- * If the user attempts to register a new piece with this impl, it throws a runtime error
+ * If the user attempts to register a new piece with this impl, it throws a
+ * runtime error
  */
 public class LockingPieceContainer implements PieceContainer {
     private final List<Piece> pieces;
@@ -22,16 +23,18 @@ public class LockingPieceContainer implements PieceContainer {
         this.inPlay = false;
         this.currentPieceIndex = 0;
     }
-    @Override 
+
+    @Override
     public void registerNewPiece(Piece newPiece) {
         if (!this.inPlay) {
             this.pieces.add(newPiece);
             return;
         }
         throw new LockingPieceContainerMisuseException(
-            "Tried to register a new piece after In-Play methods were invoked. Use/Create an alternative if this wasn't an accident");
+                "Tried to register a new piece after In-Play methods were invoked. Use/Create an alternative if this wasn't an accident");
     }
-    @Override 
+
+    @Override
     public Piece getNextPiece() {
         // The moment this function has been invoked, lock the pieces list
         this.inPlay = true;
@@ -44,7 +47,8 @@ public class LockingPieceContainer implements PieceContainer {
     }
 
     @Override
-    // This uses the internal tracker to automatically choose which position should be omitted and returns the other positions
+    // This uses the internal tracker to automatically choose which position should
+    // be omitted and returns the other positions
     public List<GridPosition> getOtherPiecesPositions() {
         List<GridPosition> positions = new ArrayList<>();
         Piece currentPiece = this.currentPieceFromList();
@@ -65,6 +69,11 @@ public class LockingPieceContainer implements PieceContainer {
     @Override
     public int getNumPieces() {
         return this.pieces.size();
+    }
+
+    @Override
+    public List<Piece> getPiecesInOriginalOrder() {
+        return this.pieces;
     }
 
 }

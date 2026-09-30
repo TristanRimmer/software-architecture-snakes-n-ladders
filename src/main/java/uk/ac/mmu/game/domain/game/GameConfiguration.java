@@ -7,9 +7,9 @@ import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
 import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
 
 public record GameConfiguration(
-    WinCondition winEvaluator,
-    CollisionCondition pieceCollisionService,
-    DiceRolling diceRoller,
-    Board board,
-    GameTurn turnSequence
-) {}
+        WinCondition winEvaluator,
+        CollisionCondition collisionEvaluator,
+        DiceRolling diceRoller,
+        Board board,
+        GameTurn turnSequence) {
+}

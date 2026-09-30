@@ -23,28 +23,25 @@ public class GamePiece implements Piece {
         this.currentDisplacement += increment;
 
         return converter.displacementToGridPosition(
-            this.currentDisplacement, 
-            this.gridWidth, 
-            this.gridHeight
-        );
+                this.currentDisplacement,
+                this.gridWidth,
+                this.gridHeight);
     }
 
     @Override
     public void setPosition(GridPosition newPos) {
         this.currentDisplacement = converter.gridPositionToDisplacement(
-            newPos, 
-            this.gridWidth,
-            this.gridHeight
-        );       
+                newPos,
+                this.gridWidth,
+                this.gridHeight);
     }
 
     @Override
     public GridPosition getCurrentPosition() {
         return converter.displacementToGridPosition(
-            this.currentDisplacement, 
-            this.gridWidth,
-            this.gridHeight
-        );
+                this.currentDisplacement,
+                this.gridWidth,
+                this.gridHeight);
     }
 
     @Override
@@ -52,4 +49,8 @@ public class GamePiece implements Piece {
         return this.currentDisplacement;
     }
 
+    @Override
+    public PositionTrackingConverter getTrackingConverter() {
+        return this.converter;
+    }
 }

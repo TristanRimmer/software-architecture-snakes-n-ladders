@@ -7,7 +7,13 @@ import uk.ac.mmu.game.domain.util.GridPosition;
 
 public interface PieceContainer {
     void registerNewPiece(Piece newPiece);
+
     Piece getNextPiece();
+
     List<GridPosition> getOtherPiecesPositions();
+
     int getNumPieces();
+
+    // WARN: Code smell?
+    List<Piece> getPiecesInOriginalOrder();
 }
