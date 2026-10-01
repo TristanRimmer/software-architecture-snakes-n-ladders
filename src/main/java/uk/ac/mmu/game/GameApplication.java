@@ -1,6 +1,5 @@
 package uk.ac.mmu.game;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.boot.SpringApplication;
@@ -11,7 +10,7 @@ import uk.ac.mmu.game.domain.events.eventlistener.DiceRollRecorder;
 import uk.ac.mmu.game.domain.game.Game;
 import uk.ac.mmu.game.domain.game.GameStore;
 import uk.ac.mmu.game.infrastructure.output.ConsolePrinter;
-import uk.ac.mmu.game.infrastructure.persistence.FileSystemGameRepository;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemGameRepository;
 import uk.ac.mmu.game.usecase.GameIDInvalidException;
 import uk.ac.mmu.game.usecase.GameRepository;
 

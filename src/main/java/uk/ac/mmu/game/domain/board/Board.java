@@ -1,5 +1,6 @@
 package uk.ac.mmu.game.domain.board;
 
+import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
 import uk.ac.mmu.game.domain.util.GridPosition;
 
 public interface Board {
@@ -8,4 +9,5 @@ public interface Board {
     int getBoardWidth();
     int getBoardHeight();
     int getMinimumTravelDistance();
+    void registerNewSpecialPosition(SpecialLinkedPositions newPosition);
 }

@@ -1,5 +1,6 @@
 package uk.ac.mmu.game.domain.board;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,6 +14,30 @@ public class GameBoard implements Board {
     // Note: this works because GridPosition implements a proper equals()
     HashMap<GridPosition, Integer> specialPositionsMap = new HashMap<>();
 
+    public GameBoard(int width, int height) {
+        this.width = width;
+        this.height = height;
+        this.specialPositionsList = new ArrayList<>();
+        /*
+            This implementation of Board uses a hashmap of indexes to make the pieceHasLandedOnSpecialSpot more simplisitc
+        */
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                // -1 means it isnt special
+                specialPositionsMap.put(new GridPosition(x, y), -1);
+            }
+        }
+    }
+    @Override
+    public void registerNewSpecialPosition(SpecialLinkedPositions newPosition) {
+        List<GridPosition> relevantPositions = newPosition.getListOfSpecialPositions();
+
+        for (GridPosition pos : relevantPositions) {
+            this.specialPositionsMap.put(pos, 
+                specialPositionsList.lastIndexOf(specialPositionsList.getLast()));
+        }
+    }
+    
     public GameBoard(int width, int height, List<SpecialLinkedPositions> specialPositions) {
         this.width = width;
         this.height = height;
