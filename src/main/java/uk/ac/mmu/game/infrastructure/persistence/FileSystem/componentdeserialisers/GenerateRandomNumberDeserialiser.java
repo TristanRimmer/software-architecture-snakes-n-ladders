@@ -45,14 +45,15 @@ public class GenerateRandomNumberDeserialiser implements GamSubcomponentDeserial
 
     @Override
     public boolean loadedObjectSuccessfully() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'loadedObjectSuccessfully'");
+        return this.instanceCreated;
     }
 
     @Override
     public GenerateRandomNumber getObject() throws DeserialisedObjectNotCreatedException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getObject'");
+        if (!this.loadedObjectSuccessfully())
+            throw new DeserialisedObjectNotCreatedException("Random Number Generator not initialised correctly");
+
+        return this.rng;
     }
 
 }

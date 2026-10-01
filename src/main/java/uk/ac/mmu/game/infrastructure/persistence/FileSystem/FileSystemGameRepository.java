@@ -14,6 +14,7 @@ import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.board.GameBoard;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
 import uk.ac.mmu.game.domain.dice.DiceRolling;
+import uk.ac.mmu.game.domain.dice.GenerateRandomNumber;
 import uk.ac.mmu.game.domain.dice.variations.SingleDice;
 import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamFixed;
 import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamUnbounded;
@@ -31,13 +32,13 @@ import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialise
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.DeserialisedObjectNotCreatedException;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.DiceRollsDeserialiser;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.GamSubcomponentDeserialiser;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.GenerateRandomNumberDeserialiser;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.HitConditionDeserialiser;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.IsDiceRuleStrictDeserialiser;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.PiecePositionTrackerDeserialiser;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.SpecialPositionDeserialiser;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.TurnSequenceDeserialiser;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.WinConditionDeserialiser;
-import uk.ac.mmu.game.infrastructure.random.JavaStlRandom;
 import uk.ac.mmu.game.infrastructure.serialisation.GameTurnSerialiser;
 import uk.ac.mmu.game.infrastructure.serialisation.HitConditionSerialiser;
 import uk.ac.mmu.game.infrastructure.serialisation.PositionTrackingConverterSerialiser;
@@ -76,8 +77,7 @@ public class FileSystemGameRepository implements GameRepository {
     private static final String WIN_CONDITION_HEADER = "WinCondition";
     private static final String HIT_CONDITION_HEADER = "HitCondition";
     private static final String BOARD_SIZE_HEADER = "BoardSize";
-
-    // TODO: Random Number Generator
+    private static final String RANDOM_NUMBER_GENERATOR = "RandomNumbersSource";
 
     private final Path pathToDirectory;
     private List<String> listOfSavesAsFiles;
@@ -140,6 +140,7 @@ public class FileSystemGameRepository implements GameRepository {
         deserialisers.put(SPECIAL_POSITION_HEADER, new SpecialPositionDeserialiser(SPECIAL_POSITION_HEADER));
         deserialisers.put(BOARD_SIZE_HEADER, new BoardDeserialiser(GameBoard.class, BOARD_SIZE_HEADER));
         deserialisers.put(PIECES_HEADER, new PiecePositionTrackerDeserialiser(PIECES_HEADER));
+        deserialisers.put(RANDOM_NUMBER_GENERATOR, new GenerateRandomNumberDeserialiser(RANDOM_NUMBER_GENERATOR));
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file.toString()))) {
             String currentLine;
@@ -159,6 +160,7 @@ public class FileSystemGameRepository implements GameRepository {
             CollisionCondition collisionCondition = (CollisionCondition)deserialisers.get(HIT_CONDITION_HEADER).getObject();
             GameTurn turnSequence = (GameTurn)deserialisers.get(TURN_SEQUENCE_HEADER).getObject();
             boolean isStrictDiceRules = (Boolean)deserialisers.get(DICE_RULE_HEADER).getObject();
+            GenerateRandomNumber randomNumberGenerator = (GenerateRandomNumber)deserialisers.get(RANDOM_NUMBER_GENERATOR).getObject();
 
             // In the implementations, they are not a generic List they are specifcially an ArrayList
             ArrayList<Integer> diceRolls = (ArrayList<Integer>)deserialisers.get(DICE_ROLLS_HEADER).getObject();
@@ -176,7 +178,7 @@ public class FileSystemGameRepository implements GameRepository {
             }
 
             DiceRolling diceRoller = isStrictDiceRules ? new DiceStreamFixed(diceRolls)
-                : new DiceStreamUnbounded(diceRolls, new SingleDice(new JavaStlRandom(), 6));
+                : new DiceStreamUnbounded(diceRolls, new SingleDice(randomNumberGenerator, 6));
 
             PieceContainer pieceContainer = new LockingPieceContainer();
 
