@@ -77,8 +77,6 @@ public class FileSystemGameRepository implements GameRepository {
     private static final String HIT_CONDITION_HEADER = "HitCondition";
     private static final String BOARD_SIZE_HEADER = "BoardSize";
 
-
-
     // TODO: Random Number Generator
 
     private final Path pathToDirectory;
@@ -131,33 +129,7 @@ public class FileSystemGameRepository implements GameRepository {
 
     // TODO: implement choose random generator
     private GameStore serialiseGameFileToGameStore(Path file) throws FileSystemInternalError {
-        /**
-         * File Layout:
-         * Line 1: 24854995_GAME_SAVE // Similar to BMPs, its a tag
-         * // The following should be any order
-         * BoardSize X Y
-         * HitCondition [hitConditionName]
-         * WinCondition [winConditionName]
-         * 
-         * NumPieces [NumPiece] // Immediately followed by the piece movement pattern.
-         * In this comment, assume NumPiece to be 4
-         * BottomLeft
-         * TopRight
-         * BottomRight
-         * TopLeft
-         * 
-         * NumSpecialPositions [NumSpecial] // like above, assume its 3
-         * OneWayTeleporter X1 Y1 X2 Y2 // eg 2 3 0 1
-         * TwoWayTeleporter X1 Y1 X2 Y2
-         * TwoWayTeleporter X1 Y1 X2 Y2
-         * 
-         * DiceRule [Strict/Lenient]
-         * DiceRolls [NumDiceRolls] // Pretend its 7
-         * 6 2 4 1 6 2 2
-         * 
-         * TurnSequence [turnSequence]
-         */
-
+        // TODO: Could i apply builder pattern here?
         HashMap<String, GamSubcomponentDeserialiser<?>> deserialisers = new HashMap<>();
 
         deserialisers.put(WIN_CONDITION_HEADER, new WinConditionDeserialiser(WIN_CONDITION_HEADER));
@@ -189,17 +161,15 @@ public class FileSystemGameRepository implements GameRepository {
             boolean isStrictDiceRules = (Boolean)deserialisers.get(DICE_RULE_HEADER).getObject();
 
             // In the implementations, they are not a generic List they are specifcially an ArrayList
-            @SuppressWarnings("unchecked")
             ArrayList<Integer> diceRolls = (ArrayList<Integer>)deserialisers.get(DICE_ROLLS_HEADER).getObject();
 
-            @SuppressWarnings("unchecked")
-            ArrayList<SpecialLinkedPositions> specialPositions = 
-                (ArrayList<SpecialLinkedPositions>)deserialisers.get(SPECIAL_POSITION_HEADER).getObject();
-            Board board = (Board)deserialisers.get(BOARD_SIZE_HEADER).getObject();
-
-            @SuppressWarnings("unchecked")
             ArrayList<PositionTrackingConverter> pieceMoveset = 
                 (ArrayList<PositionTrackingConverter>)deserialisers.get(PIECES_HEADER).getObject();
+
+            ArrayList<SpecialLinkedPositions> specialPositions = 
+                (ArrayList<SpecialLinkedPositions>)deserialisers.get(SPECIAL_POSITION_HEADER).getObject();
+
+            Board board = (Board)deserialisers.get(BOARD_SIZE_HEADER).getObject();
 
             for (SpecialLinkedPositions positions : specialPositions) {
                 board.registerNewSpecialPosition(positions);
