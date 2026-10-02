@@ -3,7 +3,6 @@ package uk.ac.mmu.game.domain.dice.variations.stream;
 import java.util.List;
 
 import uk.ac.mmu.game.domain.dice.DiceRolling;
-import uk.ac.mmu.game.domain.dice.GenerateRandomNumber;
 
 public class DiceStreamUnbounded implements DiceRolling {
     DiceRollFromStream diceRollStream;
@@ -20,9 +19,5 @@ public class DiceStreamUnbounded implements DiceRolling {
         } catch (DiceRollStreamMisuseException e) {
             return backupRoller.nextDiceRoll();
         }
-    }
-    @Override
-    public GenerateRandomNumber randomNumbersSource() {
-        return null;
     }
 }

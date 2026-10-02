@@ -28,6 +28,7 @@ import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
 import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
 import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
+import uk.ac.mmu.game.domain.util.GridPosition;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.BoardDeserialiser;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.DeserialisedObjectNotCreatedException;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.DiceRollsDeserialiser;
@@ -43,6 +44,7 @@ import uk.ac.mmu.game.infrastructure.serialisation.GameTurnSerialiser;
 import uk.ac.mmu.game.infrastructure.serialisation.GenerateRandomNumberSerialiser;
 import uk.ac.mmu.game.infrastructure.serialisation.HitConditionSerialiser;
 import uk.ac.mmu.game.infrastructure.serialisation.PositionTrackingConverterSerialiser;
+import uk.ac.mmu.game.infrastructure.serialisation.SpecialPositionSerialiser;
 import uk.ac.mmu.game.infrastructure.serialisation.WinConditionSerialiser;
 import uk.ac.mmu.game.usecase.GameIDInvalidException;
 import uk.ac.mmu.game.usecase.GameRepository;
@@ -235,8 +237,19 @@ public class FileSystemGameRepository implements GameRepository {
                     BOARD_SIZE_HEADER + " " + config.board().getBoardWidth() + " " + config.board().getBoardHeight());
             writer.newLine();
 
-            writer.write(SPECIAL_POSITION_HEADER + " " + 0);
+            writer.write(SPECIAL_POSITION_HEADER + " " + config.board().getSpecialPositions().size());
             writer.newLine();
+
+            for (SpecialLinkedPositions pos : config.board().getSpecialPositions()) {
+                String string = SpecialPositionSerialiser.getStringFromImplemention(pos);
+
+                for (GridPosition currPos : pos.getListOfSpecialPositions()) {
+                    string = string + " " + currPos.x() + " " + currPos.y();                    
+                }
+
+                writer.write(string);
+                writer.newLine();
+            }
 
             writer.write(HIT_CONDITION_HEADER +
                     " " + HitConditionSerialiser.getStringFromImplementation(config.collisionEvaluator()));
@@ -278,7 +291,7 @@ public class FileSystemGameRepository implements GameRepository {
         }
 
         System.out.println("Saved to " + newFile.getFileName().toString());
-        this.listOfSavesAsFiles.add(newFile.getFileName().toString());
+        this.listOfSavesAsFiles.add(gameData.tag());
     }
 
     @Override

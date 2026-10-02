@@ -32,6 +32,8 @@ public class GameBoard implements Board {
     public void registerNewSpecialPosition(SpecialLinkedPositions newPosition) {
         List<GridPosition> relevantPositions = newPosition.getListOfSpecialPositions();
 
+        this.specialPositionsList.add(newPosition);
+
         for (GridPosition pos : relevantPositions) {
             this.specialPositionsMap.put(pos, 
                 specialPositionsList.lastIndexOf(specialPositionsList.getLast()));
@@ -105,4 +107,9 @@ public class GameBoard implements Board {
     public int getMinimumTravelDistance() {
         return this.width * this.height - 1;
     }
+    @Override
+    public List<SpecialLinkedPositions> getSpecialPositions() {
+       return this.specialPositionsList; 
+    }
+
 }

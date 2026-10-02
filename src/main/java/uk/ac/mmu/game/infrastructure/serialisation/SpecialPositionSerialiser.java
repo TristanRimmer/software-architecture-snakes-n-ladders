@@ -18,4 +18,10 @@ public class SpecialPositionSerialiser {
             default -> throw new ImplFactoryException("Invalid option provided to Special Position factory");
         };
     }
+    public static String getStringFromImplemention(SpecialLinkedPositions impl) {
+        return switch(impl) {
+            case OneWayTeleporter o -> ONE_WAY_TELEPORTER;
+            case TwoWayTeleporter t -> TWO_WAY_TELEPORER;
+        };
+    }
 }
