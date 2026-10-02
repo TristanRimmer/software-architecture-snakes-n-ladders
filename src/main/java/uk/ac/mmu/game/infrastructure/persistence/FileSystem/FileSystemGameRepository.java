@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.board.GameBoard;
@@ -19,7 +20,6 @@ import uk.ac.mmu.game.domain.dice.variations.SingleDice;
 import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamFixed;
 import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamUnbounded;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
-import uk.ac.mmu.game.domain.game.GameStore;
 import uk.ac.mmu.game.domain.game.state.gameturn.GameTurn;
 import uk.ac.mmu.game.domain.pieces.GamePiece;
 import uk.ac.mmu.game.domain.pieces.Piece;
@@ -40,11 +40,15 @@ import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialise
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.TurnSequenceDeserialiser;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.WinConditionDeserialiser;
 import uk.ac.mmu.game.infrastructure.serialisation.GameTurnSerialiser;
+import uk.ac.mmu.game.infrastructure.serialisation.GenerateRandomNumberSerialiser;
 import uk.ac.mmu.game.infrastructure.serialisation.HitConditionSerialiser;
 import uk.ac.mmu.game.infrastructure.serialisation.PositionTrackingConverterSerialiser;
 import uk.ac.mmu.game.infrastructure.serialisation.WinConditionSerialiser;
 import uk.ac.mmu.game.usecase.GameIDInvalidException;
 import uk.ac.mmu.game.usecase.GameRepository;
+import uk.ac.mmu.game.usecase.GameStore;
+
+// TODO: there is a bit of code cleanup to do here
 
 public class FileSystemGameRepository implements GameRepository {
     // Private Error for failed serialisation
@@ -64,11 +68,9 @@ public class FileSystemGameRepository implements GameRepository {
     private static final String DIRECTORY_OF_SAVES = "MMU_24854995_SandL";
     private static final String SAVE_FILE_CUSTOM_EXTENSION = "sandl";
 
-    // Regarding File Reading, there are some key words that were previously magic
     private static final String DICE_RULE_HEADER = "DiceRule";
     private static final String DICE_RULE_STRICT = "Strict";
     private static final String DICE_RULE_LENIENT = "Lenient";
-
     private static final String TURN_SEQUENCE_HEADER = "TurnSequence";
     private static final String SPECIAL_POSITION_HEADER = "NumSpecialPositions";
     private static final String DICE_ROLLS_HEADER = "DiceRolls";
@@ -127,20 +129,30 @@ public class FileSystemGameRepository implements GameRepository {
         }
     }
 
-    // TODO: implement choose random generator
     private GameStore serialiseGameFileToGameStore(Path file) throws FileSystemInternalError {
-        // TODO: Could i apply builder pattern here?
-        HashMap<String, GamSubcomponentDeserialiser<?>> deserialisers = new HashMap<>();
+        // Instantiating them outside the map rather than explicitly in the map means i can avoid casts
+        // when calling getObject()
+        WinConditionDeserialiser winConditionDeserialiser = new WinConditionDeserialiser(WIN_CONDITION_HEADER);
+        HitConditionDeserialiser hitConditionDeserialiser = new HitConditionDeserialiser(HIT_CONDITION_HEADER);
+        IsDiceRuleStrictDeserialiser diceRuleDeserialiser = new IsDiceRuleStrictDeserialiser(DICE_RULE_HEADER, DICE_RULE_STRICT, DICE_RULE_LENIENT);
+        DiceRollsDeserialiser diceRollsDeserialiser = new DiceRollsDeserialiser(DICE_ROLLS_HEADER);
+        TurnSequenceDeserialiser turnSequenceDeserialiser = new TurnSequenceDeserialiser(TURN_SEQUENCE_HEADER);
+        SpecialPositionDeserialiser specialPositionDeserialiser = new SpecialPositionDeserialiser(SPECIAL_POSITION_HEADER);
+        BoardDeserialiser boardDeserialiser = new BoardDeserialiser(GameBoard.class, BOARD_SIZE_HEADER);
+        PiecePositionTrackerDeserialiser piecePositionTrackerDeserialiser = new PiecePositionTrackerDeserialiser(PIECES_HEADER);
+        GenerateRandomNumberDeserialiser randomNumberDeserialiser = new GenerateRandomNumberDeserialiser(RANDOM_NUMBER_GENERATOR);
 
-        deserialisers.put(WIN_CONDITION_HEADER, new WinConditionDeserialiser(WIN_CONDITION_HEADER));
-        deserialisers.put(HIT_CONDITION_HEADER, new HitConditionDeserialiser(HIT_CONDITION_HEADER));
-        deserialisers.put(DICE_RULE_HEADER, new IsDiceRuleStrictDeserialiser(DICE_RULE_HEADER, DICE_RULE_STRICT, DICE_RULE_LENIENT));
-        deserialisers.put(DICE_ROLLS_HEADER, new DiceRollsDeserialiser(DICE_ROLLS_HEADER));
-        deserialisers.put(TURN_SEQUENCE_HEADER, new TurnSequenceDeserialiser(TURN_SEQUENCE_HEADER));
-        deserialisers.put(SPECIAL_POSITION_HEADER, new SpecialPositionDeserialiser(SPECIAL_POSITION_HEADER));
-        deserialisers.put(BOARD_SIZE_HEADER, new BoardDeserialiser(GameBoard.class, BOARD_SIZE_HEADER));
-        deserialisers.put(PIECES_HEADER, new PiecePositionTrackerDeserialiser(PIECES_HEADER));
-        deserialisers.put(RANDOM_NUMBER_GENERATOR, new GenerateRandomNumberDeserialiser(RANDOM_NUMBER_GENERATOR));
+        Map<String, GamSubcomponentDeserialiser<?>> deserialisers = new HashMap<>();
+
+        deserialisers.put(WIN_CONDITION_HEADER, winConditionDeserialiser);
+        deserialisers.put(HIT_CONDITION_HEADER, hitConditionDeserialiser);
+        deserialisers.put(DICE_RULE_HEADER, diceRuleDeserialiser);
+        deserialisers.put(DICE_ROLLS_HEADER, diceRollsDeserialiser);
+        deserialisers.put(TURN_SEQUENCE_HEADER, turnSequenceDeserialiser);
+        deserialisers.put(SPECIAL_POSITION_HEADER, specialPositionDeserialiser);
+        deserialisers.put(BOARD_SIZE_HEADER, boardDeserialiser);
+        deserialisers.put(PIECES_HEADER, piecePositionTrackerDeserialiser);
+        deserialisers.put(RANDOM_NUMBER_GENERATOR, randomNumberDeserialiser);
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file.toString()))) {
             String currentLine;
@@ -154,24 +166,16 @@ public class FileSystemGameRepository implements GameRepository {
             throw new FileSystemInternalError(file.getFileName().toString(), "Error Reading the game file");
         }
 
-        // These casts only work as the concrete implementations have a fixed type parameter
         try {
-            WinCondition winCondition = (WinCondition)deserialisers.get(WIN_CONDITION_HEADER).getObject();
-            CollisionCondition collisionCondition = (CollisionCondition)deserialisers.get(HIT_CONDITION_HEADER).getObject();
-            GameTurn turnSequence = (GameTurn)deserialisers.get(TURN_SEQUENCE_HEADER).getObject();
-            boolean isStrictDiceRules = (Boolean)deserialisers.get(DICE_RULE_HEADER).getObject();
-            GenerateRandomNumber randomNumberGenerator = (GenerateRandomNumber)deserialisers.get(RANDOM_NUMBER_GENERATOR).getObject();
-
-            // In the implementations, they are not a generic List they are specifcially an ArrayList
-            ArrayList<Integer> diceRolls = (ArrayList<Integer>)deserialisers.get(DICE_ROLLS_HEADER).getObject();
-
-            ArrayList<PositionTrackingConverter> pieceMoveset = 
-                (ArrayList<PositionTrackingConverter>)deserialisers.get(PIECES_HEADER).getObject();
-
-            ArrayList<SpecialLinkedPositions> specialPositions = 
-                (ArrayList<SpecialLinkedPositions>)deserialisers.get(SPECIAL_POSITION_HEADER).getObject();
-
-            Board board = (Board)deserialisers.get(BOARD_SIZE_HEADER).getObject();
+            WinCondition winCondition = winConditionDeserialiser.getObject();
+            CollisionCondition collisionCondition = hitConditionDeserialiser.getObject();
+            GameTurn turnSequence = turnSequenceDeserialiser.getObject();
+            boolean isStrictDiceRules = diceRuleDeserialiser.getObject();
+            GenerateRandomNumber randomNumberGenerator = randomNumberDeserialiser.getObject();
+            ArrayList<Integer> diceRolls = diceRollsDeserialiser.getObject();
+            ArrayList<PositionTrackingConverter> pieceMoveset =  piecePositionTrackerDeserialiser.getObject();
+            ArrayList<SpecialLinkedPositions> specialPositions = specialPositionDeserialiser.getObject();
+            Board board = boardDeserialiser.getObject();
 
             for (SpecialLinkedPositions positions : specialPositions) {
                 board.registerNewSpecialPosition(positions);
@@ -250,6 +254,10 @@ public class FileSystemGameRepository implements GameRepository {
             writer.newLine();
 
             writer.write(DICE_ROLLS_HEADER + " " + gameData.diceRolls().size());
+            writer.newLine();
+
+            // INFO: On replay, the old configuration doesn't matter, so its always unseeded
+            writer.write(RANDOM_NUMBER_GENERATOR + " " + GenerateRandomNumberSerialiser.JAVA_STL_UNSEEDED);
             writer.newLine();
 
             for (Integer roll : gameData.diceRolls()) {

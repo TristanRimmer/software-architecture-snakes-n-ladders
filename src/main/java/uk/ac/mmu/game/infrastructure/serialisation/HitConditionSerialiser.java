@@ -11,12 +11,13 @@ public final class HitConditionSerialiser {
 
     public static CollisionCondition getImplementationFromString(String string) throws ImplFactoryException {
         switch (string) {
-            case HITS_DO_NOTHING:
+            case HITS_DO_NOTHING -> {
                 return new HitsDoNothing();
-            case HITS_FORFEIT_TURN:
+            }
+            case HITS_FORFEIT_TURN -> {
                 return new HitsForfeitTurn();
-            default:
-                throw new ImplFactoryException(
+            }
+            default -> throw new ImplFactoryException(
                         "The provided string does not map to any existing implementation");
         }
     }

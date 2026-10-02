@@ -11,12 +11,13 @@ public class GenerateRandomNumberSerialiser {
 
     public static GenerateRandomNumber getImplementationFromString(String string) throws ImplFactoryException {
         switch (string) {
-            case JAVA_STL_UNSEEDED:
+            case JAVA_STL_UNSEEDED -> {
                 return new JavaStlRandom();
-            case JAVA_STL_SEEDED:
+            }
+            case JAVA_STL_SEEDED -> {
                 return new JavaStlRandomSeeded();
-            default:
-                throw new ImplFactoryException(
+            }
+            default -> throw new ImplFactoryException(
                         "The provided string does not map to any existing implementation");
         }
     }
