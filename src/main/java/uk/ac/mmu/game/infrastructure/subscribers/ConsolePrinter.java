@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.infrastructure.output;
+package uk.ac.mmu.game.infrastructure.subscribers;
 
 import uk.ac.mmu.game.domain.events.GameEventSubscriber;
 import uk.ac.mmu.game.domain.events.types.ArbitraryHeader;
@@ -13,6 +13,9 @@ import uk.ac.mmu.game.domain.events.types.PiecesHit;
 import uk.ac.mmu.game.domain.events.types.SpecialPositionMovedPiece;
 import uk.ac.mmu.game.domain.events.types.TurnChange;
 import uk.ac.mmu.game.domain.events.types.WinConditionPreventedWin;
+import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
+import uk.ac.mmu.game.infrastructure.output.SystemOut;
+import uk.ac.mmu.game.infrastructure.output.TextOutputHandler;
 
 // TODO: add early returns and make it a chain
 public class ConsolePrinter implements GameEventSubscriber {

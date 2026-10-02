@@ -1,7 +1,8 @@
-package uk.ac.mmu.game.domain.game;
+package uk.ac.mmu.game.usecase;
 
 import java.util.List;
 
+import uk.ac.mmu.game.domain.game.GameConfiguration;
 import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
 
 // TODO: GameStore does not need to store the diceRolls

@@ -17,4 +17,9 @@ public class SingleDice implements DiceRolling {
         return 1 + rng.randomNumberInRange(0, this.maxDiceRoll);
     }
 
+    @Override
+    public GenerateRandomNumber randomNumbersSource() {
+        return this.rng;
+    }
+
 }
