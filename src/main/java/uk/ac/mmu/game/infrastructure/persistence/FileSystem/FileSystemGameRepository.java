@@ -210,8 +210,6 @@ public class FileSystemGameRepository implements GameRepository {
         // Initial check to see if it needs an additional extension
         boolean fileNameIsntUnique = this.listOfSavesAsFiles.contains(fileName);
 
-        System.out.println(this.listOfSavesAsFiles.getLast() + ", " + fileName);
-
         int copyNumber = fileNameIsntUnique ? 1 : 0;
 
         while (fileNameIsntUnique) {

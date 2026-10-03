@@ -123,7 +123,7 @@ public class SpringBootConfiguration {
         GridPosition posA1 = new GridPosition(1, 1);
         GridPosition posA2 = new GridPosition(4, 1);
         GridPosition posB1 = new GridPosition(3, 2);
-        GridPosition posB2 = new GridPosition(3, 2);
+        GridPosition posB2 = new GridPosition(2, 3);
 
         return switch (type) {
             case "twowayteleporter" -> List.of(

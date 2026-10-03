@@ -46,8 +46,6 @@ public class SpecialPositionDeserialiser implements GamSubcomponentDeserialiser<
             if (linePieces.size() != 5)
                 return;
 
-            System.out.println(line);
-
             int x1 = FileSystemUtil.stringToUnsignedInt(linePieces.get(1));
             int y1 = FileSystemUtil.stringToUnsignedInt(linePieces.get(2));
             int x2 = FileSystemUtil.stringToUnsignedInt(linePieces.get(3));

@@ -9,6 +9,7 @@ import uk.ac.mmu.game.domain.events.types.PieceMove;
 import uk.ac.mmu.game.domain.events.types.PieceWon;
 import uk.ac.mmu.game.domain.events.types.PiecesHit;
 import uk.ac.mmu.game.domain.events.types.SpecialPositionMovedPiece;
+import uk.ac.mmu.game.domain.events.types.TemporaryNewDicePosition;
 import uk.ac.mmu.game.domain.events.types.TurnChange;
 import uk.ac.mmu.game.domain.events.types.WinConditionPreventedWin;
 import uk.ac.mmu.game.domain.game.state.GameOver;
@@ -37,7 +38,7 @@ public class ConsolePrinter implements GameEventSubscriber {
         this.stylisedPrinterIOMechanism.println((
             pieceMove.oldPos().equals(pieceMove.newPos()) ? 
                 "=> The piece has ended its turn in the same place, at " + pieceMove.newPos()
-            :   "=> The Piece has moved from " + pieceMove.oldPos() + " to " + pieceMove.newPos()
+            :   "=> The piece started its turn at " + pieceMove.oldPos() + " and ended at " + pieceMove.newPos()
         ));
 
     if (state instanceof PiecesHit piecesHit)
@@ -47,6 +48,8 @@ public class ConsolePrinter implements GameEventSubscriber {
         this.stylisedPrinterIOMechanism.println("=> The piece has landed on " + pieceWon.piece().getCurrentPosition() + " and has won the game!"); 
         this.inGameOverState = true;
     }
+    if (state instanceof TemporaryNewDicePosition tempPos)
+        this.stylisedPrinterIOMechanism.println("=> (Internally, the piece is currently at " + tempPos.temp() + ")");
 
     if (state instanceof TurnChange pieceChange)
         StylisedPrinter.printSubheading(stylisedPrinterIOMechanism, "Piece " + pieceChange.pieceNumber() + "'s Turn");
