@@ -29,8 +29,15 @@ public class HardCodedGameConfigurationFactory implements GameConfigurationFacto
             new TwoWayTeleporter(
                 new GridPosition(0,3), 
                 new GridPosition(1, 0)));
+		specialPositions.add(
+            new TwoWayTeleporter(
+                new GridPosition(0,0), 
+                new GridPosition(1, 0)));
 
-		Board board = new GameBoard(5, 5, specialPositions);
+		Board board = new GameBoard(5, 5);
+
+        for (SpecialLinkedPositions p : specialPositions)
+            board.registerNewSpecialPosition(p);
 
 		DiceRolling diceRoller = new SingleDice(new JavaStlRandom(), 6);
 		WinCondition winEvaluator = new ExactHit();

@@ -9,7 +9,6 @@ public class HardCodedGameRepositoryFactory implements GameRepositoryFactory {
     @Override
     public GameRepository getGameRepository() {
         // File System is more interesting
-        // return new InMemoryGameRepository();
         return new FileSystemGameRepository();
     }
 }

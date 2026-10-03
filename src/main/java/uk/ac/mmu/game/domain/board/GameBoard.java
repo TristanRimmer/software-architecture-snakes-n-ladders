@@ -29,8 +29,16 @@ public class GameBoard implements Board {
         }
     }
     @Override
-    public void registerNewSpecialPosition(SpecialLinkedPositions newPosition) {
+    public boolean registerNewSpecialPosition(SpecialLinkedPositions newPosition) {
         List<GridPosition> relevantPositions = newPosition.getListOfSpecialPositions();
+
+        boolean anyPosOnCorner = relevantPositions
+            .stream()
+            .map(pos -> this.pieceHasLandedOnSpecialSpot(pos))
+            .reduce(false, (a,b) -> a || b);
+
+        if (anyPosOnCorner)
+            return false;
 
         this.specialPositionsList.add(newPosition);
 
@@ -38,34 +46,8 @@ public class GameBoard implements Board {
             this.specialPositionsMap.put(pos, 
                 specialPositionsList.lastIndexOf(specialPositionsList.getLast()));
         }
-    }
-    
-    public GameBoard(int width, int height, List<SpecialLinkedPositions> specialPositions) {
-        this.width = width;
-        this.height = height;
-        this.specialPositionsList = specialPositions;
 
-        /*
-            This implementation of Board uses a hashmap of indexes to make the pieceHasLandedOnSpecialSpot more simplisitc
-        */
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                // -1 means it isnt special
-                specialPositionsMap.put(new GridPosition(x, y), -1);
-            }
-        }
-
-        int currentIndex = 0;
-
-        for (SpecialLinkedPositions specialPos : this.specialPositionsList) {
-            List<GridPosition> relevantPositions = specialPos.getListOfSpecialPositions();
-
-            for (GridPosition pos : relevantPositions) {
-                this.specialPositionsMap.put(pos, currentIndex);
-            }
-
-            currentIndex++;
-        }
+        return true;
     }
 
     @Override
@@ -112,4 +94,12 @@ public class GameBoard implements Board {
        return this.specialPositionsList; 
     }
 
+    private boolean positionLandsOnWinSpot(GridPosition pos) {
+        GridPosition bottomLeft = new GridPosition(0, 0);
+        GridPosition topLeft = new GridPosition(0, this.width - 1);
+        GridPosition bottomRight = new GridPosition(this.width - 1, 0);
+        GridPosition topRight = new GridPosition(this.width - 1, this.height - 1);
+
+        return pos.equals(bottomLeft) || pos.equals(topLeft) || pos.equals(bottomRight) || pos.equals(topRight);
+    }
 }

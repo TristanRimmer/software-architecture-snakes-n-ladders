@@ -27,13 +27,6 @@ public class ConsolePrinter implements GameEventSubscriber {
     
     @Override
     public void notify(GameEvent state) {
-        /*
-            The ConsolePrinter cares about every single state
-
-            In a language with better templating (like C++), there would be a manually monomorphised implementation of each state it cares about
-
-            Java cannot do this, so this is the next best thing
-        */
        if (state instanceof DiceRolled diceRolled)
         this.stylisedPrinterIOMechanism.println(
             this.inGameOverState ?

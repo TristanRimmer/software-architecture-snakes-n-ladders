@@ -47,15 +47,17 @@ public class MetadataDumper implements GameEventSubscriber {
             final List<SpecialLinkedPositions> specialPositions = this.gameConfig.board().getSpecialPositions();
 
             output.println("- Number of Teleporter-Pairs: " + specialPositions.size());
-            output.println("- Variety of types being used: ");
 
-            String types = "";
-            for (SpecialLinkedPositions pos : specialPositions) {
-                String asString = SpecialPositionMapper.getStringFromImplemention(pos);
-                if (!types.contains(asString))
-                    types = (types.isEmpty()) ? "--- " + asString : types + "\n" + "--- " + asString;
+            if (!specialPositions.isEmpty()) {
+                output.println("- Variety of types being used: ");
+                String types = "";
+                for (SpecialLinkedPositions pos : specialPositions) {
+                    String asString = SpecialPositionMapper.getStringFromImplemention(pos);
+                    if (!types.contains(asString))
+                        types = (types.isEmpty()) ? "--- " + asString : types + "\n" + "--- " + asString;
+                }
+                output.println(types);
             }
-            output.println(types);
 
             String winConditionAsString = WinConditionMapper.getStringFromImplementation(gameConfig.winEvaluator());
             String hitConditionAsString = HitConditionMapper.getStringFromImplementation(gameConfig.collisionEvaluator());
@@ -70,10 +72,10 @@ public class MetadataDumper implements GameEventSubscriber {
             } else if (diceStrategy instanceof TwoDice) {
                 output.println("- Number of dice: 2xD" + diceStrategy.getMaxPossibleRoll());
             } else if (diceStrategy instanceof DiceStreamFixed) {
-                output.println("- Dice Rolls Pre Recorded: 2 D" + diceStrategy.getMaxPossibleRoll());
+                output.println("- Dice Rolls Pre Recorded: 1x D" + diceStrategy.getMaxPossibleRoll());
                 output.println("- The dice rule is Strict. If the list of rolls is exhausted, the program will intentionally crash"); 
             } else if (diceStrategy instanceof DiceStreamUnbounded) {
-                output.println("- Dice Rolls Pre Recorded: 2 D" + diceStrategy.getMaxPossibleRoll());
+                output.println("- Dice Rolls Pre Recorded: 1x D" + diceStrategy.getMaxPossibleRoll());
                 output.println("- The dice rule is lenient. If the list of rolls is exhausted, the program will automatically generate more"); 
             }
 

@@ -4,7 +4,6 @@ import uk.ac.mmu.game.domain.board.specialpositions.OneWayTeleporter;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
 import uk.ac.mmu.game.domain.board.specialpositions.TwoWayTeleporter;
 import uk.ac.mmu.game.domain.util.GridPosition;
-import uk.ac.mmu.game.domain.util.ImplFactoryException;
 
 public class SpecialPositionMapper {
     public static final String TWO_WAY_TELEPORER = "TwoWayTeleporter";

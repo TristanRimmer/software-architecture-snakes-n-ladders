@@ -11,6 +11,6 @@ public interface Board {
     int getBoardWidth();
     int getBoardHeight();
     int getMinimumTravelDistance();
-    void registerNewSpecialPosition(SpecialLinkedPositions newPosition);
+    boolean registerNewSpecialPosition(SpecialLinkedPositions newPosition);
     List<SpecialLinkedPositions> getSpecialPositions();
 }

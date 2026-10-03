@@ -49,7 +49,6 @@ public class HardCodedApplication {
 					PLAY_OPTIONS)
 			) {
 				case 0 -> {
-					System.out.println("Create New");
                     GameConfiguration config = gameConfigurationFactory.getGameConfiguration();
                     PieceContainer pieces = pieceConfigurationFactory.getPieceContainer(
                         config.board().getBoardWidth(), 
@@ -74,7 +73,10 @@ public class HardCodedApplication {
                     repository.saveGame(gameStore);
 				}
 				case 1 -> {
-					System.out.println("Replay Existing");
+                    if (repository.getSavedGameOptions().isEmpty()) {
+                        System.out.println("There are currently no saved games");
+                        break;
+                    }
 
                     int gameChoice = CommandLineInterface.pickOptionNumberFromList(
                         "Choose which game to load: ", repository.getSavedGameOptions());
