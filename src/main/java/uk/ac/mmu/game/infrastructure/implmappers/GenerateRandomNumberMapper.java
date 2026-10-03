@@ -1,11 +1,11 @@
-package uk.ac.mmu.game.infrastructure.serialisation;
+package uk.ac.mmu.game.infrastructure.implmappers;
 
 import uk.ac.mmu.game.domain.dice.GenerateRandomNumber;
 import uk.ac.mmu.game.domain.util.ImplFactoryException;
 import uk.ac.mmu.game.infrastructure.random.JavaStlRandom;
 import uk.ac.mmu.game.infrastructure.random.JavaStlRandomSeeded;
 
-public class GenerateRandomNumberSerialiser {
+public class GenerateRandomNumberMapper {
     public static final String JAVA_STL_UNSEEDED = "Default";
     public static final String JAVA_STL_SEEDED = "StlSeeded";
 

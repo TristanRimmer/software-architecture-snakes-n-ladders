@@ -7,9 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.board.GameBoard;
@@ -29,6 +27,12 @@ import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
 import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
 import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
 import uk.ac.mmu.game.domain.util.GridPosition;
+import uk.ac.mmu.game.infrastructure.implmappers.GameTurnMapper;
+import uk.ac.mmu.game.infrastructure.implmappers.GenerateRandomNumberMapper;
+import uk.ac.mmu.game.infrastructure.implmappers.HitConditionMapper;
+import uk.ac.mmu.game.infrastructure.implmappers.PositionTrackingConverterMapper;
+import uk.ac.mmu.game.infrastructure.implmappers.SpecialPositionMapper;
+import uk.ac.mmu.game.infrastructure.implmappers.WinConditionMapper;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.BoardDeserialiser;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.DeserialisedObjectNotCreatedException;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.DiceRollsDeserialiser;
@@ -40,12 +44,6 @@ import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialise
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.SpecialPositionDeserialiser;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.TurnSequenceDeserialiser;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.WinConditionDeserialiser;
-import uk.ac.mmu.game.infrastructure.serialisation.GameTurnSerialiser;
-import uk.ac.mmu.game.infrastructure.serialisation.GenerateRandomNumberSerialiser;
-import uk.ac.mmu.game.infrastructure.serialisation.HitConditionSerialiser;
-import uk.ac.mmu.game.infrastructure.serialisation.PositionTrackingConverterSerialiser;
-import uk.ac.mmu.game.infrastructure.serialisation.SpecialPositionSerialiser;
-import uk.ac.mmu.game.infrastructure.serialisation.WinConditionSerialiser;
 import uk.ac.mmu.game.usecase.GameIDInvalidException;
 import uk.ac.mmu.game.usecase.GameRepository;
 import uk.ac.mmu.game.usecase.GameStore;
@@ -95,7 +93,6 @@ public class FileSystemGameRepository implements GameRepository {
             throw new FileSystemGameRepositoryRuntimeError(
                     "Could not establish a path to either the home or current working directory");
 
-        // If here, at least one worked
         Path chosenHome = Files.exists(pathToHome) ? pathToHome : backupHomePath;
         Path homeWithDir = Path.of(chosenHome + "/" + DIRECTORY_OF_SAVES);
 
@@ -122,7 +119,6 @@ public class FileSystemGameRepository implements GameRepository {
                 if (!file.getFileName().toString().endsWith("." + SAVE_FILE_CUSTOM_EXTENSION))
                     continue;
 
-                // A bit ugly - just trimming the extension and . off
                 this.listOfSavesAsFiles.add(this.getNameFromFile(file.getFileName().toString()));
             }
         } catch (IOException e) {
@@ -144,23 +140,25 @@ public class FileSystemGameRepository implements GameRepository {
         PiecePositionTrackerDeserialiser piecePositionTrackerDeserialiser = new PiecePositionTrackerDeserialiser(PIECES_HEADER);
         GenerateRandomNumberDeserialiser randomNumberDeserialiser = new GenerateRandomNumberDeserialiser(RANDOM_NUMBER_GENERATOR);
 
-        Map<String, GamSubcomponentDeserialiser<?>> deserialisers = new HashMap<>();
-
-        deserialisers.put(WIN_CONDITION_HEADER, winConditionDeserialiser);
-        deserialisers.put(HIT_CONDITION_HEADER, hitConditionDeserialiser);
-        deserialisers.put(DICE_RULE_HEADER, diceRuleDeserialiser);
-        deserialisers.put(DICE_ROLLS_HEADER, diceRollsDeserialiser);
-        deserialisers.put(TURN_SEQUENCE_HEADER, turnSequenceDeserialiser);
-        deserialisers.put(SPECIAL_POSITION_HEADER, specialPositionDeserialiser);
-        deserialisers.put(BOARD_SIZE_HEADER, boardDeserialiser);
-        deserialisers.put(PIECES_HEADER, piecePositionTrackerDeserialiser);
-        deserialisers.put(RANDOM_NUMBER_GENERATOR, randomNumberDeserialiser);
+        List<GamSubcomponentDeserialiser<?>> deserialisers = new ArrayList<>(
+            List.of(
+                winConditionDeserialiser, 
+                hitConditionDeserialiser, 
+                diceRollsDeserialiser, 
+                diceRuleDeserialiser, 
+                turnSequenceDeserialiser, 
+                specialPositionDeserialiser, 
+                boardDeserialiser, 
+                piecePositionTrackerDeserialiser, 
+                randomNumberDeserialiser
+            )
+        );
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file.toString()))) {
             String currentLine;
 
             while ((currentLine = reader.readLine()) != null) {
-                for (GamSubcomponentDeserialiser<?> obj : deserialisers.values()) {
+                for (GamSubcomponentDeserialiser<?> obj : deserialisers) {
                     obj.loadNextLine(currentLine);
                 }
             }
@@ -241,7 +239,7 @@ public class FileSystemGameRepository implements GameRepository {
             writer.newLine();
 
             for (SpecialLinkedPositions pos : config.board().getSpecialPositions()) {
-                String string = SpecialPositionSerialiser.getStringFromImplemention(pos);
+                String string = SpecialPositionMapper.getStringFromImplemention(pos);
 
                 for (GridPosition currPos : pos.getListOfSpecialPositions()) {
                     string = string + " " + currPos.x() + " " + currPos.y();                    
@@ -252,15 +250,15 @@ public class FileSystemGameRepository implements GameRepository {
             }
 
             writer.write(HIT_CONDITION_HEADER +
-                    " " + HitConditionSerialiser.getStringFromImplementation(config.collisionEvaluator()));
+                    " " + HitConditionMapper.getStringFromImplementation(config.collisionEvaluator()));
             writer.newLine();
 
             writer.write(WIN_CONDITION_HEADER + " "
-                    + WinConditionSerialiser.getStringFromImplementation(config.winEvaluator()));
+                    + WinConditionMapper.getStringFromImplementation(config.winEvaluator()));
             writer.newLine();
 
             writer.write(
-                    TURN_SEQUENCE_HEADER + " " + GameTurnSerialiser.getStringFromImplementation(config.turnSequence()));
+                    TURN_SEQUENCE_HEADER + " " + GameTurnMapper.getStringFromImplementation(config.turnSequence()));
             writer.newLine();
 
             writer.write(DICE_RULE_HEADER + " " + DICE_RULE_STRICT);
@@ -270,7 +268,7 @@ public class FileSystemGameRepository implements GameRepository {
             writer.newLine();
 
             // INFO: On replay, the old configuration doesn't matter, so its always unseeded
-            writer.write(RANDOM_NUMBER_GENERATOR + " " + GenerateRandomNumberSerialiser.JAVA_STL_UNSEEDED);
+            writer.write(RANDOM_NUMBER_GENERATOR + " " + GenerateRandomNumberMapper.JAVA_STL_UNSEEDED);
             writer.newLine();
 
             for (Integer roll : gameData.diceRolls()) {
@@ -283,7 +281,7 @@ public class FileSystemGameRepository implements GameRepository {
 
             for (Piece piece : gameData.pieces().getPiecesInOriginalOrder()) {
                 writer.write(
-                        PositionTrackingConverterSerialiser.getStringFromImplementation(piece.getTrackingConverter()));
+                        PositionTrackingConverterMapper.getStringFromImplementation(piece.getTrackingConverter()));
                 writer.newLine();
             }
         } catch (IOException e) {

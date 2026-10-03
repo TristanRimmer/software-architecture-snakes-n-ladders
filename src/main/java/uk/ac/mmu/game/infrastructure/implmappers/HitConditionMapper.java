@@ -1,11 +1,11 @@
-package uk.ac.mmu.game.infrastructure.serialisation;
+package uk.ac.mmu.game.infrastructure.implmappers;
 
 import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
 import uk.ac.mmu.game.domain.rules.hitcondition.HitsDoNothing;
 import uk.ac.mmu.game.domain.rules.hitcondition.HitsForfeitTurn;
 import uk.ac.mmu.game.domain.util.ImplFactoryException;
 
-public final class HitConditionSerialiser {
+public final class HitConditionMapper {
     public static final String HITS_DO_NOTHING = "HitsDoNothing";
     public static final String HITS_FORFEIT_TURN = "HitsForfeitTurn";
 

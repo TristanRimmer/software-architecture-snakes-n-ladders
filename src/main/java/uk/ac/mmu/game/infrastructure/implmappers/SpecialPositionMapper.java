@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.infrastructure.serialisation;
+package uk.ac.mmu.game.infrastructure.implmappers;
 
 import uk.ac.mmu.game.domain.board.specialpositions.OneWayTeleporter;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
@@ -6,7 +6,7 @@ import uk.ac.mmu.game.domain.board.specialpositions.TwoWayTeleporter;
 import uk.ac.mmu.game.domain.util.GridPosition;
 import uk.ac.mmu.game.domain.util.ImplFactoryException;
 
-public class SpecialPositionSerialiser {
+public class SpecialPositionMapper {
     public static final String TWO_WAY_TELEPORER = "TwoWayTeleporter";
     public static final String ONE_WAY_TELEPORTER = "OneWayTeleporter";
 

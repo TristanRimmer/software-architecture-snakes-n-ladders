@@ -1,10 +1,10 @@
-package uk.ac.mmu.game.infrastructure.serialisation;
+package uk.ac.mmu.game.infrastructure.implmappers;
 
 import uk.ac.mmu.game.domain.game.state.gameturn.ComprehensiveGameTurn;
 import uk.ac.mmu.game.domain.game.state.gameturn.GameTurn;
 import uk.ac.mmu.game.domain.util.ImplFactoryException;
 
-public class GameTurnSerialiser {
+public class GameTurnMapper {
     public static final String COMPREHENSIVE_GAME_TURN = "Default";
 
     public static GameTurn getImplementationFromString(String name) throws ImplFactoryException {

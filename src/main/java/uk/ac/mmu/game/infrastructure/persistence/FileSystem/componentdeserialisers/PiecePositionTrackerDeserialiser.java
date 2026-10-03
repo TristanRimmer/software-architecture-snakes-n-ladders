@@ -5,8 +5,8 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
 import uk.ac.mmu.game.domain.util.ImplFactoryException;
+import uk.ac.mmu.game.infrastructure.implmappers.PositionTrackingConverterMapper;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
-import uk.ac.mmu.game.infrastructure.serialisation.PositionTrackingConverterSerialiser;
 
 public class PiecePositionTrackerDeserialiser implements GamSubcomponentDeserialiser<ArrayList<PositionTrackingConverter>> {
     private final String PIECES_HEADER;
@@ -48,7 +48,7 @@ public class PiecePositionTrackerDeserialiser implements GamSubcomponentDeserial
             // Head registered, 1 per line 
             try {
                 this.converters.add(
-                    PositionTrackingConverterSerialiser.getImplementationFromString(linePieces.getLast())
+                    PositionTrackingConverterMapper.getImplementationFromString(linePieces.getLast())
                 );
             } catch (ImplFactoryException _e) {/* Implicit Return */}
             

@@ -4,8 +4,8 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
 import uk.ac.mmu.game.domain.util.ImplFactoryException;
+import uk.ac.mmu.game.infrastructure.implmappers.HitConditionMapper;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
-import uk.ac.mmu.game.infrastructure.serialisation.HitConditionSerialiser;
 
 public class HitConditionDeserialiser implements GamSubcomponentDeserialiser<CollisionCondition> {
 
@@ -28,7 +28,7 @@ public class HitConditionDeserialiser implements GamSubcomponentDeserialiser<Col
             return;
 
         try {
-            this.condition = HitConditionSerialiser.getImplementationFromString(linePieces.get(1));
+            this.condition = HitConditionMapper.getImplementationFromString(linePieces.get(1));
             this.instanceCreated = true;
         } catch (ImplFactoryException e) { /* Implicit Return */ }
     }

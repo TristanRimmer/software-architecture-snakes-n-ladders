@@ -4,8 +4,8 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
 import uk.ac.mmu.game.domain.util.ImplFactoryException;
+import uk.ac.mmu.game.infrastructure.implmappers.WinConditionMapper;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
-import uk.ac.mmu.game.infrastructure.serialisation.WinConditionSerialiser;
 
 public class WinConditionDeserialiser implements GamSubcomponentDeserialiser<WinCondition>{
 
@@ -28,7 +28,7 @@ public class WinConditionDeserialiser implements GamSubcomponentDeserialiser<Win
             return;
 
         try {
-            this.condition = WinConditionSerialiser.getImplementationFromString(linePieces.get(1));
+            this.condition = WinConditionMapper.getImplementationFromString(linePieces.get(1));
             this.instanceCreated = true;
         } catch (ImplFactoryException e) { /* Implicit Return */ }
     }

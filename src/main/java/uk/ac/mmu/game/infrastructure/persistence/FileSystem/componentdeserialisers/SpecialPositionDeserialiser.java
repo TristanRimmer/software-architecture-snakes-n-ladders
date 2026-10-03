@@ -6,8 +6,8 @@ import java.util.List;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
 import uk.ac.mmu.game.domain.util.GridPosition;
 import uk.ac.mmu.game.domain.util.ImplFactoryException;
+import uk.ac.mmu.game.infrastructure.implmappers.SpecialPositionMapper;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
-import uk.ac.mmu.game.infrastructure.serialisation.SpecialPositionSerialiser;
 
 public class SpecialPositionDeserialiser implements GamSubcomponentDeserialiser<ArrayList<SpecialLinkedPositions>>{
     private final String SPECIAL_POSITION_HEADER;
@@ -59,7 +59,7 @@ public class SpecialPositionDeserialiser implements GamSubcomponentDeserialiser<
             // Head registered, 1 per line 
             try {
                 this.positions.add(
-                    SpecialPositionSerialiser.getImplementationFromString(
+                    SpecialPositionMapper.getImplementationFromString(
                         linePieces.get(0), 
                         new GridPosition(x1, y1), 
                         new GridPosition(x2, y2))

@@ -1,11 +1,11 @@
-package uk.ac.mmu.game.infrastructure.serialisation;
+package uk.ac.mmu.game.infrastructure.implmappers;
 
 import uk.ac.mmu.game.domain.rules.wincondition.CrossTheFinishline;
 import uk.ac.mmu.game.domain.rules.wincondition.ExactHit;
 import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
 import uk.ac.mmu.game.domain.util.ImplFactoryException;
 
-public final class WinConditionSerialiser {
+public final class WinConditionMapper {
     public static final String CROSS_THE_FINISH_LINE = "CrossTheFinishLine";
     public static final String EXACT_HIT = "ExactHit";
 

@@ -4,8 +4,8 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.game.state.gameturn.GameTurn;
 import uk.ac.mmu.game.domain.util.ImplFactoryException;
+import uk.ac.mmu.game.infrastructure.implmappers.GameTurnMapper;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
-import uk.ac.mmu.game.infrastructure.serialisation.GameTurnSerialiser;
 
 public class TurnSequenceDeserialiser implements GamSubcomponentDeserialiser<GameTurn> {
     private final String TURN_SEQUENCE_HEADER;
@@ -28,7 +28,7 @@ public class TurnSequenceDeserialiser implements GamSubcomponentDeserialiser<Gam
             return;
 
         try {
-            this.sequence = GameTurnSerialiser.getImplementationFromString(linePieces.get(1));
+            this.sequence = GameTurnMapper.getImplementationFromString(linePieces.get(1));
             this.instanceCreated = true;
         } catch (ImplFactoryException e) { /* Implicit Return */ }
     }

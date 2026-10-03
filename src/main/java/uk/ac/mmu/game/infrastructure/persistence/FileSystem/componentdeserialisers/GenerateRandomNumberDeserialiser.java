@@ -4,9 +4,9 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.dice.GenerateRandomNumber;
 import uk.ac.mmu.game.domain.util.ImplFactoryException;
+import uk.ac.mmu.game.infrastructure.implmappers.GenerateRandomNumberMapper;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
 import uk.ac.mmu.game.infrastructure.random.JavaStlRandomSeeded;
-import uk.ac.mmu.game.infrastructure.serialisation.GenerateRandomNumberSerialiser;
 
 public class GenerateRandomNumberDeserialiser implements GamSubcomponentDeserialiser<GenerateRandomNumber>{
     private final String RANDOM_NUMBER_GENERATOR;
@@ -29,7 +29,7 @@ public class GenerateRandomNumberDeserialiser implements GamSubcomponentDeserial
             return;
 
         try {
-            this.rng = GenerateRandomNumberSerialiser.getImplementationFromString(linePieces.get(1));
+            this.rng = GenerateRandomNumberMapper.getImplementationFromString(linePieces.get(1));
             this.instanceCreated = true;
         } catch (ImplFactoryException e) { 
             return;
