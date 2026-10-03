@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
-import uk.ac.mmu.game.domain.util.ImplFactoryException;
+import uk.ac.mmu.game.infrastructure.implmappers.ImplFactoryException;
 import uk.ac.mmu.game.infrastructure.implmappers.PositionTrackingConverterMapper;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
 

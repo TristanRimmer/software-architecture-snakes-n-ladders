@@ -5,7 +5,6 @@ import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerRightOrigin;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.UpperLeftOrigin;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.UpperRightOrigin;
-import uk.ac.mmu.game.domain.util.ImplFactoryException;
 
 public class PositionTrackingConverterMapper {
     public static final String LOWER_LEFT_ORIGIN = "LowerLeftOrigin";

@@ -1,7 +1,6 @@
 package uk.ac.mmu.game.infrastructure.implmappers;
 
 import uk.ac.mmu.game.domain.dice.GenerateRandomNumber;
-import uk.ac.mmu.game.domain.util.ImplFactoryException;
 import uk.ac.mmu.game.infrastructure.random.JavaStlRandom;
 
 public class RandomNumberSourceMapper {

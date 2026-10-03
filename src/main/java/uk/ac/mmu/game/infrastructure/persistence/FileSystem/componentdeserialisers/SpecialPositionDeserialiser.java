@@ -5,7 +5,7 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
 import uk.ac.mmu.game.domain.util.GridPosition;
-import uk.ac.mmu.game.domain.util.ImplFactoryException;
+import uk.ac.mmu.game.infrastructure.implmappers.ImplFactoryException;
 import uk.ac.mmu.game.infrastructure.implmappers.SpecialPositionMapper;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
 

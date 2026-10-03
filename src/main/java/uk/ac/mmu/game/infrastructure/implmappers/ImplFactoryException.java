@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.domain.util;
+package uk.ac.mmu.game.infrastructure.implmappers;
 
 public class ImplFactoryException extends Exception {
     public ImplFactoryException(String msg) {
