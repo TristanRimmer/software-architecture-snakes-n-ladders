@@ -19,9 +19,6 @@ import uk.ac.mmu.game.domain.dice.variations.TwoDice;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
 import uk.ac.mmu.game.domain.game.gameturn.ComprehensiveGameTurn;
 import uk.ac.mmu.game.domain.game.gameturn.GameTurn;
-import uk.ac.mmu.game.domain.pieces.GamePiece;
-import uk.ac.mmu.game.domain.pieces.container.LockingPieceContainer;
-import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerLeftOrigin;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerRightOrigin;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.UpperLeftOrigin;
@@ -39,6 +36,7 @@ import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemGameReposi
 import uk.ac.mmu.game.infrastructure.persistence.InMemoryGameRepository;
 import uk.ac.mmu.game.infrastructure.random.JavaStlRandom;
 import uk.ac.mmu.game.usecase.GameRepository;
+import uk.ac.mmu.game.usecase.PieceConfigurationsList;
 
 @Configuration
 public class SpringBootConfiguration {
@@ -71,27 +69,16 @@ public class SpringBootConfiguration {
         };
     }
     @Bean
-    public PieceContainer pieceContainer(
+    public PieceConfigurationsList pieceConfiguration(
         @Value("${game.numberofpieces}") String pieceCount) {
-        PieceContainer container = new LockingPieceContainer();
-
-        switch (pieceCount) {
-            case "2" -> {
-                container.registerNewPiece(new GamePiece(new LowerLeftOrigin(), 5,5));
-                container.registerNewPiece(new GamePiece(new UpperRightOrigin(), 5,5));
-            }
-            case "4" -> {
-                container.registerNewPiece(new GamePiece(new LowerLeftOrigin(), 6, 6));
-                container.registerNewPiece(new GamePiece(new UpperRightOrigin(), 6, 6));
-                container.registerNewPiece(new GamePiece(new LowerRightOrigin(), 6, 6));
-                container.registerNewPiece(new GamePiece(new UpperLeftOrigin(), 6, 6));
-            }
+        return switch (pieceCount) {
+            case "2" -> new PieceConfigurationsList(List.of(new LowerLeftOrigin(), new UpperRightOrigin())); 
+            case "4" -> new PieceConfigurationsList(List.of(new LowerLeftOrigin(), new UpperRightOrigin(), new LowerRightOrigin(), new UpperLeftOrigin())); 
             default -> throw new IllegalArgumentException(
                 "Spring Boot App only wants 2 or 4. If you want this to change, use a file system repository and modify it in there.");
-        }
-
-        return container;
+        };
     }
+
     @Bean 
     public Board board(
         @Value("${game.numberofpieces}") String pieceCount

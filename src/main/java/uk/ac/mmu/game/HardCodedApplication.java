@@ -3,9 +3,7 @@ package uk.ac.mmu.game;
 import java.util.List;
 
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
-import uk.ac.mmu.game.domain.game.Game;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
-import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
 import uk.ac.mmu.game.infrastructure.factories.HardCodedGameConfigurationFactory;
 import uk.ac.mmu.game.infrastructure.factories.HardCodedGameRepositoryFactory;
 import uk.ac.mmu.game.infrastructure.factories.HardCodedPieceConfigurationFactory;
@@ -13,15 +11,16 @@ import uk.ac.mmu.game.infrastructure.input.CommandLineInterface;
 import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
 import uk.ac.mmu.game.infrastructure.output.SystemOut;
 import uk.ac.mmu.game.infrastructure.subscribers.ConsolePrinter;
-import uk.ac.mmu.game.infrastructure.subscribers.DiceRollRecorder;
-import uk.ac.mmu.game.infrastructure.subscribers.MetadataDumper;
 import uk.ac.mmu.game.infrastructure.subscribers.TurnsTracker;
+import uk.ac.mmu.game.usecase.GameAction;
 import uk.ac.mmu.game.usecase.GameConfigurationFactory;
-import uk.ac.mmu.game.usecase.GameIDInvalidException;
 import uk.ac.mmu.game.usecase.GameRepository;
 import uk.ac.mmu.game.usecase.GameRepositoryFactory;
-import uk.ac.mmu.game.usecase.GameStore;
+import uk.ac.mmu.game.usecase.NewGameAction;
 import uk.ac.mmu.game.usecase.PieceConfigurationFactory;
+import uk.ac.mmu.game.usecase.PieceConfigurationsList;
+import uk.ac.mmu.game.usecase.ReplayGameAction;
+import uk.ac.mmu.game.usecase.SessionOverAction;
 
 public class HardCodedApplication {
 	private static final List<String> PLAY_OPTIONS = List.of("New", "Replay", "Exit");
@@ -35,68 +34,37 @@ public class HardCodedApplication {
 		while (true) {
             StylisedPrinter.printBanner(new SystemOut(), "Snakes & Ladders");
 
-            // Objects are recreated each run so internal behaviour resets
+			// Not configurable
             GameEventPublisher publisher = new GameEventPublisher();
-            DiceRollRecorder diceRollTracker = new DiceRollRecorder();
-
             publisher.registerNewSubscriber(new ConsolePrinter());
             publisher.registerNewSubscriber(new TurnsTracker());
-            publisher.registerNewSubscriber(diceRollTracker);
 
-			switch(
+            GameAction action = switch (
 				CommandLineInterface.pickOptionNumberFromList(
 					"Choose how you would like to source a game", 
-					PLAY_OPTIONS)
-			) {
-				case 0 -> {
-                    GameConfiguration config = gameConfigurationFactory.getGameConfiguration();
-                    PieceContainer pieces = pieceConfigurationFactory.getPieceContainer(
-                        config.board().getBoardWidth(), 
-                        config.board().getBoardHeight());
+					PLAY_OPTIONS)) {
+                        case 0 -> { 
+                            GameConfiguration config = gameConfigurationFactory.getGameConfiguration();
+                            PieceConfigurationsList pieces = pieceConfigurationFactory.getPieceConfigList(
+                                config.board().getBoardWidth(), config.board().getBoardHeight());
 
-                    publisher.registerNewSubscriber(new MetadataDumper(config, pieces));
+                            yield new NewGameAction(
+                                config,
+                                pieces,
+                                publisher, 
+                                repository
+                            );
+                        }
+                        case 1 -> new ReplayGameAction(
+                            publisher, 
+                            repository
+                        );
+                        default -> new SessionOverAction(); 
+                    };
+            if (action.endOfSession())
+                return;
 
-                    Game currentGame = new Game(config, pieces, publisher);
-                    
-                    currentGame.play();
-
-                    List<Integer> diceStream = diceRollTracker.getListOfDiceRolls();
-
-                    String gameName = 
-                        CommandLineInterface.askQuestionAndGetStringBack("Choose a name for this game save (or leave blank to stop saving): ");
-                    
-                    if (gameName.strip().isBlank())
-                        break;
-
-                    GameStore gameStore = new GameStore(config, pieces, diceStream, gameName);
-
-                    repository.saveGame(gameStore);
-				}
-				case 1 -> {
-                    if (repository.getSavedGameOptions().isEmpty()) {
-                        System.out.println("There are currently no saved games");
-                        break;
-                    }
-
-                    int gameChoice = CommandLineInterface.pickOptionNumberFromList(
-                        "Choose which game to load: ", repository.getSavedGameOptions());
-
-                    try {
-                        GameStore gameStore = repository.loadGame(gameChoice);
-                        Game currentGame = new Game(gameStore.configuration(), gameStore.pieces(), publisher);
-
-                        publisher.registerNewSubscriber(new MetadataDumper(gameStore.configuration(), gameStore.pieces()));
-
-                        currentGame.play();
-                    } catch (GameIDInvalidException e) {
-                        System.out.println("Error: the chosen game could not be serialised. Please try another game");
-                    }
-				}
-				case 2 -> {
-					return;	
-				}
-				default -> {}
-			}
+            action.run();
 		}
     }
 }
