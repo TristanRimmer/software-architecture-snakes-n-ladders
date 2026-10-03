@@ -36,7 +36,7 @@ import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemGameReposi
 import uk.ac.mmu.game.infrastructure.persistence.InMemoryGameRepository;
 import uk.ac.mmu.game.infrastructure.random.JavaStlRandom;
 import uk.ac.mmu.game.usecase.GameRepository;
-import uk.ac.mmu.game.usecase.PieceConfigurationsList;
+import uk.ac.mmu.game.usecase.types.PieceConfigurationsList;
 
 @Configuration
 public class SpringBootConfiguration {

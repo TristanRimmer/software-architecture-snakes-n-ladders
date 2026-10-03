@@ -15,12 +15,12 @@ import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
 import uk.ac.mmu.game.infrastructure.output.SystemOut;
 import uk.ac.mmu.game.infrastructure.subscribers.ConsolePrinter;
 import uk.ac.mmu.game.infrastructure.subscribers.TurnsTracker;
-import uk.ac.mmu.game.usecase.GameAction;
 import uk.ac.mmu.game.usecase.GameRepository;
-import uk.ac.mmu.game.usecase.NewGameAction;
-import uk.ac.mmu.game.usecase.PieceConfigurationsList;
-import uk.ac.mmu.game.usecase.ReplayGameAction;
-import uk.ac.mmu.game.usecase.SessionOverAction;
+import uk.ac.mmu.game.usecase.action.GameAction;
+import uk.ac.mmu.game.usecase.action.NewGameAction;
+import uk.ac.mmu.game.usecase.action.ReplayGameAction;
+import uk.ac.mmu.game.usecase.action.SessionOverAction;
+import uk.ac.mmu.game.usecase.types.PieceConfigurationsList;
 
 @Import(SpringBootConfiguration.class)
 @SpringBootApplication
@@ -54,7 +54,6 @@ public class GameApplication {
                             publisher, 
                             repository
                         );
-                        // Seems wasteful to create a whole object that does this
                         default -> new SessionOverAction(); 
                     };
             if (action.endOfSession())

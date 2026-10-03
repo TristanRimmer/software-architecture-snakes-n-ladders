@@ -12,15 +12,15 @@ import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
 import uk.ac.mmu.game.infrastructure.output.SystemOut;
 import uk.ac.mmu.game.infrastructure.subscribers.ConsolePrinter;
 import uk.ac.mmu.game.infrastructure.subscribers.TurnsTracker;
-import uk.ac.mmu.game.usecase.GameAction;
 import uk.ac.mmu.game.usecase.GameConfigurationFactory;
 import uk.ac.mmu.game.usecase.GameRepository;
 import uk.ac.mmu.game.usecase.GameRepositoryFactory;
-import uk.ac.mmu.game.usecase.NewGameAction;
 import uk.ac.mmu.game.usecase.PieceConfigurationFactory;
-import uk.ac.mmu.game.usecase.PieceConfigurationsList;
-import uk.ac.mmu.game.usecase.ReplayGameAction;
-import uk.ac.mmu.game.usecase.SessionOverAction;
+import uk.ac.mmu.game.usecase.action.GameAction;
+import uk.ac.mmu.game.usecase.action.NewGameAction;
+import uk.ac.mmu.game.usecase.action.ReplayGameAction;
+import uk.ac.mmu.game.usecase.action.SessionOverAction;
+import uk.ac.mmu.game.usecase.types.PieceConfigurationsList;
 
 public class HardCodedApplication {
 	private static final List<String> PLAY_OPTIONS = List.of("New", "Replay", "Exit");

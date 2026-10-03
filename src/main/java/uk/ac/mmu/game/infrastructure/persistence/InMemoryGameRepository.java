@@ -5,7 +5,7 @@ import java.util.List;
 
 import uk.ac.mmu.game.usecase.GameIDInvalidException;
 import uk.ac.mmu.game.usecase.GameRepository;
-import uk.ac.mmu.game.usecase.GameStore;
+import uk.ac.mmu.game.usecase.types.GameStore;
 
 public class InMemoryGameRepository implements GameRepository {
     private final List<GameStore> storedGames;

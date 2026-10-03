@@ -46,7 +46,7 @@ import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialise
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.WinConditionDeserialiser;
 import uk.ac.mmu.game.usecase.GameIDInvalidException;
 import uk.ac.mmu.game.usecase.GameRepository;
-import uk.ac.mmu.game.usecase.GameStore;
+import uk.ac.mmu.game.usecase.types.GameStore;
 
 // TODO: there is a bit of code cleanup to do here
 

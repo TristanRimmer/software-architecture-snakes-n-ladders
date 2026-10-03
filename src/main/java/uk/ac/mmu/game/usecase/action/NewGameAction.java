@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.usecase;
+package uk.ac.mmu.game.usecase.action;
 
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.game.Game;
@@ -10,6 +10,9 @@ import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
 import uk.ac.mmu.game.infrastructure.input.CommandLineInterface;
 import uk.ac.mmu.game.infrastructure.subscribers.DiceRollRecorder;
 import uk.ac.mmu.game.infrastructure.subscribers.MetadataDumper;
+import uk.ac.mmu.game.usecase.GameRepository;
+import uk.ac.mmu.game.usecase.types.GameStore;
+import uk.ac.mmu.game.usecase.types.PieceConfigurationsList;
 
 public final class NewGameAction implements GameAction {
     private final GameConfiguration configuration;

@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.usecase;
+package uk.ac.mmu.game.usecase.types;
 
 import java.util.List;
 

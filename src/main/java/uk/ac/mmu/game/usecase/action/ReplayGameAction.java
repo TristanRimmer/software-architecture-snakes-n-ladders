@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.usecase;
+package uk.ac.mmu.game.usecase.action;
 
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.game.Game;
@@ -6,6 +6,9 @@ import uk.ac.mmu.game.domain.game.GameConfiguration;
 import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
 import uk.ac.mmu.game.infrastructure.input.CommandLineInterface;
 import uk.ac.mmu.game.infrastructure.subscribers.MetadataDumper;
+import uk.ac.mmu.game.usecase.GameIDInvalidException;
+import uk.ac.mmu.game.usecase.GameRepository;
+import uk.ac.mmu.game.usecase.types.GameStore;
 
 public final class ReplayGameAction implements GameAction {
     private final GameEventPublisher publisher;

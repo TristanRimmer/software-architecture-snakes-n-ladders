@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.usecase;
+package uk.ac.mmu.game.usecase.action;
 
 public class SessionOverAction implements GameAction {
     @Override
