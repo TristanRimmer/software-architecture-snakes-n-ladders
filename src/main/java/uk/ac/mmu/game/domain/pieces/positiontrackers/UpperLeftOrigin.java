@@ -19,6 +19,6 @@ public final class UpperLeftOrigin implements PositionTrackingConverter {
     @Override
     public int gridPositionToDisplacement(GridPosition position, int gridWidth, int gridHeight) {
         return ((gridHeight - 1 - position.y()) * gridWidth) 
-            + (position.y() % 2 == 0 ? position.x() : gridWidth - 1 - position.x());
+            + ((gridHeight - 1 - position.y()) % 2 == 0 ? position.x() : gridWidth - 1 - position.x());
     }
 }
