@@ -1,0 +1,19 @@
+24854995_Game_Save
+BoardSize 5 5
+NumSpecialPositions 0
+HitCondition HitsDoNothing
+WinCondition CrossTheFinishLine
+TurnSequence Default
+DiceRule Strict
+DiceRolls 7
+RandomNumbersSource Default
+4
+7
+9
+6
+4
+7
+9
+NumPieces 2
+LowerLeftOrigin
+UpperRightOrigin
