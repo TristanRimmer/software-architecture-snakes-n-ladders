@@ -39,13 +39,16 @@ public class MetadataDumper implements GameEventSubscriber {
         if (state instanceof BetterGameStateTransition stateTransition
             && stateTransition.state().equals(Ready.class)) {
             StylisedPrinter.printSubheading(output, "Game Configuration");
+
             output.println("-> Board Dimensions: " + new GridPosition(
                 gameConfig.board().getBoardWidth(), 
                 gameConfig.board().getBoardHeight()));
             
             final List<SpecialLinkedPositions> specialPositions = this.gameConfig.board().getSpecialPositions();
+
             output.println("- Number of Teleporter-Pairs: " + specialPositions.size());
             output.println("- Variety of types being used: ");
+
             String types = "";
             for (SpecialLinkedPositions pos : specialPositions) {
                 String asString = SpecialPositionMapper.getStringFromImplemention(pos);
@@ -75,12 +78,12 @@ public class MetadataDumper implements GameEventSubscriber {
             }
 
             StylisedPrinter.printSubheading(output, "Piece Configuration");
-            List<Piece> pieces = this.pieces.getPiecesInOriginalOrder();
+            final List<Piece> listOfPieces = this.pieces.getPiecesInOriginalOrder();
 
-            output.println("- Number of Pieces: " + pieces.size());
-            output.println("- Starting corner of each piece: ");
-            for (Piece p : pieces) {
-                output.println("- - " + PositionTrackingConverterMapper.getStringFromImplementation(p.getTrackingConverter()));
+            output.println("- Number of Pieces: " + listOfPieces.size());
+            output.println("- Starting corner of each piece (in order): ");
+            for (Piece p : listOfPieces) {
+                output.println("--- " + PositionTrackingConverterMapper.getStringFromImplementation(p.getTrackingConverter()));
             }
         }
     }

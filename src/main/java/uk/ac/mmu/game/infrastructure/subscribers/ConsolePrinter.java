@@ -1,12 +1,9 @@
 package uk.ac.mmu.game.infrastructure.subscribers;
 
 import uk.ac.mmu.game.domain.events.GameEventSubscriber;
-import uk.ac.mmu.game.domain.events.types.ArbitraryHeader;
-import uk.ac.mmu.game.domain.events.types.ArbitraryMessage;
 import uk.ac.mmu.game.domain.events.types.BetterGameStateTransition;
 import uk.ac.mmu.game.domain.events.types.DiceRolled;
 import uk.ac.mmu.game.domain.events.types.GameEvent;
-import uk.ac.mmu.game.domain.events.types.GameStateTransition;
 import uk.ac.mmu.game.domain.events.types.HitConditionsPreventedMove;
 import uk.ac.mmu.game.domain.events.types.PieceMove;
 import uk.ac.mmu.game.domain.events.types.PieceWon;
@@ -62,10 +59,6 @@ public class ConsolePrinter implements GameEventSubscriber {
        if (state instanceof TurnChange pieceChange)
         StylisedPrinter.printSubheading(stylisedPrinterIOMechanism, "Piece " + pieceChange.pieceNumber() + "'s Turn");
 
-       if (state instanceof GameStateTransition stateTransition) {
-        StylisedPrinter.printBanner(this.stylisedPrinterIOMechanism, stateTransition.newStateName());
-        this.inGameOverState = stateTransition.newStateName().contains("Game Over"); 
-        }
        if (state instanceof BetterGameStateTransition stateTransition) {
             Class<? extends GameState> newState = stateTransition.state();
 
@@ -73,18 +66,12 @@ public class ConsolePrinter implements GameEventSubscriber {
                 case Class<?> c when c == Ready.class -> "Ready";
                 case Class<?> c when c == InPlay.class -> "In Play";
                 case Class<?> c when c == GameOver.class -> "Game Over";
-                default -> "Unreachable" /* GameState is sealed -> this code will never be reached */;
+                default -> "Unreachable" /* GameState is a sealed interface -> this code will never be reached */;
             };
 
             StylisedPrinter.printBanner(this.stylisedPrinterIOMechanism, stateAsString);
             this.inGameOverState = newState.equals(GameOver.class);
        }
-
-       if (state instanceof ArbitraryHeader header)
-        StylisedPrinter.printSubheading(stylisedPrinterIOMechanism, header.msg());    
-
-       if (state instanceof ArbitraryMessage message)
-        this.stylisedPrinterIOMechanism.println("=> " + message.msg());         
 
        if (state instanceof HitConditionsPreventedMove)
         this.stylisedPrinterIOMechanism.println("=> Due to the current Hit Condition, the piece's move was cancelled!");

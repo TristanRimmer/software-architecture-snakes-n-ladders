@@ -10,6 +10,8 @@ import uk.ac.mmu.game.infrastructure.factories.HardCodedGameConfigurationFactory
 import uk.ac.mmu.game.infrastructure.factories.HardCodedGameRepositoryFactory;
 import uk.ac.mmu.game.infrastructure.factories.HardCodedPieceConfigurationFactory;
 import uk.ac.mmu.game.infrastructure.input.CommandLineInterface;
+import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
+import uk.ac.mmu.game.infrastructure.output.SystemOut;
 import uk.ac.mmu.game.infrastructure.subscribers.ConsolePrinter;
 import uk.ac.mmu.game.infrastructure.subscribers.DiceRollRecorder;
 import uk.ac.mmu.game.infrastructure.subscribers.MetadataDumper;
@@ -31,6 +33,8 @@ public class HardCodedApplication {
         GameRepository repository = gameRepositoryFactory.getGameRepository();
 
 		while (true) {
+            StylisedPrinter.printBanner(new SystemOut(), "Snakes & Ladders");
+
             // Objects are recreated each run so internal behaviour resets
             GameEventPublisher publisher = new GameEventPublisher();
             DiceRollRecorder diceRollTracker = new DiceRollRecorder();
