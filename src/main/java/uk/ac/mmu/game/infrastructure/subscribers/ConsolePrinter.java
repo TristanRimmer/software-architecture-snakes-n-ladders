@@ -20,6 +20,8 @@ import uk.ac.mmu.game.infrastructure.output.TextOutputHandler;
 // TODO: add early returns and make it a chain
 public class ConsolePrinter implements GameEventSubscriber {
     private final TextOutputHandler stylisedPrinterIOMechanism = new SystemOut();
+
+    private boolean inGameOverState = false;
     
     @Override
     public void notify(GameEvent state) {
@@ -31,7 +33,11 @@ public class ConsolePrinter implements GameEventSubscriber {
             Java cannot do this, so this is the next best thing
         */
        if (state instanceof DiceRolled diceRolled)
-        this.stylisedPrinterIOMechanism.println("=> The Dice was rolled and landed on a " + diceRolled.diceRoll());
+        this.stylisedPrinterIOMechanism.println(
+            this.inGameOverState ?
+            "The game is over; dice roll ignored!" : 
+            "=> The Dice was rolled and landed on a " + diceRolled.diceRoll()
+        );
 
        if (state instanceof PieceMove pieceMove)
         this.stylisedPrinterIOMechanism.println((
@@ -43,15 +49,19 @@ public class ConsolePrinter implements GameEventSubscriber {
        if (state instanceof PiecesHit piecesHit)
         this.stylisedPrinterIOMechanism.println("=> The piece has collided with another one at " + piecesHit.pieceB().getCurrentPosition());
 
-       if (state instanceof PieceWon pieceWon)
+       if (state instanceof PieceWon pieceWon) {
         this.stylisedPrinterIOMechanism.println("=> The piece has landed on " + pieceWon.piece().getCurrentPosition() + " and has won the game!"); 
-
+        this.inGameOverState = true;
+        }
+        
        if (state instanceof TurnChange pieceChange)
         StylisedPrinter.printSubheading(stylisedPrinterIOMechanism, "Piece " + pieceChange.pieceNumber() + "'s Turn");
 
-       if (state instanceof GameStateTransition stateTransition)
+       if (state instanceof GameStateTransition stateTransition) {
         StylisedPrinter.printBanner(this.stylisedPrinterIOMechanism, stateTransition.newStateName());
-        
+        this.inGameOverState = stateTransition.newStateName().contains("Game Over"); 
+        }
+
        if (state instanceof ArbitraryHeader header)
         StylisedPrinter.printSubheading(stylisedPrinterIOMechanism, header.msg());    
 

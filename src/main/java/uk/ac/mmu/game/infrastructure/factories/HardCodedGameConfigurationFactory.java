@@ -10,14 +10,14 @@ import uk.ac.mmu.game.domain.board.specialpositions.TwoWayTeleporter;
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 import uk.ac.mmu.game.domain.dice.variations.SingleDice;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
-import uk.ac.mmu.game.domain.game.state.gameturn.ComprehensiveGameTurn;
-import uk.ac.mmu.game.domain.game.state.gameturn.GameTurn;
+import uk.ac.mmu.game.domain.game.gameturn.ComprehensiveGameTurn;
+import uk.ac.mmu.game.domain.game.gameturn.GameTurn;
 import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
 import uk.ac.mmu.game.domain.rules.hitcondition.HitsForfeitTurn;
 import uk.ac.mmu.game.domain.rules.wincondition.ExactHit;
 import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
 import uk.ac.mmu.game.domain.util.GridPosition;
-import uk.ac.mmu.game.infrastructure.random.JavaStlRandomSeeded;
+import uk.ac.mmu.game.infrastructure.random.JavaStlRandom;
 import uk.ac.mmu.game.usecase.GameConfigurationFactory;
 
 public class HardCodedGameConfigurationFactory implements GameConfigurationFactory {
@@ -32,10 +32,7 @@ public class HardCodedGameConfigurationFactory implements GameConfigurationFacto
 
 		Board board = new GameBoard(5, 5, specialPositions);
 
-        JavaStlRandomSeeded rng = new JavaStlRandomSeeded();
-        rng.setSeed(4444);
-        
-		DiceRolling diceRoller = new SingleDice(rng, 6);
+		DiceRolling diceRoller = new SingleDice(new JavaStlRandom(), 6);
 		WinCondition winEvaluator = new ExactHit();
 		CollisionCondition collisionHandler = new HitsForfeitTurn();
 

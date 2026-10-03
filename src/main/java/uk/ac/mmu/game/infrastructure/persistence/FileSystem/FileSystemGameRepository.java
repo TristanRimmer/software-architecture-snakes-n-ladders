@@ -18,7 +18,7 @@ import uk.ac.mmu.game.domain.dice.variations.SingleDice;
 import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamFixed;
 import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamUnbounded;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
-import uk.ac.mmu.game.domain.game.state.gameturn.GameTurn;
+import uk.ac.mmu.game.domain.game.gameturn.GameTurn;
 import uk.ac.mmu.game.domain.pieces.GamePiece;
 import uk.ac.mmu.game.domain.pieces.Piece;
 import uk.ac.mmu.game.domain.pieces.container.LockingPieceContainer;

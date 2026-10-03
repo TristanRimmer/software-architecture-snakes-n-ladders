@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.domain.game.state.gameturn;
+package uk.ac.mmu.game.domain.game.gameturn;
 
 import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.dice.DiceRolling;

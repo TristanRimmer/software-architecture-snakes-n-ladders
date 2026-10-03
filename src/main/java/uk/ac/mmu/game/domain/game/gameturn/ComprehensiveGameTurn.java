@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.domain.game.state.gameturn;
+package uk.ac.mmu.game.domain.game.gameturn;
 
 import java.util.List;
 

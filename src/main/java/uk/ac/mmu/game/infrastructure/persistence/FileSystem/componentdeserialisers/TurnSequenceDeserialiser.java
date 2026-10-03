@@ -2,7 +2,7 @@ package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialis
 
 import java.util.List;
 
-import uk.ac.mmu.game.domain.game.state.gameturn.GameTurn;
+import uk.ac.mmu.game.domain.game.gameturn.GameTurn;
 import uk.ac.mmu.game.domain.util.ImplFactoryException;
 import uk.ac.mmu.game.infrastructure.implmappers.GameTurnMapper;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;

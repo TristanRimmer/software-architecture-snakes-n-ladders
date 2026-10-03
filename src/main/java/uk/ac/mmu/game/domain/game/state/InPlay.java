@@ -7,7 +7,7 @@ import uk.ac.mmu.game.domain.events.types.GameStateTransition;
 import uk.ac.mmu.game.domain.events.types.PieceWon;
 import uk.ac.mmu.game.domain.events.types.TurnChange;
 import uk.ac.mmu.game.domain.game.Game;
-import uk.ac.mmu.game.domain.game.state.gameturn.GameTurn;
+import uk.ac.mmu.game.domain.game.gameturn.GameTurn;
 import uk.ac.mmu.game.domain.pieces.Piece;
 import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
 import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
