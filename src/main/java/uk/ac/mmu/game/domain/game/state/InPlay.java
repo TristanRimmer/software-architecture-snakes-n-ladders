@@ -3,7 +3,7 @@ package uk.ac.mmu.game.domain.game.state;
 import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
-import uk.ac.mmu.game.domain.events.types.GameStateTransition;
+import uk.ac.mmu.game.domain.events.types.BetterGameStateTransition;
 import uk.ac.mmu.game.domain.events.types.PieceWon;
 import uk.ac.mmu.game.domain.events.types.TurnChange;
 import uk.ac.mmu.game.domain.game.Game;
@@ -26,7 +26,7 @@ public final class InPlay implements GameState {
 
         final GameEventPublisher publisher = context.getEventPublisher();
 
-        publisher.publish(new GameStateTransition("In Play"));
+        context.getEventPublisher().publish(new BetterGameStateTransition(InPlay.class));
 
         int numTurns = 0;
 

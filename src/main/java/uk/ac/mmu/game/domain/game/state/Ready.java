@@ -4,6 +4,7 @@ import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.events.types.ArbitraryHeader;
 import uk.ac.mmu.game.domain.events.types.ArbitraryMessage;
+import uk.ac.mmu.game.domain.events.types.BetterGameStateTransition;
 import uk.ac.mmu.game.domain.game.Game;
 
 public final class Ready implements GameState {
@@ -12,6 +13,7 @@ public final class Ready implements GameState {
     public GameState execute(Game context) {
         GameEventPublisher output = context.getEventPublisher();
 
+        output.publish(new BetterGameStateTransition(Ready.class));
         output.publish(new ArbitraryHeader("Game Information"));
 
         Board board = context.getConfig().board();

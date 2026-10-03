@@ -3,6 +3,7 @@ package uk.ac.mmu.game.infrastructure.subscribers;
 import uk.ac.mmu.game.domain.events.GameEventSubscriber;
 import uk.ac.mmu.game.domain.events.types.ArbitraryHeader;
 import uk.ac.mmu.game.domain.events.types.ArbitraryMessage;
+import uk.ac.mmu.game.domain.events.types.BetterGameStateTransition;
 import uk.ac.mmu.game.domain.events.types.DiceRolled;
 import uk.ac.mmu.game.domain.events.types.GameEvent;
 import uk.ac.mmu.game.domain.events.types.GameStateTransition;
@@ -13,6 +14,10 @@ import uk.ac.mmu.game.domain.events.types.PiecesHit;
 import uk.ac.mmu.game.domain.events.types.SpecialPositionMovedPiece;
 import uk.ac.mmu.game.domain.events.types.TurnChange;
 import uk.ac.mmu.game.domain.events.types.WinConditionPreventedWin;
+import uk.ac.mmu.game.domain.game.state.GameOver;
+import uk.ac.mmu.game.domain.game.state.GameState;
+import uk.ac.mmu.game.domain.game.state.InPlay;
+import uk.ac.mmu.game.domain.game.state.Ready;
 import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
 import uk.ac.mmu.game.infrastructure.output.SystemOut;
 import uk.ac.mmu.game.infrastructure.output.TextOutputHandler;
@@ -42,7 +47,7 @@ public class ConsolePrinter implements GameEventSubscriber {
        if (state instanceof PieceMove pieceMove)
         this.stylisedPrinterIOMechanism.println((
             pieceMove.oldPos().equals(pieceMove.newPos()) ? 
-                "The piece has ended its turn in the same place, at " + pieceMove.newPos()
+                "=> The piece has ended its turn in the same place, at " + pieceMove.newPos()
             :   "=> The Piece has moved from " + pieceMove.oldPos() + " to " + pieceMove.newPos()
         ));
 
@@ -61,6 +66,19 @@ public class ConsolePrinter implements GameEventSubscriber {
         StylisedPrinter.printBanner(this.stylisedPrinterIOMechanism, stateTransition.newStateName());
         this.inGameOverState = stateTransition.newStateName().contains("Game Over"); 
         }
+       if (state instanceof BetterGameStateTransition stateTransition) {
+            Class<? extends GameState> newState = stateTransition.state();
+
+            String stateAsString = switch(newState) {
+                case Class<?> c when c == Ready.class -> "Ready";
+                case Class<?> c when c == InPlay.class -> "In Play";
+                case Class<?> c when c == GameOver.class -> "Game Over";
+                default -> "Unreachable" /* GameState is sealed -> this code will never be reached */;
+            };
+
+            StylisedPrinter.printBanner(this.stylisedPrinterIOMechanism, stateAsString);
+            this.inGameOverState = newState.equals(GameOver.class);
+       }
 
        if (state instanceof ArbitraryHeader header)
         StylisedPrinter.printSubheading(stylisedPrinterIOMechanism, header.msg());    
