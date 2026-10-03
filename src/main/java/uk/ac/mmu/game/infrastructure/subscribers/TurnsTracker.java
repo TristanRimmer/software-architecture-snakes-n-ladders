@@ -21,8 +21,7 @@ public class TurnsTracker implements GameEventSubscriber {
     }
     @Override
     public void notify(GameEvent state) {
-        if (state instanceof TurnChange pieceChange) {
-            Integer pieceNumber = pieceChange.pieceNumber();
+        if (state instanceof TurnChange(int pieceNumber)) {
 
             if (!this.numberOfTurnsPerPiece.containsKey(pieceNumber))
                 this.numberOfTurnsPerPiece.put(pieceNumber, 0);

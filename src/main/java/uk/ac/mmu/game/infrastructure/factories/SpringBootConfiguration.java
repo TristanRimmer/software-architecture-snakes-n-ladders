@@ -119,12 +119,6 @@ public class SpringBootConfiguration {
             throw new IllegalArgumentException(
                 "Spring Boot App only wants 2 or 4 pieces. If you want this to change, use a file system repository and modify it in there.");
         
-        int boardDim = switch (pieceCount) {
-            case "2" -> 5;
-            case "4" -> 6;
-            default -> 5 /* Unreachable */;
-        };
-
         // 2 Fixed-sets of grid point pairs
         GridPosition posA1 = new GridPosition(1, 1);
         GridPosition posA2 = new GridPosition(4, 1);

@@ -34,7 +34,7 @@ public class GameBoard implements Board {
 
         boolean anyPosOnCorner = relevantPositions
             .stream()
-            .map(pos -> this.pieceHasLandedOnSpecialSpot(pos))
+            .map(pos -> this.positionLandsOnWinSpot(pos))
             .reduce(false, (a,b) -> a || b);
 
         if (anyPosOnCorner)

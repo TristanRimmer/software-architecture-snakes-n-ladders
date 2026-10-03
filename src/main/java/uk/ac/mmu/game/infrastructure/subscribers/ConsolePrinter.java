@@ -19,7 +19,6 @@ import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
 import uk.ac.mmu.game.infrastructure.output.SystemOut;
 import uk.ac.mmu.game.infrastructure.output.TextOutputHandler;
 
-// TODO: add early returns and make it a chain
 public class ConsolePrinter implements GameEventSubscriber {
     private final TextOutputHandler stylisedPrinterIOMechanism = new SystemOut();
 
@@ -27,52 +26,52 @@ public class ConsolePrinter implements GameEventSubscriber {
     
     @Override
     public void notify(GameEvent state) {
-       if (state instanceof DiceRolled diceRolled)
+    if (state instanceof DiceRolled diceRolled)
         this.stylisedPrinterIOMechanism.println(
             this.inGameOverState ?
             "The game is over; dice roll ignored!" : 
             "=> The Dice was rolled and landed on a " + diceRolled.diceRoll()
         );
 
-       if (state instanceof PieceMove pieceMove)
+    if (state instanceof PieceMove pieceMove)
         this.stylisedPrinterIOMechanism.println((
             pieceMove.oldPos().equals(pieceMove.newPos()) ? 
                 "=> The piece has ended its turn in the same place, at " + pieceMove.newPos()
             :   "=> The Piece has moved from " + pieceMove.oldPos() + " to " + pieceMove.newPos()
         ));
 
-       if (state instanceof PiecesHit piecesHit)
+    if (state instanceof PiecesHit piecesHit)
         this.stylisedPrinterIOMechanism.println("=> The piece has collided with another one at " + piecesHit.pieceB().getCurrentPosition());
 
-       if (state instanceof PieceWon pieceWon) {
+    if (state instanceof PieceWon pieceWon) {
         this.stylisedPrinterIOMechanism.println("=> The piece has landed on " + pieceWon.piece().getCurrentPosition() + " and has won the game!"); 
         this.inGameOverState = true;
-        }
-        
-       if (state instanceof TurnChange pieceChange)
+    }
+
+    if (state instanceof TurnChange pieceChange)
         StylisedPrinter.printSubheading(stylisedPrinterIOMechanism, "Piece " + pieceChange.pieceNumber() + "'s Turn");
 
-       if (state instanceof BetterGameStateTransition stateTransition) {
-            Class<? extends GameState> newState = stateTransition.state();
+    if (state instanceof BetterGameStateTransition stateTransition) {
+        Class<? extends GameState> newState = stateTransition.state();
 
-            String stateAsString = switch(newState) {
-                case Class<?> c when c == Ready.class -> "Ready";
-                case Class<?> c when c == InPlay.class -> "In Play";
-                case Class<?> c when c == GameOver.class -> "Game Over";
-                default -> "Unreachable" /* GameState is a sealed interface -> this code will never be reached */;
-            };
+        String stateAsString = switch(newState) {
+            case Class<?> c when c == Ready.class -> "Ready";
+            case Class<?> c when c == InPlay.class -> "In Play";
+            case Class<?> c when c == GameOver.class -> "Game Over";
+            default -> "Unreachable" /* GameState is a sealed interface -> this code will never be reached */;
+        };
 
-            StylisedPrinter.printBanner(this.stylisedPrinterIOMechanism, stateAsString);
-            this.inGameOverState = newState.equals(GameOver.class);
-       }
+        StylisedPrinter.printBanner(this.stylisedPrinterIOMechanism, stateAsString);
+        this.inGameOverState = newState.equals(GameOver.class);
+    }
 
-       if (state instanceof HitConditionsPreventedMove)
+    if (state instanceof HitConditionsPreventedMove)
         this.stylisedPrinterIOMechanism.println("=> Due to the current Hit Condition, the piece's move was cancelled!");
 
-       if (state instanceof SpecialPositionMovedPiece)
+    if (state instanceof SpecialPositionMovedPiece)
         this.stylisedPrinterIOMechanism.println("=> The piece landed on a special position!");
 
-       if (state instanceof WinConditionPreventedWin)
+    if (state instanceof WinConditionPreventedWin)
         this.stylisedPrinterIOMechanism.println("=> The piece would have won, but hasn't as a direct result of the chosen win condition");
     }
 }

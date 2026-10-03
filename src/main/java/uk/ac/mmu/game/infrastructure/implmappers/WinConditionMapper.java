@@ -10,12 +10,13 @@ public final class WinConditionMapper {
 
     public static WinCondition getImplementationFromString(String string) throws ImplFactoryException {
         switch (string) {
-            case CROSS_THE_FINISH_LINE:
+            case CROSS_THE_FINISH_LINE -> {
                 return new CrossTheFinishline();
-            case EXACT_HIT:
+            }
+            case EXACT_HIT -> {
                 return new ExactHit();
-            default:
-                throw new ImplFactoryException(
+            }
+            default -> throw new ImplFactoryException(
                         "The provided string does not map to any existing implementation");
         }
     }
