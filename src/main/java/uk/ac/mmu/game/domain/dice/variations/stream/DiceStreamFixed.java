@@ -19,4 +19,11 @@ public class DiceStreamFixed implements DiceRolling {
             throw new DiceRollStreamRuntimeException("The DiceStreamFixed object has exceeded its stream of dice rolls");
         }
     }
+
+    @Override
+    public int getMaxPossibleRoll() {
+        int largest = this.diceRollStream.stream.stream().reduce(1, (a,b) -> a > b ? a : b);
+
+        return largest;
+    }
 }

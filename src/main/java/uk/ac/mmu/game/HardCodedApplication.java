@@ -12,6 +12,7 @@ import uk.ac.mmu.game.infrastructure.factories.HardCodedPieceConfigurationFactor
 import uk.ac.mmu.game.infrastructure.input.CommandLineInterface;
 import uk.ac.mmu.game.infrastructure.subscribers.ConsolePrinter;
 import uk.ac.mmu.game.infrastructure.subscribers.DiceRollRecorder;
+import uk.ac.mmu.game.infrastructure.subscribers.MetadataDumper;
 import uk.ac.mmu.game.infrastructure.subscribers.TurnsTracker;
 import uk.ac.mmu.game.usecase.GameConfigurationFactory;
 import uk.ac.mmu.game.usecase.GameIDInvalidException;
@@ -50,6 +51,8 @@ public class HardCodedApplication {
                         config.board().getBoardWidth(), 
                         config.board().getBoardHeight());
 
+                    publisher.registerNewSubscriber(new MetadataDumper(config, pieces));
+
                     Game currentGame = new Game(config, pieces, publisher);
                     
                     currentGame.play();
@@ -75,6 +78,8 @@ public class HardCodedApplication {
                     try {
                         GameStore gameStore = repository.loadGame(gameChoice);
                         Game currentGame = new Game(gameStore.configuration(), gameStore.pieces(), publisher);
+
+                        publisher.registerNewSubscriber(new MetadataDumper(gameStore.configuration(), gameStore.pieces()));
 
                         currentGame.play();
                     } catch (GameIDInvalidException e) {

@@ -16,4 +16,9 @@ public class SingleDice implements DiceRolling {
     public int nextDiceRoll() {
         return 1 + rng.randomNumberInRange(0, this.maxDiceRoll);
     }
+
+    @Override
+    public int getMaxPossibleRoll() {
+        return maxDiceRoll; 
+    }
 }

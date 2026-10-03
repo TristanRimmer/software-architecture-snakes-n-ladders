@@ -18,4 +18,9 @@ public class TwoDice implements DiceRolling {
             + rng.randomNumberInRange(0, this.maxDiceRoll) 
             + rng.randomNumberInRange(0, this.maxDiceRoll);
     }
+
+    @Override
+    public int getMaxPossibleRoll() {
+        return maxDiceRoll;
+    }
 }
