@@ -40,4 +40,14 @@ public final class TwoWayTeleporter implements SpecialLinkedPositions {
 
         return positions;
     }
+
+    @Override
+    public List<GridPosition> getEntryPoints() {
+        ArrayList<GridPosition> positions = new ArrayList<>();
+
+        positions.add(this.positionOne);
+        positions.add(this.positionTwo);
+
+        return positions;
+    }
 }

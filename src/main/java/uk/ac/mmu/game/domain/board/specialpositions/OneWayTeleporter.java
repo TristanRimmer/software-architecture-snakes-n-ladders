@@ -37,4 +37,13 @@ public final class OneWayTeleporter implements SpecialLinkedPositions {
 
         return positions;
     }
+
+    @Override
+    public List<GridPosition> getEntryPoints() {
+        ArrayList<GridPosition> positions = new ArrayList<>();
+
+        positions.add(this.teleportsFromHere);
+
+        return positions;
+    }
 }

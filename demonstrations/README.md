@@ -2,6 +2,8 @@
 
 This folder contains a list of configs for testing which demonstrate all features as specified in the brief
 
+It also contains some example outputs, and the serialised versions of games generated from the corresponding properties file
+
 ## Naming Convention
 
 The file called 'basic_game.properties' contains the details of the basic game:

@@ -10,4 +10,6 @@ public sealed interface SpecialLinkedPositions permits OneWayTeleporter, TwoWayT
     GridPosition getPositionAfterSpecialBehaviour(GridPosition landedPos);
 
     List<GridPosition> getListOfSpecialPositions();
+
+    List<GridPosition> getEntryPoints();
 }

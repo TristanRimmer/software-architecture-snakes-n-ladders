@@ -105,6 +105,8 @@ public class FileSystemGameRepository implements GameRepository {
             }
         }
 
+        System.out.println("(Established link to Game-Store Directory at " + homeWithDir.toString() + ")");
+
         // If here, there is an established path to the save directory
         this.pathToDirectory = homeWithDir;
         this.listOfSavesAsFiles = new ArrayList<>();

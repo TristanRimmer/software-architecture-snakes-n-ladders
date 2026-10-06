@@ -30,7 +30,7 @@ public class GameBoard implements Board {
     }
     @Override
     public boolean registerNewSpecialPosition(SpecialLinkedPositions newPosition) {
-        List<GridPosition> relevantPositions = newPosition.getListOfSpecialPositions();
+        List<GridPosition> relevantPositions = newPosition.getEntryPoints();
 
         boolean anyPosOnCorner = relevantPositions
             .stream()
