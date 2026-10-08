@@ -23,11 +23,7 @@ This document will attempt to answer the following key questions:
 - How did the package structure evolve throughout development?
 - Were they any major refactors worth mentioning?
 
-#### 4. Are there note-worthy insights uncovered in development?
-
-- Examples of code that doesn't necessarily link to architecture or SOLID but is important
-
-Followed by a final evaluative summary of the project
+Followed by a final evaluative summary of the project and insights from the module
 
 ## 1) What Design & Architecture Patterns were used?
 
@@ -205,5 +201,63 @@ Overall, its probably the weakest interface structure in terms of SOLID Principl
 
 The evolution of the products design throughout development can be split into 'Package Structure Changes' and 'Major Logic Refactors'
 
-- How did the package structure evolve throughout development?
-- Were they any major refactors worth mentioning?
+### Package Structure Changes
+
+The assignment brief specified to follow an 'Infrastructure-Usecase-Domain' package structure. When I began work on this assignment, I didn't _really_ understand it. Part of it comes from my software background, being primarily in lower-level languages (C++/Rust) where this paradigm isn't common practise. As a result, initially, everything was just in
+`uk.ac.mmu.game` at a top level. Realistically, this wouldn't have been a problem for _me_, but knowing it would eventually get reorganised, I was lazy with my structure and that slowed down development a lot.
+
+For example, one major change was the refactoring of the afformentioned `java.util.Random` logic out of my domain. Following this, I then struggled with tackling the problem of text output, and it took me a while to figure out the system I eventually used (Subscriber Interface in Domain, Console Logger in Infrastructure)
+
+### Major Logic Refactors
+
+There are a few major refactors that posed significant challenges throughout development. Two major ones were:
+
+#### 1) Piece Vector Spatial Awareness
+
+In the initial version, the Piece class tracked its internal position via a 2-Dimensional Vector. This was a problem for a few reasons:
+
+- Coupled the starting position and the board-position knowledge directly to the piece
+- Complicated the movement tracking interally and violated DRY (generally this is not a huge problem, but in this case it was)
+- Coupled the game-rule logic tightly with the Piece.
+
+The new version instead had the piece only track its distance from the start as a scalar.
+This dramatically simplified movement tracking, and the work for mapping between displacement (scalar) and grid position (vector) was offloaded onto a separate class. This was beneficial from a SOLID persective, and was another implementation of strategy pattern.
+
+#### 2) Game-Rule logic changes
+
+In the initial versions of the game-rules (win condition and hit condition), the interface generally looked like this
+
+```
+interface GameRule:
+  + bool hasThisGameRuleApplied(positions, etc.., etc..)
+```
+
+There were a coupled problems with this:
+
+- It made it very unclear what the boolean return type meant for the implementations. I intended on it meaning that the rule should or shouldn't be applied, but it could easily be interpretted as the rule HAS been or HASN'T been applied.
+- Even with the knowledge of how to interpret the boolean, it offloaded the game-state updating into the game-turn logic, essentially meaning the game needed to know the game-rule implementations.
+
+The final versions looked like this:
+
+```
+interface GameRule:
+  + GameRuleStatus evaluateGameRule(Piece piece, Board board, etc)
+```
+
+The `GameRuleStatus` was an enum that made it explicitly clear that the interface/implementation is responsible for handling the pieces. This separated concerns of the game-rule from the game-turn, and instead provided tools purely for making the logic apparent to the user via logging.
+
+## Final Evaluation
+
+### Thoughts
+
+The 'Strategy Pattern' driven development has meant that the game logic is easily extensible at a domain level, allowing for a wide range of extensions to be easily implemented. Abstractions like the `GameTurn`, `GameState` are higher level abstractions which help reduce high-level game logic.
+
+If I were to be critical, the custom Serialise/Deserialise system makes the application, by nature, less pretty. Choosing a custom file type for game saving has required me to make extensive use of `instanceof` which, in any situation at a domain level, would be a serious code smell. As its infrastructure level, its not _as_ serious of a problem, but choosing to use other libraries to handle this for me would have reduced my work load, and the volume of code that had to be written.
+
+Another 'problem' is that it required me to add lazy 'getters' to the game-logic interfaces. In this scenario, it meant that I was updating Domain logic to help infrastructure, which is technically a one-way dependency violation; however, it doesn't directly reference anything outside of domain, from an outsider perspective it isn't, which is why it wasn't refactored.
+
+### Module Takeaways & Summary
+
+The biggest takeaway from the University Module is this package structure. In a higher level language like Java, it is interesting to see a package structure like this and posed a lot of additional concern at development time. This not only directly demonstrated the benefits for having such a dependency separation, but it also revealed gaps in knowledge that a typical Java developer should have.
+
+In summary, I would say that this is a _generally_ very well written code base. It applies SOLID principles to a high standard, and makes good use of design patterns in a way that **ACTUALLY** benefits developers and improves the development cycle, whilst conforming to the 'Infrastructure-Usecase-Domain' package structure. Any violations of SOLID are minor, and would not require major refactors to resolve these issues, and in a project of this size doesn't really pose as technical debt.
