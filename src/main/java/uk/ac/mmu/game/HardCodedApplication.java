@@ -45,8 +45,7 @@ public class HardCodedApplication {
 					PLAY_OPTIONS)) {
                         case 0 -> { 
                             GameConfiguration config = gameConfigurationFactory.getGameConfiguration();
-                            PieceConfigurationsList pieces = pieceConfigurationFactory.getPieceConfigList(
-                                config.board().getBoardWidth(), config.board().getBoardHeight());
+                            PieceConfigurationsList pieces = pieceConfigurationFactory.getPieceConfigList();
 
                             yield new NewGameAction(
                                 config,

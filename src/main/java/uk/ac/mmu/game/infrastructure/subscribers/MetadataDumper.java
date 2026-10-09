@@ -41,8 +41,8 @@ public class MetadataDumper implements GameEventSubscriber {
             StylisedPrinter.printSubheading(output, "Game Configuration");
 
             output.println("-> Board Dimensions: " + new GridPosition(
-                gameConfig.board().getBoardWidth(), 
-                gameConfig.board().getBoardHeight()));
+                gameConfig.board().getBoardWidth().getValue(), 
+                gameConfig.board().getBoardHeight().getValue()));
             
             final List<SpecialLinkedPositions> specialPositions = this.gameConfig.board().getSpecialPositions();
 

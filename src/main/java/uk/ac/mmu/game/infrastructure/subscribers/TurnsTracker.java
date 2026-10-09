@@ -1,6 +1,7 @@
 package uk.ac.mmu.game.infrastructure.subscribers;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import uk.ac.mmu.game.domain.events.GameEventSubscriber;
@@ -16,12 +17,22 @@ public class TurnsTracker implements GameEventSubscriber {
     private final Map<Integer, Integer> numberOfTurnsPerPiece;
     private final TextOutputHandler stylisedPrinterIOMechanism = new SystemOut();
 
+    private static final List<String> colours = List.of(
+        "\u001B[31m",
+        "\u001B[34m",
+        "\u001B[32m",
+        "\u001B[33m",
+        "\u001B[0m"
+    );
+
     public TurnsTracker() {
         this.numberOfTurnsPerPiece = new LinkedHashMap<>();
     }
     @Override
     public void notify(GameEvent state) {
         if (state instanceof TurnChange(int pieceNumber)) {
+            String colour = (pieceNumber <= 4) ? colours.get(pieceNumber) : colours.getLast();
+            StylisedPrinter.printSubheading(stylisedPrinterIOMechanism, colour + "Piece " + pieceNumber + colours.getLast() + "'s Turn");
 
             if (!this.numberOfTurnsPerPiece.containsKey(pieceNumber))
                 this.numberOfTurnsPerPiece.put(pieceNumber, 0);

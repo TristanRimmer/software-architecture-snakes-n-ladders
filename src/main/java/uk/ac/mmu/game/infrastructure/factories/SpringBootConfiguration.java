@@ -84,8 +84,8 @@ public class SpringBootConfiguration {
         @Value("${game.numberofpieces}") String pieceCount
     ) {
         return switch (pieceCount) {
-            case "2" -> new GameBoard(5, 5);
-            case "4" -> new GameBoard(6, 6); 
+            case "2" -> new GameBoard(5);
+            case "4" -> new GameBoard(6); 
             default -> throw new IllegalArgumentException(
                 "Spring Boot App only wants 2 or 4 pieces. If you want this to change, use a file system repository and modify it in there.");
         };

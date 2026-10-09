@@ -2,16 +2,18 @@ package uk.ac.mmu.game.domain.pieces;
 
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
 import uk.ac.mmu.game.domain.util.GridPosition;
+import uk.ac.mmu.game.domain.util.PositiveIntWithMinimum;
 
 public class GamePiece implements Piece {
     PositionTrackingConverter converter;
-
-    int gridWidth;
-    int gridHeight;
+    PositiveIntWithMinimum gridWidth;
+    PositiveIntWithMinimum gridHeight;
 
     int currentDisplacement;
 
-    public GamePiece(PositionTrackingConverter converter, int gridWidth, int gridHeight) {
+    public GamePiece(PositionTrackingConverter converter, 
+                     PositiveIntWithMinimum gridWidth,
+                     PositiveIntWithMinimum gridHeight) {
         this.converter = converter;
         this.gridWidth = gridWidth;
         this.gridHeight = gridHeight;

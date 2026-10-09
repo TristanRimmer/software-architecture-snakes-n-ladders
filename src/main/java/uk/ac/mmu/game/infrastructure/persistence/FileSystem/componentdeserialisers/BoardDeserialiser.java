@@ -43,7 +43,7 @@ public class BoardDeserialiser implements GamSubcomponentDeserialiser<Board> {
             throw new DeserialisedObjectNotCreatedException("Board object was not successfully created");
 
         if (this.chosenImplementation == GameBoard.class)
-            return new GameBoard(this.boardWidth, this.boardHeight);
+            return new GameBoard(this.boardWidth);
 
         throw new DeserialisedObjectNotCreatedException("Board object implementation not supported");
     }

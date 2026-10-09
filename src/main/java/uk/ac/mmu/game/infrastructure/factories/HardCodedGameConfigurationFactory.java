@@ -34,7 +34,7 @@ public class HardCodedGameConfigurationFactory implements GameConfigurationFacto
                 new GridPosition(0,0), 
                 new GridPosition(1, 0)));
 
-		Board board = new GameBoard(5, 5);
+		Board board = new GameBoard(5);
 
         for (SpecialLinkedPositions p : specialPositions)
             board.registerNewSpecialPosition(p);

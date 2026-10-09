@@ -6,23 +6,25 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
 import uk.ac.mmu.game.domain.util.GridPosition;
+import uk.ac.mmu.game.domain.util.PositiveIntWithMinimum;
 
 public class GameBoard implements Board {
-    int width;
-    int height;
+    PositiveIntWithMinimum width;
+    PositiveIntWithMinimum height;
     List<SpecialLinkedPositions> specialPositionsList;
     // Note: this works because GridPosition implements a proper equals()
     HashMap<GridPosition, Integer> specialPositionsMap = new HashMap<>();
 
-    public GameBoard(int width, int height) {
-        this.width = width;
-        this.height = height;
+    public GameBoard(int dimensions) {
+        PositiveIntWithMinimum validatedDimension = new PositiveIntWithMinimum(5, dimensions);
+        this.width = validatedDimension;
+        this.height = validatedDimension;
         this.specialPositionsList = new ArrayList<>();
         /*
             This implementation of Board uses a hashmap of indexes to make the pieceHasLandedOnSpecialSpot more simplisitc
         */
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
+        for (int y = 0; y < this.width.getValue(); y++) {
+            for (int x = 0; x < this.height.getValue(); x++) {
                 // -1 means it isnt special
                 specialPositionsMap.put(new GridPosition(x, y), -1);
             }
@@ -51,12 +53,12 @@ public class GameBoard implements Board {
     }
 
     @Override
-    public int getBoardWidth() {
+    public PositiveIntWithMinimum getBoardWidth() {
         return this.width;
     }
 
     @Override
-    public int getBoardHeight() {
+    public PositiveIntWithMinimum getBoardHeight() {
         return this.height;
     }
 
@@ -87,7 +89,7 @@ public class GameBoard implements Board {
 
     @Override
     public int getMinimumTravelDistance() {
-        return this.width * this.height - 1;
+        return this.width.getValue() * this.height.getValue() - 1;
     }
     @Override
     public List<SpecialLinkedPositions> getSpecialPositions() {
@@ -96,9 +98,9 @@ public class GameBoard implements Board {
 
     private boolean positionLandsOnWinSpot(GridPosition pos) {
         GridPosition bottomLeft = new GridPosition(0, 0);
-        GridPosition topLeft = new GridPosition(0, this.width - 1);
-        GridPosition bottomRight = new GridPosition(this.width - 1, 0);
-        GridPosition topRight = new GridPosition(this.width - 1, this.height - 1);
+        GridPosition topLeft = new GridPosition(0, this.width.getValue() - 1);
+        GridPosition bottomRight = new GridPosition(this.width.getValue() - 1, 0);
+        GridPosition topRight = new GridPosition(this.width.getValue() - 1, this.height.getValue() - 1);
 
         return pos.equals(bottomLeft) || pos.equals(topLeft) || pos.equals(bottomRight) || pos.equals(topRight);
     }

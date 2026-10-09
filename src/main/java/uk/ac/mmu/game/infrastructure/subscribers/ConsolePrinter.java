@@ -10,7 +10,6 @@ import uk.ac.mmu.game.domain.events.types.PieceWon;
 import uk.ac.mmu.game.domain.events.types.PiecesHit;
 import uk.ac.mmu.game.domain.events.types.SpecialPositionMovedPiece;
 import uk.ac.mmu.game.domain.events.types.TemporaryNewDicePosition;
-import uk.ac.mmu.game.domain.events.types.TurnChange;
 import uk.ac.mmu.game.domain.events.types.WinConditionPreventedWin;
 import uk.ac.mmu.game.domain.game.state.GameOver;
 import uk.ac.mmu.game.domain.game.state.GameState;
@@ -50,9 +49,6 @@ public class ConsolePrinter implements GameEventSubscriber {
     }
     if (state instanceof TemporaryNewDicePosition tempPos)
         this.stylisedPrinterIOMechanism.println("=> (Internally, the piece is currently at " + tempPos.temp() + ")");
-
-    if (state instanceof TurnChange pieceChange)
-        StylisedPrinter.printSubheading(stylisedPrinterIOMechanism, "Piece " + pieceChange.pieceNumber() + "'s Turn");
 
     if (state instanceof BetterGameStateTransition stateTransition) {
         Class<? extends GameState> newState = stateTransition.state();
