@@ -6,17 +6,17 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
 import uk.ac.mmu.game.domain.util.GridPosition;
-import uk.ac.mmu.game.domain.util.PositiveIntWithMinimum;
+import uk.ac.mmu.game.domain.util.PositiveIntegerAtleastFive;
 
 public class GameBoard implements Board {
-    PositiveIntWithMinimum width;
-    PositiveIntWithMinimum height;
+    PositiveIntegerAtleastFive width;
+    PositiveIntegerAtleastFive height;
     List<SpecialLinkedPositions> specialPositionsList;
     // Note: this works because GridPosition implements a proper equals()
     HashMap<GridPosition, Integer> specialPositionsMap = new HashMap<>();
 
     public GameBoard(int dimensions) {
-        PositiveIntWithMinimum validatedDimension = new PositiveIntWithMinimum(5, dimensions);
+        PositiveIntegerAtleastFive validatedDimension = new PositiveIntegerAtleastFive(dimensions);
         this.width = validatedDimension;
         this.height = validatedDimension;
         this.specialPositionsList = new ArrayList<>();
@@ -53,12 +53,12 @@ public class GameBoard implements Board {
     }
 
     @Override
-    public PositiveIntWithMinimum getBoardWidth() {
+    public PositiveIntegerAtleastFive getBoardWidth() {
         return this.width;
     }
 
     @Override
-    public PositiveIntWithMinimum getBoardHeight() {
+    public PositiveIntegerAtleastFive getBoardHeight() {
         return this.height;
     }
 

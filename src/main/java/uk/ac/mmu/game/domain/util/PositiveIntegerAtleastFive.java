@@ -1,25 +1,22 @@
 package uk.ac.mmu.game.domain.util;
 
-public class PositiveIntWithMinimum {
+public class PositiveIntegerAtleastFive implements PositiveIntegerWithMinimum {
     class PositiveIntWithMinimumInvalidRuntimeException extends RuntimeException {
         public PositiveIntWithMinimumInvalidRuntimeException() {
             super("Created a PositiveIntWithMinimum class and one of the inputs were invalid");
         }
     }
-
-    private int minimum;
     private int value;
 
-    public PositiveIntWithMinimum(int minimum, int value) {
-        if (minimum <= 0 || value <= 0 || value < minimum)
+    public PositiveIntegerAtleastFive(int value) {
+        if (value < 5)
             throw new PositiveIntWithMinimumInvalidRuntimeException();
 
-        this.minimum = minimum;
         this.value = value;
     }
 
     public int getMinimum() {
-        return this.minimum;
+        return 5;
     };
 
     public int getValue() {
