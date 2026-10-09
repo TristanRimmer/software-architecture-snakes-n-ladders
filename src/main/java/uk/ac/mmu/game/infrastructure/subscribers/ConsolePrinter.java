@@ -44,7 +44,7 @@ public class ConsolePrinter implements GameEventSubscriber {
         this.stylisedPrinterIOMechanism.println("=> The piece has collided with another one at " + piecesHit.pieceB().getCurrentPosition());
 
     if (state instanceof PieceWon pieceWon) {
-        this.stylisedPrinterIOMechanism.println("=> The piece has landed on " + pieceWon.piece().getCurrentPosition() + " and has won the game!"); 
+        StylisedPrinter.printBanner(this.stylisedPrinterIOMechanism, "This piece has has won the game!"); 
         this.inGameOverState = true;
     }
     if (state instanceof TemporaryNewDicePosition tempPos)

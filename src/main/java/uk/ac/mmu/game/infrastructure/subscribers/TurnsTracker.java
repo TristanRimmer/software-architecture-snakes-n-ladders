@@ -18,11 +18,11 @@ public class TurnsTracker implements GameEventSubscriber {
     private final TextOutputHandler stylisedPrinterIOMechanism = new SystemOut();
 
     private static final List<String> colours = List.of(
-        "\u001B[31m",
-        "\u001B[34m",
-        "\u001B[32m",
-        "\u001B[33m",
-        "\u001B[0m"
+        "\u001B[31m", // Red
+        "\u001B[34m", // Blue
+        "\u001B[32m", // Green/Yellow I dont remember 
+        "\u001B[33m", // The opposite of above 
+        "\u001B[0m" // Clear
     );
 
     public TurnsTracker() {
