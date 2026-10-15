@@ -4,6 +4,7 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
+import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
 import uk.ac.mmu.game.infrastructure.factories.HardCodedGameConfigurationFactory;
 import uk.ac.mmu.game.infrastructure.factories.HardCodedGameRepositoryFactory;
 import uk.ac.mmu.game.infrastructure.factories.HardCodedPieceConfigurationFactory;
@@ -20,7 +21,6 @@ import uk.ac.mmu.game.usecase.action.GameAction;
 import uk.ac.mmu.game.usecase.action.NewGameAction;
 import uk.ac.mmu.game.usecase.action.ReplayGameAction;
 import uk.ac.mmu.game.usecase.action.SessionOverAction;
-import uk.ac.mmu.game.usecase.types.PieceConfigurationsList;
 
 public class HardCodedApplication {
 	private static final List<String> PLAY_OPTIONS = List.of("New", "Replay", "Exit");

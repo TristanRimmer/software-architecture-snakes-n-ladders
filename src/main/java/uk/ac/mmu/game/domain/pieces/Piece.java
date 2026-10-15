@@ -1,6 +1,5 @@
 package uk.ac.mmu.game.domain.pieces;
 
-import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
 import uk.ac.mmu.game.domain.util.GridPosition;
 
 public interface Piece {
@@ -16,7 +15,4 @@ public interface Piece {
 
     // Gets the displacement
     int getDisplacement();
-
-    // TODO: consider a refactor -> is this getting too big? (ISP)
-    PositionTrackingConverter getTrackingConverter();
 }

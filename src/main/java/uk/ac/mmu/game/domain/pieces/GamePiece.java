@@ -50,9 +50,4 @@ public class GamePiece implements Piece {
     public int getDisplacement() {
         return this.currentDisplacement;
     }
-
-    @Override
-    public PositionTrackingConverter getTrackingConverter() {
-        return this.converter;
-    }
 }

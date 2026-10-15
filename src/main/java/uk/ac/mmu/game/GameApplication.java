@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
 
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
+import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
 import uk.ac.mmu.game.infrastructure.factories.SpringBootConfiguration;
 import uk.ac.mmu.game.infrastructure.input.CommandLineInterface;
 import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
@@ -20,7 +21,6 @@ import uk.ac.mmu.game.usecase.action.GameAction;
 import uk.ac.mmu.game.usecase.action.NewGameAction;
 import uk.ac.mmu.game.usecase.action.ReplayGameAction;
 import uk.ac.mmu.game.usecase.action.SessionOverAction;
-import uk.ac.mmu.game.usecase.types.PieceConfigurationsList;
 
 @Import(SpringBootConfiguration.class)
 @SpringBootApplication

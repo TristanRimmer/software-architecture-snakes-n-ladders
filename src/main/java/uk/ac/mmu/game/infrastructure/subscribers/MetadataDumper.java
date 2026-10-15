@@ -13,9 +13,9 @@ import uk.ac.mmu.game.domain.events.types.BetterGameStateTransition;
 import uk.ac.mmu.game.domain.events.types.GameEvent;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
 import uk.ac.mmu.game.domain.game.state.Ready;
-import uk.ac.mmu.game.domain.pieces.Piece;
-import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
+import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
 import uk.ac.mmu.game.domain.util.GridPosition;
+import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
 import uk.ac.mmu.game.infrastructure.implmappers.HitConditionMapper;
 import uk.ac.mmu.game.infrastructure.implmappers.PositionTrackingConverterMapper;
 import uk.ac.mmu.game.infrastructure.implmappers.SpecialPositionMapper;
@@ -26,10 +26,10 @@ import uk.ac.mmu.game.infrastructure.output.TextOutputHandler;
 
 public class MetadataDumper implements GameEventSubscriber {
     private final GameConfiguration gameConfig;
-    private final PieceContainer pieces;
+    private final PieceConfigurationsList pieces;
     private final TextOutputHandler output = new SystemOut();
 
-    public MetadataDumper(GameConfiguration config, PieceContainer pieces) {
+    public MetadataDumper(GameConfiguration config, PieceConfigurationsList pieces) {
         this.gameConfig = config;
         this.pieces = pieces;
     }
@@ -80,12 +80,13 @@ public class MetadataDumper implements GameEventSubscriber {
             }
 
             StylisedPrinter.printSubheading(output, "Piece Configuration");
-            final List<Piece> listOfPieces = this.pieces.getPiecesInOriginalOrder();
+            final List<PositionTrackingConverter> listOfPieces = this.pieces.converters();
 
             output.println("- Number of Pieces: " + listOfPieces.size());
             output.println("- Starting corner of each piece (in order): ");
-            for (Piece p : listOfPieces) {
-                output.println("--- " + PositionTrackingConverterMapper.getStringFromImplementation(p.getTrackingConverter()));
+
+            for (PositionTrackingConverter p : listOfPieces) {
+                output.println("--- " + PositionTrackingConverterMapper.getStringFromImplementation(p));
             }
         }
     }

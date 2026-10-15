@@ -30,13 +30,13 @@ import uk.ac.mmu.game.domain.rules.wincondition.CrossTheFinishline;
 import uk.ac.mmu.game.domain.rules.wincondition.ExactHit;
 import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
 import uk.ac.mmu.game.domain.util.GridPosition;
+import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
 import uk.ac.mmu.game.infrastructure.implmappers.HitConditionMapper;
 import uk.ac.mmu.game.infrastructure.implmappers.WinConditionMapper;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemGameRepository;
 import uk.ac.mmu.game.infrastructure.persistence.InMemoryGameRepository;
 import uk.ac.mmu.game.infrastructure.random.JavaStlRandom;
 import uk.ac.mmu.game.usecase.GameRepository;
-import uk.ac.mmu.game.usecase.types.PieceConfigurationsList;
 
 @Configuration
 public class SpringBootConfiguration {

@@ -3,7 +3,7 @@ package uk.ac.mmu.game.usecase.action;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.game.Game;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
-import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
+import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
 import uk.ac.mmu.game.infrastructure.input.CommandLineInterface;
 import uk.ac.mmu.game.infrastructure.subscribers.MetadataDumper;
 import uk.ac.mmu.game.usecase.GameIDInvalidException;
@@ -43,13 +43,12 @@ public final class ReplayGameAction implements GameAction {
         }
 
         GameConfiguration config = gameStore.configuration();
-        PieceContainer pieces = gameStore.pieces();
+        PieceConfigurationsList pieces = gameStore.pieces();
 
-        // Still needs a data dumper for pretty printing
-        this.publisher.registerNewSubscriber(
-            new MetadataDumper(config, pieces));
+        this.publisher.registerNewSubscriber(new MetadataDumper(config, pieces));
 
         Game game = new Game(config, pieces, this.publisher);
+
         game.play();
     }
 

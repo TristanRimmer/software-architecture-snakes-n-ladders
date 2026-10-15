@@ -19,14 +19,11 @@ import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamFixed;
 import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamUnbounded;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
 import uk.ac.mmu.game.domain.game.gameturn.GameTurn;
-import uk.ac.mmu.game.domain.pieces.GamePiece;
-import uk.ac.mmu.game.domain.pieces.Piece;
-import uk.ac.mmu.game.domain.pieces.container.LockingPieceContainer;
-import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
 import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
 import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
 import uk.ac.mmu.game.domain.util.GridPosition;
+import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
 import uk.ac.mmu.game.infrastructure.implmappers.GameTurnMapper;
 import uk.ac.mmu.game.infrastructure.implmappers.GenerateRandomNumberMapper;
 import uk.ac.mmu.game.infrastructure.implmappers.HitConditionMapper;
@@ -175,7 +172,7 @@ public class FileSystemGameRepository implements GameRepository {
             boolean isStrictDiceRules = diceRuleDeserialiser.getObject();
             GenerateRandomNumber randomNumberGenerator = randomNumberDeserialiser.getObject();
             ArrayList<Integer> diceRolls = diceRollsDeserialiser.getObject();
-            ArrayList<PositionTrackingConverter> pieceMoveset =  piecePositionTrackerDeserialiser.getObject();
+            PieceConfigurationsList pieceMoveset =  piecePositionTrackerDeserialiser.getObject();
             ArrayList<SpecialLinkedPositions> specialPositions = specialPositionDeserialiser.getObject();
             Board board = boardDeserialiser.getObject();
 
@@ -186,15 +183,9 @@ public class FileSystemGameRepository implements GameRepository {
             DiceRolling diceRoller = isStrictDiceRules ? new DiceStreamFixed(diceRolls)
                 : new DiceStreamUnbounded(diceRolls, new SingleDice(randomNumberGenerator, 6));
 
-            PieceContainer pieceContainer = new LockingPieceContainer();
-
-            for (PositionTrackingConverter p : pieceMoveset) {
-                pieceContainer.registerNewPiece(new GamePiece(p, board.getBoardWidth(), board.getBoardHeight()));
-            }
-
             return new GameStore(
                 new GameConfiguration(winCondition, collisionCondition, diceRoller, board, turnSequence), 
-                pieceContainer, 
+                pieceMoveset, 
                 diceRolls, 
                 this.getNameFromFile(file.getFileName().toString()));
         } catch (DeserialisedObjectNotCreatedException e) {
@@ -232,7 +223,7 @@ public class FileSystemGameRepository implements GameRepository {
             writer.newLine();
 
             writer.write(
-                    BOARD_SIZE_HEADER + " " + config.board().getBoardWidth() + " " + config.board().getBoardHeight());
+                    BOARD_SIZE_HEADER + " " + config.board().getBoardWidth().getValue() + " " + config.board().getBoardHeight().getValue());
             writer.newLine();
 
             writer.write(SPECIAL_POSITION_HEADER + " " + config.board().getSpecialPositions().size());
@@ -276,12 +267,12 @@ public class FileSystemGameRepository implements GameRepository {
                 writer.newLine();
             }
 
-            writer.write(PIECES_HEADER + " " + gameData.pieces().getNumPieces());
+            writer.write(PIECES_HEADER + " " + gameData.pieces().converters().size());
             writer.newLine();
 
-            for (Piece piece : gameData.pieces().getPiecesInOriginalOrder()) {
+            for (PositionTrackingConverter piece : gameData.pieces().converters()) {
                 writer.write(
-                        PositionTrackingConverterMapper.getStringFromImplementation(piece.getTrackingConverter()));
+                        PositionTrackingConverterMapper.getStringFromImplementation(piece));
                 writer.newLine();
             }
         } catch (IOException e) {

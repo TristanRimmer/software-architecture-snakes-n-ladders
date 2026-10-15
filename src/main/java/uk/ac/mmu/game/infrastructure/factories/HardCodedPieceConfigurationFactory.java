@@ -6,8 +6,8 @@ import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerLeftOrigin;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerRightOrigin;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.UpperLeftOrigin;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.UpperRightOrigin;
+import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
 import uk.ac.mmu.game.usecase.PieceConfigurationFactory;
-import uk.ac.mmu.game.usecase.types.PieceConfigurationsList;
 
 public class HardCodedPieceConfigurationFactory implements PieceConfigurationFactory {
 

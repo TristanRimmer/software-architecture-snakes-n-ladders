@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
+import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
 import uk.ac.mmu.game.infrastructure.implmappers.ImplFactoryException;
 import uk.ac.mmu.game.infrastructure.implmappers.PositionTrackingConverterMapper;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
 
-public class PiecePositionTrackerDeserialiser implements GamSubcomponentDeserialiser<ArrayList<PositionTrackingConverter>> {
+public class PiecePositionTrackerDeserialiser implements GamSubcomponentDeserialiser<PieceConfigurationsList> {
     private final String PIECES_HEADER;
     private final ArrayList<PositionTrackingConverter> converters = new ArrayList<>();
 
@@ -65,11 +66,11 @@ public class PiecePositionTrackerDeserialiser implements GamSubcomponentDeserial
     }
 
     @Override
-    public ArrayList<PositionTrackingConverter> getObject() throws DeserialisedObjectNotCreatedException {
+    public PieceConfigurationsList getObject() throws DeserialisedObjectNotCreatedException {
         if (!this.loadedObjectSuccessfully())
             throw new DeserialisedObjectNotCreatedException("Piece Position Tracking Converters not successfully created");
 
-        return this.converters;
+        return new PieceConfigurationsList(this.converters); 
     }
 
 }
