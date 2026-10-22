@@ -15,10 +15,12 @@ public class PositiveIntegerAtleastFive implements PositiveIntegerWithMinimum {
         this.value = value;
     }
 
+    @Override
     public int getMinimum() {
         return 5;
     };
 
+    @Override
     public int getValue() {
         return this.value;
     }

@@ -1,6 +1,7 @@
 package uk.ac.mmu.game.domain.game.state;
 
 import uk.ac.mmu.game.domain.board.Board;
+import uk.ac.mmu.game.domain.board.specialpositions.SpecialPositionContainer;
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.events.types.BetterGameStateTransition;
@@ -22,6 +23,7 @@ public final class InPlay implements GameState {
         final CollisionCondition collisionHandler = context.getConfig().collisionEvaluator();
         final WinCondition winEvaluator = context.getConfig().winEvaluator();
         final Board board = context.getConfig().board();
+        final SpecialPositionContainer specialPositions = context.getConfig().specialPositions();
         final GameTurn turnSequence = context.getConfig().turnSequence();
 
         final GameEventPublisher publisher = context.getEventPublisher();
@@ -54,6 +56,7 @@ public final class InPlay implements GameState {
                     collisionHandler,
                     winEvaluator,
                     board,
+                    specialPositions,
                     publisher);
         } while (!isGameWon);
 

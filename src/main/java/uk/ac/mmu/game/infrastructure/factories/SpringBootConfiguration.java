@@ -11,6 +11,8 @@ import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.board.GameBoard;
 import uk.ac.mmu.game.domain.board.specialpositions.OneWayTeleporter;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
+import uk.ac.mmu.game.domain.board.specialpositions.SpecialPositionContainer;
+import uk.ac.mmu.game.domain.board.specialpositions.TeleporterContainerDisallowingWinTeleporters;
 import uk.ac.mmu.game.domain.board.specialpositions.TwoWayTeleporter;
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 import uk.ac.mmu.game.domain.dice.GenerateRandomNumber;
@@ -111,6 +113,10 @@ public class SpringBootConfiguration {
         return new ComprehensiveGameTurn();
     }
     @Bean 
+    public SpecialPositionContainer specialPositionContainer(Board board) {
+        return new TeleporterContainerDisallowingWinTeleporters(board.getBoardWidth(), board.getBoardHeight());
+    }
+    @Bean 
     public List<SpecialLinkedPositions> getSpecialPositions(
         @Value("${game.teleporterstrategy}") String type,
         @Value("${game.numberofpieces}") String pieceCount
@@ -149,13 +155,14 @@ public class SpringBootConfiguration {
         DiceRolling diceRoller,
         Board board,
         GameTurn turnSequence,
+        SpecialPositionContainer specialPositionContainer,
         List<SpecialLinkedPositions> specialPositions
     ) {
         for (SpecialLinkedPositions p : specialPositions)
-            if (!board.registerNewSpecialPosition(p))
+            if (specialPositionContainer.registerNewSpecialPosition(p) == SpecialPositionContainer.TeleporterRegisterStatus.REJECTED)
                 System.out.println("Skipping Teleporter as its positions aren't valid");
 
-        return new GameConfiguration(winEvaluator, collisionEvaluator, diceRoller, board, turnSequence);
+        return new GameConfiguration(winEvaluator, collisionEvaluator, diceRoller, board, specialPositionContainer, turnSequence);
     }
 }
 

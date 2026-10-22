@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.mmu.game.domain.board.Board;
+import uk.ac.mmu.game.domain.board.specialpositions.SpecialPositionContainer;
 import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamFixed;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
 import uk.ac.mmu.game.domain.game.gameturn.GameTurn;
@@ -21,6 +22,7 @@ public class InMemoryGameRepository implements GameRepository {
         WinCondition winCondition, 
         CollisionCondition collisionCondition, 
         Board board, 
+        SpecialPositionContainer specialPositions,
         GameTurn turn, 
         List<Integer> diceRolls,
         PieceConfigurationsList pieceConfig,
@@ -40,6 +42,7 @@ public class InMemoryGameRepository implements GameRepository {
                 gameData.configuration().winEvaluator(), 
                 gameData.configuration().collisionEvaluator(), 
                 gameData.configuration().board(), 
+                gameData.configuration().specialPositions(),
                 gameData.configuration().turnSequence(), 
                 gameData.diceRolls(), 
                 gameData.pieces(),
@@ -59,7 +62,7 @@ public class InMemoryGameRepository implements GameRepository {
                 chosenGame.collisionCondition(), 
                 // Can be a fixed dice stream as these are in memory and therefore cant be modifed anyway
                 new DiceStreamFixed(chosenGame.diceRolls()), 
-                chosenGame.board(), chosenGame.turn()), 
+                chosenGame.board(), chosenGame.specialPositions(), chosenGame.turn()), 
             chosenGame.pieceConfig(), chosenGame.diceRolls(), chosenGame.tag());
     
         return gameStore;

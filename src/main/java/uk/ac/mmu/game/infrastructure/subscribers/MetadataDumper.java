@@ -44,7 +44,7 @@ public class MetadataDumper implements GameEventSubscriber {
                 gameConfig.board().getBoardWidth().getValue(), 
                 gameConfig.board().getBoardHeight().getValue()));
             
-            final List<SpecialLinkedPositions> specialPositions = this.gameConfig.board().getSpecialPositions();
+            final List<SpecialLinkedPositions> specialPositions = this.gameConfig.specialPositions().getSpecialPositions();
 
             output.println("- Number of Teleporter-Pairs: " + specialPositions.size());
 

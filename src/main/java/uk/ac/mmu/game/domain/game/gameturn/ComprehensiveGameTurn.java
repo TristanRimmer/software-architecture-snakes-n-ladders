@@ -3,6 +3,8 @@ package uk.ac.mmu.game.domain.game.gameturn;
 import java.util.List;
 
 import uk.ac.mmu.game.domain.board.Board;
+import uk.ac.mmu.game.domain.board.specialpositions.SpecialPositionContainer;
+import uk.ac.mmu.game.domain.board.specialpositions.SpecialPositionContainer.SpecialPositionStatus;
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.events.types.DiceRolled;
@@ -31,7 +33,7 @@ public final class ComprehensiveGameTurn implements GameTurn {
     @Override
     public boolean didNextTurnWinGame(Piece currentPiece, PieceContainer allPieces,
             DiceRolling diceRoller, CollisionCondition collisionHandler, WinCondition winEvaluator,
-            Board board, GameEventPublisher publisher) {
+            Board board, SpecialPositionContainer specialPositionContainer, GameEventPublisher publisher) {
         /*
          * Store some initial position data about this and other pieces
          */
@@ -69,11 +71,10 @@ public final class ComprehensiveGameTurn implements GameTurn {
         /*
          * Did the piece land on a special spot?
          */
-        if (board.pieceHasLandedOnSpecialSpot(currentPiece.getCurrentPosition())) {
-            publisher.publish(new SpecialPositionMovedPiece());
+        SpecialPositionStatus teleporterInteractionStatus = specialPositionContainer.evaluatePieceHittingSpecialPositions(currentPiece);
 
-            currentPiece.setPosition(
-                    board.getSpecialPositionBehaviour(currentPiece.getCurrentPosition()));
+        if (teleporterInteractionStatus == SpecialPositionContainer.SpecialPositionStatus.PIECE_TELEPORTED) {
+            publisher.publish(new SpecialPositionMovedPiece());
             /*
              * Does THIS need to be voided based on hit rules?
              */
@@ -82,7 +83,7 @@ public final class ComprehensiveGameTurn implements GameTurn {
             if (secondCollisionStatus == CollisionStatus.MOVEDIDNTHAPPEN) {
                 publisher.publish(new HitConditionsPreventedMove());
             } // Otherwise the piece did move
-        }
+        } // Otherwise it was equal to NOTHING_HAPPENED
         publisher.publish(new PieceMove(initialPosition, currentPiece.getCurrentPosition()));
 
         return false;

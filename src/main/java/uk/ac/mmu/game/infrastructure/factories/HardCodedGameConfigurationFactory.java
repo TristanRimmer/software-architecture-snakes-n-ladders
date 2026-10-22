@@ -6,6 +6,8 @@ import java.util.List;
 import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.board.GameBoard;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
+import uk.ac.mmu.game.domain.board.specialpositions.SpecialPositionContainer;
+import uk.ac.mmu.game.domain.board.specialpositions.TeleporterContainerDisallowingWinTeleporters;
 import uk.ac.mmu.game.domain.board.specialpositions.TwoWayTeleporter;
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 import uk.ac.mmu.game.domain.dice.variations.SingleDice;
@@ -35,9 +37,10 @@ public class HardCodedGameConfigurationFactory implements GameConfigurationFacto
                 new GridPosition(1, 0)));
 
 		Board board = new GameBoard(5);
+        SpecialPositionContainer specialPositionContainer = new TeleporterContainerDisallowingWinTeleporters(board.getBoardWidth(), board.getBoardHeight());
 
         for (SpecialLinkedPositions p : specialPositions)
-            board.registerNewSpecialPosition(p);
+            specialPositionContainer.registerNewSpecialPosition(p);
 
 		DiceRolling diceRoller = new SingleDice(new JavaStlRandom(), 6);
 		WinCondition winEvaluator = new ExactHit();
@@ -45,7 +48,7 @@ public class HardCodedGameConfigurationFactory implements GameConfigurationFacto
 
         GameTurn turnSequence = new ComprehensiveGameTurn();
 
-        return new GameConfiguration(winEvaluator, collisionHandler, diceRoller, board, turnSequence);
+        return new GameConfiguration(winEvaluator, collisionHandler, diceRoller, board, specialPositionContainer, turnSequence);
     }
 
 }

@@ -11,7 +11,9 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.board.GameBoard;
+import uk.ac.mmu.game.domain.board.specialpositions.LenientTeleporterContainer;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
+import uk.ac.mmu.game.domain.board.specialpositions.SpecialPositionContainer;
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 import uk.ac.mmu.game.domain.dice.GenerateRandomNumber;
 import uk.ac.mmu.game.domain.dice.variations.SingleDice;
@@ -176,15 +178,18 @@ public class FileSystemGameRepository implements GameRepository {
             ArrayList<SpecialLinkedPositions> specialPositions = specialPositionDeserialiser.getObject();
             Board board = boardDeserialiser.getObject();
 
+            // Similar to the dice roller, this can be hard coded here as a file that was saved had to have run already
+            SpecialPositionContainer fileSystemSpecialPositionContainer = new LenientTeleporterContainer(board.getBoardWidth(), board.getBoardHeight());
+
             for (SpecialLinkedPositions positions : specialPositions) {
-                board.registerNewSpecialPosition(positions);
+                fileSystemSpecialPositionContainer.registerNewSpecialPosition(positions);
             }
 
             DiceRolling diceRoller = isStrictDiceRules ? new DiceStreamFixed(diceRolls)
                 : new DiceStreamUnbounded(diceRolls, new SingleDice(randomNumberGenerator, 6));
 
             return new GameStore(
-                new GameConfiguration(winCondition, collisionCondition, diceRoller, board, turnSequence), 
+                new GameConfiguration(winCondition, collisionCondition, diceRoller, board, fileSystemSpecialPositionContainer, turnSequence), 
                 pieceMoveset, 
                 diceRolls, 
                 this.getNameFromFile(file.getFileName().toString()));
@@ -226,10 +231,10 @@ public class FileSystemGameRepository implements GameRepository {
                     BOARD_SIZE_HEADER + " " + config.board().getBoardWidth().getValue() + " " + config.board().getBoardHeight().getValue());
             writer.newLine();
 
-            writer.write(SPECIAL_POSITION_HEADER + " " + config.board().getSpecialPositions().size());
+            writer.write(SPECIAL_POSITION_HEADER + " " + config.specialPositions().getSpecialPositions().size());
             writer.newLine();
 
-            for (SpecialLinkedPositions pos : config.board().getSpecialPositions()) {
+            for (SpecialLinkedPositions pos : config.specialPositions().getSpecialPositions()) {
                 String string = SpecialPositionMapper.getStringFromImplemention(pos);
 
                 for (GridPosition currPos : pos.getListOfSpecialPositions()) {

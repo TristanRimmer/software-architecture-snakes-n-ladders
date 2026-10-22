@@ -1,6 +1,7 @@
 package uk.ac.mmu.game.domain.game.gameturn;
 
 import uk.ac.mmu.game.domain.board.Board;
+import uk.ac.mmu.game.domain.board.specialpositions.SpecialPositionContainer;
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.pieces.Piece;
@@ -15,5 +16,6 @@ public sealed interface GameTurn permits ComprehensiveGameTurn {
             CollisionCondition collisionHandler,
             WinCondition winEvaluator,
             Board board,
+            SpecialPositionContainer specialPositionContainer,
             GameEventPublisher publisher);
 }
