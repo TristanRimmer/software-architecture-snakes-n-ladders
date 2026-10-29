@@ -14,7 +14,7 @@ import uk.ac.mmu.game.infrastructure.factories.SpringBootConfiguration;
 import uk.ac.mmu.game.infrastructure.input.CommandLineInterface;
 import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
 import uk.ac.mmu.game.infrastructure.output.SystemOut;
-import uk.ac.mmu.game.infrastructure.subscribers.ConsolePrinter;
+import uk.ac.mmu.game.infrastructure.subscribers.BasicConsolePrinter;
 import uk.ac.mmu.game.infrastructure.subscribers.TurnsTracker;
 import uk.ac.mmu.game.usecase.GameRepository;
 import uk.ac.mmu.game.usecase.action.GameAction;
@@ -37,7 +37,7 @@ public class GameApplication {
 
 			// Not configurable
             GameEventPublisher publisher = new GameEventPublisher();
-            publisher.registerNewSubscriber(new ConsolePrinter());
+            publisher.registerNewSubscriber(new BasicConsolePrinter());
             publisher.registerNewSubscriber(new TurnsTracker());
 
             GameAction action = switch (

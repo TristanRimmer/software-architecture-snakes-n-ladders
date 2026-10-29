@@ -19,7 +19,7 @@ import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
 import uk.ac.mmu.game.infrastructure.output.SystemOut;
 import uk.ac.mmu.game.infrastructure.output.TextOutputHandler;
 
-public class ConsolePrinter implements GameEventSubscriber {
+public class PrettyConsolePrinter implements GameEventSubscriber {
     private final TextOutputHandler stylisedPrinterIOMechanism = new SystemOut();
 
     private boolean inGameOverState = false;

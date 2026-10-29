@@ -11,9 +11,9 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.board.Board;
 import uk.ac.mmu.game.domain.board.GameBoard;
-import uk.ac.mmu.game.domain.board.specialpositions.LenientTeleporterContainer;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialPositionContainer;
+import uk.ac.mmu.game.domain.board.specialpositions.TeleporterContainerDisallowingWinTeleporters;
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 import uk.ac.mmu.game.domain.dice.GenerateRandomNumber;
 import uk.ac.mmu.game.domain.dice.variations.SingleDice;
@@ -178,8 +178,8 @@ public class FileSystemGameRepository implements GameRepository {
             ArrayList<SpecialLinkedPositions> specialPositions = specialPositionDeserialiser.getObject();
             Board board = boardDeserialiser.getObject();
 
-            // Similar to the dice roller, this can be hard coded here as a file that was saved had to have run already
-            SpecialPositionContainer fileSystemSpecialPositionContainer = new LenientTeleporterContainer(board.getBoardWidth(), board.getBoardHeight());
+            SpecialPositionContainer fileSystemSpecialPositionContainer = 
+                new TeleporterContainerDisallowingWinTeleporters(board.getBoardWidth(), board.getBoardHeight());
 
             for (SpecialLinkedPositions positions : specialPositions) {
                 fileSystemSpecialPositionContainer.registerNewSpecialPosition(positions);

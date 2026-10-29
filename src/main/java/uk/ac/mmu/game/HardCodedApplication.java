@@ -11,7 +11,7 @@ import uk.ac.mmu.game.infrastructure.factories.HardCodedPieceConfigurationFactor
 import uk.ac.mmu.game.infrastructure.input.CommandLineInterface;
 import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
 import uk.ac.mmu.game.infrastructure.output.SystemOut;
-import uk.ac.mmu.game.infrastructure.subscribers.ConsolePrinter;
+import uk.ac.mmu.game.infrastructure.subscribers.PrettyConsolePrinter;
 import uk.ac.mmu.game.infrastructure.subscribers.TurnsTracker;
 import uk.ac.mmu.game.usecase.GameConfigurationFactory;
 import uk.ac.mmu.game.usecase.GameRepository;
@@ -36,7 +36,7 @@ public class HardCodedApplication {
 
 			// Not configurable
             GameEventPublisher publisher = new GameEventPublisher();
-            publisher.registerNewSubscriber(new ConsolePrinter());
+            publisher.registerNewSubscriber(new PrettyConsolePrinter());
             publisher.registerNewSubscriber(new TurnsTracker());
 
             GameAction action = switch (
