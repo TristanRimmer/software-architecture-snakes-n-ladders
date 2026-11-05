@@ -11,7 +11,7 @@ import uk.ac.mmu.game.domain.events.types.DiceRolled;
 import uk.ac.mmu.game.domain.events.types.HitConditionsPreventedMove;
 import uk.ac.mmu.game.domain.events.types.PieceMove;
 import uk.ac.mmu.game.domain.events.types.SpecialPositionMovedPiece;
-import uk.ac.mmu.game.domain.events.types.TemporaryNewDicePosition;
+import uk.ac.mmu.game.domain.events.types.TemporaryNewPiecePosition;
 import uk.ac.mmu.game.domain.events.types.WinConditionPreventedWin;
 import uk.ac.mmu.game.domain.pieces.Piece;
 import uk.ac.mmu.game.domain.pieces.container.PieceContainer;
@@ -47,7 +47,7 @@ public final class ComprehensiveGameTurn implements GameTurn {
         currentPiece.move(newDiceRoll);
 
         publisher.publish(new DiceRolled(newDiceRoll));
-        publisher.publish(new TemporaryNewDicePosition(currentPiece.getCurrentPosition()));
+        publisher.publish(new TemporaryNewPiecePosition(currentPiece.getCurrentPosition()));
 
         /*
          * Has the piece just won?

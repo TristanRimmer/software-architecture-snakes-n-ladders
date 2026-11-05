@@ -9,7 +9,7 @@ import uk.ac.mmu.game.domain.events.types.PieceMove;
 import uk.ac.mmu.game.domain.events.types.PieceWon;
 import uk.ac.mmu.game.domain.events.types.PiecesHit;
 import uk.ac.mmu.game.domain.events.types.SpecialPositionMovedPiece;
-import uk.ac.mmu.game.domain.events.types.TemporaryNewDicePosition;
+import uk.ac.mmu.game.domain.events.types.TemporaryNewPiecePosition;
 import uk.ac.mmu.game.domain.events.types.WinConditionPreventedWin;
 import uk.ac.mmu.game.domain.game.state.GameOver;
 import uk.ac.mmu.game.domain.game.state.GameState;
@@ -47,7 +47,7 @@ public class PrettyConsolePrinter implements GameEventSubscriber {
         StylisedPrinter.printBanner(this.stylisedPrinterIOMechanism, "This piece has has won the game!"); 
         this.inGameOverState = true;
     }
-    if (state instanceof TemporaryNewDicePosition tempPos)
+    if (state instanceof TemporaryNewPiecePosition tempPos)
         this.stylisedPrinterIOMechanism.println("=> (Internally, the piece is currently at " + tempPos.temp() + ")");
 
     if (state instanceof BetterGameStateTransition stateTransition) {

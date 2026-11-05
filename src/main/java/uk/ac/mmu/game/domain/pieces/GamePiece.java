@@ -9,6 +9,7 @@ public class GamePiece implements Piece {
     BoardDimension gridWidth;
     BoardDimension gridHeight;
 
+    // TODO: work on a value object for this that forces it to always be at least 0
     int currentDisplacement;
 
     public GamePiece(PositionTrackingConverter converter, 
