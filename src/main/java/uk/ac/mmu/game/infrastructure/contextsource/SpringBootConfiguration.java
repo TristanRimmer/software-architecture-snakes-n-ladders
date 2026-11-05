@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.infrastructure.factories;
+package uk.ac.mmu.game.infrastructure.contextsource;
 
 import java.util.ArrayList;
 import java.util.List;

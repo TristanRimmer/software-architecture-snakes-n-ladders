@@ -5,18 +5,15 @@ import java.util.List;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
 import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
-import uk.ac.mmu.game.infrastructure.factories.HardCodedGameConfigurationFactory;
-import uk.ac.mmu.game.infrastructure.factories.HardCodedGameRepositoryFactory;
-import uk.ac.mmu.game.infrastructure.factories.HardCodedPieceConfigurationFactory;
+import uk.ac.mmu.game.infrastructure.contextsource.HardCodedGameConfigurationSource;
+import uk.ac.mmu.game.infrastructure.contextsource.HardCodedGameRepositorySource;
+import uk.ac.mmu.game.infrastructure.contextsource.HardCodedPieceConfigurationSource;
 import uk.ac.mmu.game.infrastructure.input.CommandLineInterface;
 import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
 import uk.ac.mmu.game.infrastructure.output.SystemOut;
 import uk.ac.mmu.game.infrastructure.subscribers.PrettyConsolePrinter;
 import uk.ac.mmu.game.infrastructure.subscribers.TurnsTracker;
-import uk.ac.mmu.game.usecase.GameConfigurationFactory;
 import uk.ac.mmu.game.usecase.GameRepository;
-import uk.ac.mmu.game.usecase.GameRepositoryFactory;
-import uk.ac.mmu.game.usecase.PieceConfigurationFactory;
 import uk.ac.mmu.game.usecase.action.GameAction;
 import uk.ac.mmu.game.usecase.action.NewGameAction;
 import uk.ac.mmu.game.usecase.action.ReplayGameAction;
@@ -25,11 +22,8 @@ import uk.ac.mmu.game.usecase.action.SessionOverAction;
 public class HardCodedApplication {
 	private static final List<String> PLAY_OPTIONS = List.of("New", "Replay", "Exit");
     public static void main(String[] args) {
-        GameRepositoryFactory gameRepositoryFactory = new HardCodedGameRepositoryFactory();
-        GameConfigurationFactory gameConfigurationFactory = new HardCodedGameConfigurationFactory();
-        PieceConfigurationFactory pieceConfigurationFactory = new HardCodedPieceConfigurationFactory();
 
-        GameRepository repository = gameRepositoryFactory.getGameRepository();
+        GameRepository repository = HardCodedGameRepositorySource.getGameRepository();
 
 		while (true) {
             StylisedPrinter.printBanner(new SystemOut(), "Snakes & Ladders");
@@ -44,8 +38,8 @@ public class HardCodedApplication {
 					"Choose how you would like to source a game", 
 					PLAY_OPTIONS)) {
                         case 0 -> { 
-                            GameConfiguration config = gameConfigurationFactory.getGameConfiguration();
-                            PieceConfigurationsList pieces = pieceConfigurationFactory.getPieceConfigList();
+                            GameConfiguration config = HardCodedGameConfigurationSource.getGameConfiguration();
+                            PieceConfigurationsList pieces = HardCodedPieceConfigurationSource.getPieceConfigList();
 
                             yield new NewGameAction(
                                 config,

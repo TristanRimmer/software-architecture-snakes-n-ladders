@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.infrastructure.factories;
+package uk.ac.mmu.game.infrastructure.contextsource;
 
 import java.util.List;
 
@@ -9,10 +9,8 @@ import uk.ac.mmu.game.domain.pieces.positiontrackers.UpperRightOrigin;
 import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
 import uk.ac.mmu.game.usecase.PieceConfigurationFactory;
 
-public class HardCodedPieceConfigurationFactory implements PieceConfigurationFactory {
-
-    @Override
-    public PieceConfigurationsList getPieceConfigList() {
+public class HardCodedPieceConfigurationSource {
+    public static PieceConfigurationsList getPieceConfigList() {
       return new PieceConfigurationsList(
             List.of(
                   new LowerLeftOrigin(), 

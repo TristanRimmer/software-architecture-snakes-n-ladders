@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.infrastructure.factories;
+package uk.ac.mmu.game.infrastructure.contextsource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +22,9 @@ import uk.ac.mmu.game.domain.util.BoardDimension;
 import uk.ac.mmu.game.domain.util.BoardDimensionInvalidException;
 import uk.ac.mmu.game.domain.util.GridPosition;
 import uk.ac.mmu.game.infrastructure.random.JavaStlRandom;
-import uk.ac.mmu.game.usecase.GameConfigurationFactory;
 
-public class HardCodedGameConfigurationFactory implements GameConfigurationFactory {
-    @Override
-    // Example to demonstrate that the code is not coupled directly to spring
-    public GameConfiguration getGameConfiguration() {
+public class HardCodedGameConfigurationSource {
+    public static GameConfiguration getGameConfiguration() {
 		List<SpecialLinkedPositions> specialPositions = new ArrayList<>();
 		specialPositions.add(
             new TwoWayTeleporter(
