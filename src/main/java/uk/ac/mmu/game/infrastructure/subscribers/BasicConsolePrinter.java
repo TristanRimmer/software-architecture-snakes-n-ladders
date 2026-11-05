@@ -5,6 +5,7 @@ import uk.ac.mmu.game.domain.events.types.BetterGameStateTransition;
 import uk.ac.mmu.game.domain.events.types.DiceRolled;
 import uk.ac.mmu.game.domain.events.types.GameEvent;
 import uk.ac.mmu.game.domain.events.types.PieceMove;
+import uk.ac.mmu.game.domain.events.types.PieceWon;
 import uk.ac.mmu.game.domain.game.state.GameOver;
 import uk.ac.mmu.game.domain.game.state.GameState;
 import uk.ac.mmu.game.domain.game.state.InPlay;
@@ -41,6 +42,9 @@ public class BasicConsolePrinter implements GameEventSubscriber {
                 
                 this.inGameOverState = newState.equals(GameOver.class);
             } 
+            case PieceWon pieceWon -> {
+                io.println("-> This piece has won the game at " + pieceWon.piece().getCurrentPosition());
+            }
             default -> {}
         }
     }
