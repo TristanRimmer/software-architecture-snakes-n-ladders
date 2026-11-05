@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.mmu.game.domain.board.Board;
-import uk.ac.mmu.game.domain.board.GameBoard;
+import uk.ac.mmu.game.domain.board.SquareBoard;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialPositionContainer;
 import uk.ac.mmu.game.domain.board.specialpositions.TeleporterContainerDisallowingWinTeleporters;
@@ -137,7 +137,7 @@ public class FileSystemGameRepository implements GameRepository {
         DiceRollsDeserialiser diceRollsDeserialiser = new DiceRollsDeserialiser(DICE_ROLLS_HEADER);
         TurnSequenceDeserialiser turnSequenceDeserialiser = new TurnSequenceDeserialiser(TURN_SEQUENCE_HEADER);
         SpecialPositionDeserialiser specialPositionDeserialiser = new SpecialPositionDeserialiser(SPECIAL_POSITION_HEADER);
-        BoardDeserialiser boardDeserialiser = new BoardDeserialiser(GameBoard.class, BOARD_SIZE_HEADER);
+        BoardDeserialiser boardDeserialiser = new BoardDeserialiser(SquareBoard.class, BOARD_SIZE_HEADER);
         PiecePositionTrackerDeserialiser piecePositionTrackerDeserialiser = new PiecePositionTrackerDeserialiser(PIECES_HEADER);
         GenerateRandomNumberDeserialiser randomNumberDeserialiser = new GenerateRandomNumberDeserialiser(RANDOM_NUMBER_GENERATOR);
 

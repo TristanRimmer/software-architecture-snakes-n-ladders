@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.mmu.game.domain.board.Board;
-import uk.ac.mmu.game.domain.board.GameBoard;
+import uk.ac.mmu.game.domain.board.SquareBoard;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialPositionContainer;
 import uk.ac.mmu.game.domain.board.specialpositions.TeleporterContainerDisallowingWinTeleporters;
@@ -18,6 +18,8 @@ import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
 import uk.ac.mmu.game.domain.rules.hitcondition.HitsForfeitTurn;
 import uk.ac.mmu.game.domain.rules.wincondition.ExactHit;
 import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
+import uk.ac.mmu.game.domain.util.BoardDimension;
+import uk.ac.mmu.game.domain.util.BoardDimensionInvalidException;
 import uk.ac.mmu.game.domain.util.GridPosition;
 import uk.ac.mmu.game.infrastructure.random.JavaStlRandom;
 import uk.ac.mmu.game.usecase.GameConfigurationFactory;
@@ -36,7 +38,15 @@ public class HardCodedGameConfigurationFactory implements GameConfigurationFacto
                 new GridPosition(0,0), 
                 new GridPosition(1, 0)));
 
-		Board board = new GameBoard(5);
+
+        BoardDimension boardDimensions = null;
+        try {
+            boardDimensions = BoardDimension.create(5);
+        } catch (BoardDimensionInvalidException ex) {
+            /* Hard Coded -> this catch will never be reached */
+        }
+
+		Board board = new SquareBoard(boardDimensions);
         SpecialPositionContainer specialPositionContainer = new TeleporterContainerDisallowingWinTeleporters(board.getBoardWidth(), board.getBoardHeight());
 
         for (SpecialLinkedPositions p : specialPositions)

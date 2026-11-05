@@ -1,9 +1,9 @@
 package uk.ac.mmu.game.domain.board;
 
-import uk.ac.mmu.game.domain.util.PositiveIntegerAtleastFive;
+import uk.ac.mmu.game.domain.util.BoardDimension;
 
 public interface Board {
-    PositiveIntegerAtleastFive getBoardWidth();
-    PositiveIntegerAtleastFive getBoardHeight();
+    BoardDimension getBoardWidth();
+    BoardDimension getBoardHeight();
     int getMinimumTravelDistance();
 }

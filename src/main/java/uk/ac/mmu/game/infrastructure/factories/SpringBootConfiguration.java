@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import uk.ac.mmu.game.domain.board.Board;
-import uk.ac.mmu.game.domain.board.GameBoard;
+import uk.ac.mmu.game.domain.board.SquareBoard;
 import uk.ac.mmu.game.domain.board.specialpositions.OneWayTeleporter;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialPositionContainer;
@@ -31,6 +31,8 @@ import uk.ac.mmu.game.domain.rules.hitcondition.HitsForfeitTurn;
 import uk.ac.mmu.game.domain.rules.wincondition.CrossTheFinishline;
 import uk.ac.mmu.game.domain.rules.wincondition.ExactHit;
 import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
+import uk.ac.mmu.game.domain.util.BoardDimension;
+import uk.ac.mmu.game.domain.util.BoardDimensionInvalidException;
 import uk.ac.mmu.game.domain.util.GridPosition;
 import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
 import uk.ac.mmu.game.infrastructure.implmappers.HitConditionMapper;
@@ -85,12 +87,22 @@ public class SpringBootConfiguration {
     public Board board(
         @Value("${game.numberofpieces}") String pieceCount
     ) {
-        return switch (pieceCount) {
-            case "2" -> new GameBoard(5);
-            case "4" -> new GameBoard(6); 
+        BoardDimension dimension = null;
+
+        int boardDimension = switch (pieceCount) {
+            case "2" -> 5;
+            case "4" -> 6;
             default -> throw new IllegalArgumentException(
                 "Spring Boot App only wants 2 or 4 pieces. If you want this to change, use a file system repository and modify it in there.");
         };
+
+        try {
+           dimension = BoardDimension.create(boardDimension); 
+        } catch (BoardDimensionInvalidException e) {
+            /* "This Code Isn't Reachable! Everything is hardcoded" */
+        }
+
+        return new SquareBoard(dimension);
     }
     @Bean
     public DiceRolling diceRolling(

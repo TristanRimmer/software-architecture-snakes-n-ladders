@@ -1,11 +1,11 @@
 package uk.ac.mmu.game.domain.pieces.positiontrackers;
 
+import uk.ac.mmu.game.domain.util.BoardDimension;
 import uk.ac.mmu.game.domain.util.GridPosition;
-import uk.ac.mmu.game.domain.util.PositiveIntegerAtleastFive;
 
 public final class LowerRightOrigin implements PositionTrackingConverter {
     @Override
-    public GridPosition displacementToGridPosition(int displacement, PositiveIntegerAtleastFive gridWidth, PositiveIntegerAtleastFive gridHeight) {
+    public GridPosition displacementToGridPosition(int displacement, BoardDimension gridWidth, BoardDimension gridHeight) {
         int numFullRows = displacement / gridWidth.getValue();
         int spacesIntoCurrentRow = displacement % gridWidth.getValue();
 
@@ -17,7 +17,7 @@ public final class LowerRightOrigin implements PositionTrackingConverter {
     }
 
     @Override
-    public int gridPositionToDisplacement(GridPosition position, PositiveIntegerAtleastFive gridWidth, PositiveIntegerAtleastFive gridHeight) {
+    public int gridPositionToDisplacement(GridPosition position, BoardDimension gridWidth, BoardDimension gridHeight) {
         return (position.y() * gridWidth.getValue()) 
             + (position.y() % 2 != 0 ? position.x() : gridWidth.getValue() - 1 - position.x());
     }

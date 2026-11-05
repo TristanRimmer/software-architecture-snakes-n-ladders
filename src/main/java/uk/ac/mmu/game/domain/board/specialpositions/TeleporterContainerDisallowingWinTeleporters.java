@@ -5,17 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 
 import uk.ac.mmu.game.domain.pieces.Piece;
+import uk.ac.mmu.game.domain.util.BoardDimension;
 import uk.ac.mmu.game.domain.util.GridPosition;
-import uk.ac.mmu.game.domain.util.PositiveIntegerAtleastFive;
 
 public class TeleporterContainerDisallowingWinTeleporters implements SpecialPositionContainer {
-    private final PositiveIntegerAtleastFive boardWidth;
-    private final PositiveIntegerAtleastFive boardHeight;
+    private final BoardDimension boardWidth;
+    private final BoardDimension boardHeight;
     private final List<SpecialLinkedPositions> teleporterList;
     // Note: this works because GridPosition implements a proper equals()
     private final HashMap<GridPosition, Integer> specialPositionsMap = new HashMap<>();
 
-    public TeleporterContainerDisallowingWinTeleporters(PositiveIntegerAtleastFive boardWidth, PositiveIntegerAtleastFive boardHeight) {
+    public TeleporterContainerDisallowingWinTeleporters(BoardDimension boardWidth, BoardDimension boardHeight) {
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
         this.teleporterList = new ArrayList<>();

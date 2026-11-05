@@ -1,19 +1,19 @@
 package uk.ac.mmu.game.domain.pieces;
 
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
+import uk.ac.mmu.game.domain.util.BoardDimension;
 import uk.ac.mmu.game.domain.util.GridPosition;
-import uk.ac.mmu.game.domain.util.PositiveIntegerAtleastFive;
 
 public class GamePiece implements Piece {
     PositionTrackingConverter converter;
-    PositiveIntegerAtleastFive gridWidth;
-    PositiveIntegerAtleastFive gridHeight;
+    BoardDimension gridWidth;
+    BoardDimension gridHeight;
 
     int currentDisplacement;
 
     public GamePiece(PositionTrackingConverter converter, 
-                     PositiveIntegerAtleastFive gridWidth,
-                     PositiveIntegerAtleastFive gridHeight) {
+                     BoardDimension gridWidth,
+                     BoardDimension gridHeight) {
         this.converter = converter;
         this.gridWidth = gridWidth;
         this.gridHeight = gridHeight;

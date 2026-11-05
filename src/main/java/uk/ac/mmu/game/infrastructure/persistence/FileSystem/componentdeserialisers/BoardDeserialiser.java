@@ -3,7 +3,9 @@ package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialis
 import java.util.List;
 
 import uk.ac.mmu.game.domain.board.Board;
-import uk.ac.mmu.game.domain.board.GameBoard;
+import uk.ac.mmu.game.domain.board.SquareBoard;
+import uk.ac.mmu.game.domain.util.BoardDimension;
+import uk.ac.mmu.game.domain.util.BoardDimensionInvalidException;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
 
 public class BoardDeserialiser implements GamSubcomponentDeserialiser<Board> {
@@ -42,8 +44,17 @@ public class BoardDeserialiser implements GamSubcomponentDeserialiser<Board> {
         if (!this.loadedObjectSuccessfully())
             throw new DeserialisedObjectNotCreatedException("Board object was not successfully created");
 
-        if (this.chosenImplementation == GameBoard.class)
-            return new GameBoard(this.boardWidth);
+        BoardDimension boardWidth = null;
+        BoardDimension boardHeight = null;
+        try {
+            boardWidth = BoardDimension.create(this.boardWidth);
+            boardHeight = BoardDimension.create(this.boardHeight);
+        } catch (BoardDimensionInvalidException e) {
+            throw new DeserialisedObjectNotCreatedException("Board object was not successfully created: board dimensions invalid (too small)");
+        }
+
+        if (this.chosenImplementation == SquareBoard.class)
+            return new SquareBoard(boardWidth);
 
         throw new DeserialisedObjectNotCreatedException("Board object implementation not supported");
     }
