@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
 import uk.ac.mmu.game.domain.events.GameEventPublisher;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
 import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
-import uk.ac.mmu.game.infrastructure.factories.SpringBootConfiguration;
+import uk.ac.mmu.game.infrastructure.contextsource.SpringBootConfiguration;
 import uk.ac.mmu.game.infrastructure.input.CommandLineInterface;
 import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
 import uk.ac.mmu.game.infrastructure.output.SystemOut;

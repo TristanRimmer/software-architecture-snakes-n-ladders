@@ -96,6 +96,8 @@ public class SpringBootConfiguration {
                 "Spring Boot App only wants 2 or 4 pieces. If you want this to change, use a file system repository and modify it in there.");
         };
 
+        System.out.println("board dims: " + boardDimension);
+
         try {
            dimension = BoardDimension.create(boardDimension); 
         } catch (BoardDimensionInvalidException e) {

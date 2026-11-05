@@ -6,6 +6,7 @@ public class SquareBoard implements Board {
     private final BoardDimension widthAndHeight;
 
     public SquareBoard(BoardDimension dimensions) {
+        System.out.println("BOARD CREATED: " + dimensions.getValue());
         this.widthAndHeight = dimensions;
     }
 

@@ -7,7 +7,6 @@ import uk.ac.mmu.game.domain.pieces.positiontrackers.LowerRightOrigin;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.UpperLeftOrigin;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.UpperRightOrigin;
 import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
-import uk.ac.mmu.game.usecase.PieceConfigurationFactory;
 
 public class HardCodedPieceConfigurationSource {
     public static PieceConfigurationsList getPieceConfigList() {
