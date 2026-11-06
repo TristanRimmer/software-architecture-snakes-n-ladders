@@ -11,7 +11,7 @@ public class PieceRelatedEventPrinter implements PieceRelatedEventSubscriber {
 
     @Override
     public void notify(PieceMove event) {
-        System.out.println("-> piece has moved from" + event.oldPos() + " to " + event.newPos());
+        System.out.println("-> piece has moved from " + event.oldPos() + " to " + event.newPos());
     }
 
     @Override

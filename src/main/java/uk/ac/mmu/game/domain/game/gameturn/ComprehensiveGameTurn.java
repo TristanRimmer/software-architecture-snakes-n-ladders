@@ -56,7 +56,7 @@ public final class ComprehensiveGameTurn implements GameTurn {
         if (winEvaluationStatus == WinEvaluationStatus.WON) {
             return true;
         } else if (winEvaluationStatus == WinEvaluationStatus.CLOSECALL) {
-            publisher.publish(new WinConditionPreventedWin());
+            publisher.publish(new WinConditionPreventedWin(currentPiece));
         } // Otherwise, its just a continue
 
         /*
