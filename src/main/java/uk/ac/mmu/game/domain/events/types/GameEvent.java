@@ -1,3 +1,7 @@
 package uk.ac.mmu.game.domain.events.types;
 
-public interface GameEvent {}
+public sealed interface GameEvent permits 
+    ConfigurableStateRelatedEvent, 
+    PieceRelatedEvent, 
+    GameRelatedEvent {}
+

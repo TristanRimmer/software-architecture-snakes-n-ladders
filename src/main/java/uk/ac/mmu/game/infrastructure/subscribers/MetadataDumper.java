@@ -8,9 +8,11 @@ import uk.ac.mmu.game.domain.dice.variations.SingleDice;
 import uk.ac.mmu.game.domain.dice.variations.TwoDice;
 import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamFixed;
 import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamUnbounded;
-import uk.ac.mmu.game.domain.events.GameEventSubscriber;
+import uk.ac.mmu.game.domain.events.GameRelatedEventSubscriber;
 import uk.ac.mmu.game.domain.events.types.BetterGameStateTransition;
-import uk.ac.mmu.game.domain.events.types.GameEvent;
+import uk.ac.mmu.game.domain.events.types.DiceRolled;
+import uk.ac.mmu.game.domain.events.types.PieceWon;
+import uk.ac.mmu.game.domain.events.types.TurnChange;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
 import uk.ac.mmu.game.domain.game.state.Ready;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
@@ -24,7 +26,7 @@ import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
 import uk.ac.mmu.game.infrastructure.output.SystemOut;
 import uk.ac.mmu.game.infrastructure.output.TextOutputHandler;
 
-public class MetadataDumper implements GameEventSubscriber {
+public class MetadataDumper implements GameRelatedEventSubscriber {
     private final GameConfiguration gameConfig;
     private final PieceConfigurationsList pieces;
     private final TextOutputHandler output = new SystemOut();
@@ -35,59 +37,70 @@ public class MetadataDumper implements GameEventSubscriber {
     }
 
     @Override
-    public void notify(GameEvent state) {
-        if (state instanceof BetterGameStateTransition stateTransition
-            && stateTransition.state().equals(Ready.class)) {
-            StylisedPrinter.printSubheading(output, "Game Configuration");
+    public void notify(BetterGameStateTransition event) {
+        
+        if (!event.state().equals(Ready.class))
+            return;
 
-            output.println("-> Board Dimensions: " + new GridPosition(
-                gameConfig.board().getBoardWidth().getValue(), 
-                gameConfig.board().getBoardHeight().getValue()));
-            
-            final List<SpecialLinkedPositions> specialPositions = this.gameConfig.specialPositions().getSpecialPositions();
+        StylisedPrinter.printSubheading(output, "Game Configuration");
 
-            output.println("- Number of Teleporter-Pairs: " + specialPositions.size());
+        output.println("-> Board Dimensions: " + new GridPosition(
+            gameConfig.board().getBoardWidth().getValue(), 
+            gameConfig.board().getBoardHeight().getValue()));
+        
+        final List<SpecialLinkedPositions> specialPositions = this.gameConfig.specialPositions().getSpecialPositions();
 
-            if (!specialPositions.isEmpty()) {
-                output.println("- Variety of types being used: ");
-                String types = "";
-                for (SpecialLinkedPositions pos : specialPositions) {
-                    String asString = SpecialPositionMapper.getStringFromImplemention(pos);
-                    if (!types.contains(asString))
-                        types = (types.isEmpty()) ? "--- " + asString : types + "\n" + "--- " + asString;
-                }
-                output.println(types);
+        output.println("- Number of Teleporter-Pairs: " + specialPositions.size());
+
+        if (!specialPositions.isEmpty()) {
+            output.println("- Variety of types being used: ");
+            String types = "";
+            for (SpecialLinkedPositions pos : specialPositions) {
+                String asString = SpecialPositionMapper.getStringFromImplemention(pos);
+                if (!types.contains(asString))
+                    types = (types.isEmpty()) ? "--- " + asString : types + "\n" + "--- " + asString;
             }
+            output.println(types);
+        }
 
-            String winConditionAsString = WinConditionMapper.getStringFromImplementation(gameConfig.winEvaluator());
-            String hitConditionAsString = HitConditionMapper.getStringFromImplementation(gameConfig.collisionEvaluator());
+        String winConditionAsString = WinConditionMapper.getStringFromImplementation(gameConfig.winEvaluator());
+        String hitConditionAsString = HitConditionMapper.getStringFromImplementation(gameConfig.collisionEvaluator());
 
-            output.println("- Win Condition: " + winConditionAsString);
-            output.println("- Hit Condition: " + hitConditionAsString);
+        output.println("- Win Condition: " + winConditionAsString);
+        output.println("- Hit Condition: " + hitConditionAsString);
 
-            final DiceRolling diceStrategy = gameConfig.diceRoller();
+        final DiceRolling diceStrategy = gameConfig.diceRoller();
 
-            if (diceStrategy instanceof SingleDice) {
-                output.println("- Number of dice: 1xD" + diceStrategy.getMaxPossibleRoll());
-            } else if (diceStrategy instanceof TwoDice) {
-                output.println("- Number of dice: 2xD" + diceStrategy.getMaxPossibleRoll());
-            } else if (diceStrategy instanceof DiceStreamFixed) {
-                output.println("- Dice Rolls Pre Recorded: 1x D" + diceStrategy.getMaxPossibleRoll());
-                output.println("- The dice rule is Strict. If the list of rolls is exhausted, the program will intentionally crash"); 
-            } else if (diceStrategy instanceof DiceStreamUnbounded) {
-                output.println("- Dice Rolls Pre Recorded: 1x D" + diceStrategy.getMaxPossibleRoll());
-                output.println("- The dice rule is lenient. If the list of rolls is exhausted, the program will automatically generate more"); 
-            }
+        // TODO: is there a type safe way? Is making the DiceStrategy a sealed interface okay here
+        if (diceStrategy instanceof SingleDice) {
+            output.println("- Number of dice: 1xD" + diceStrategy.getMaxPossibleRoll());
+        } else if (diceStrategy instanceof TwoDice) {
+            output.println("- Number of dice: 2xD" + diceStrategy.getMaxPossibleRoll());
+        } else if (diceStrategy instanceof DiceStreamFixed) {
+            output.println("- Dice Rolls Pre Recorded: 1x D" + diceStrategy.getMaxPossibleRoll());
+            output.println("- The dice rule is Strict. If the list of rolls is exhausted, the program will intentionally crash"); 
+        } else if (diceStrategy instanceof DiceStreamUnbounded) {
+            output.println("- Dice Rolls Pre Recorded: 1x D" + diceStrategy.getMaxPossibleRoll());
+            output.println("- The dice rule is lenient. If the list of rolls is exhausted, the program will automatically generate more"); 
+        }
 
-            StylisedPrinter.printSubheading(output, "Piece Configuration");
-            final List<PositionTrackingConverter> listOfPieces = this.pieces.converters();
+        StylisedPrinter.printSubheading(output, "Piece Configuration");
+        final List<PositionTrackingConverter> listOfPieces = this.pieces.converters();
 
-            output.println("- Number of Pieces: " + listOfPieces.size());
-            output.println("- Starting corner of each piece (in order): ");
+        output.println("- Number of Pieces: " + listOfPieces.size());
+        output.println("- Starting corner of each piece (in order): ");
 
-            for (PositionTrackingConverter p : listOfPieces) {
-                output.println("--- " + PositionTrackingConverterMapper.getStringFromImplementation(p));
-            }
+        for (PositionTrackingConverter p : listOfPieces) {
+            output.println("--- " + PositionTrackingConverterMapper.getStringFromImplementation(p));
         }
     }
+
+    @Override
+    public void notify(DiceRolled event) {}
+
+    @Override
+    public void notify(TurnChange event) {}
+
+    @Override
+    public void notify(PieceWon event) {}
 }

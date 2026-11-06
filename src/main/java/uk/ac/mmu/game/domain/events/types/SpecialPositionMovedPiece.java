@@ -1,3 +1,3 @@
 package uk.ac.mmu.game.domain.events.types;
 
-public record SpecialPositionMovedPiece() implements GameEvent {}
+public record SpecialPositionMovedPiece() implements ConfigurableStateRelatedEvent, PieceRelatedEvent {}

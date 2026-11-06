@@ -1,7 +1,7 @@
 package uk.ac.mmu.game.domain.events;
 
-import uk.ac.mmu.game.domain.events.types.GameEvent;
+public sealed interface GameEventSubscriber permits 
+    GameRelatedEventSubscriber, 
+    PieceRelatedEventSubscriber, 
+    ConfigurableStateRelatedEventSubscriber {}
 
-public interface GameEventSubscriber {
-    void notify(GameEvent state);
-}

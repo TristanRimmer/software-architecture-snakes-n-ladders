@@ -1,3 +1,3 @@
 package uk.ac.mmu.game.domain.events.types;
 
-public record WinConditionPreventedWin() implements GameEvent {}
+public record WinConditionPreventedWin() implements ConfigurableStateRelatedEvent {}

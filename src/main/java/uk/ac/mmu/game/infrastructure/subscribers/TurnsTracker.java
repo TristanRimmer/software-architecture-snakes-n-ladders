@@ -4,16 +4,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import uk.ac.mmu.game.domain.events.GameEventSubscriber;
+import uk.ac.mmu.game.domain.events.GameRelatedEventSubscriber;
 import uk.ac.mmu.game.domain.events.types.BetterGameStateTransition;
-import uk.ac.mmu.game.domain.events.types.GameEvent;
+import uk.ac.mmu.game.domain.events.types.DiceRolled;
+import uk.ac.mmu.game.domain.events.types.PieceWon;
 import uk.ac.mmu.game.domain.events.types.TurnChange;
-import uk.ac.mmu.game.domain.game.state.GameOver;
 import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
 import uk.ac.mmu.game.infrastructure.output.SystemOut;
 import uk.ac.mmu.game.infrastructure.output.TextOutputHandler;
 
-public class TurnsTracker implements GameEventSubscriber {
+public class TurnsTracker implements GameRelatedEventSubscriber {
     private final Map<Integer, Integer> numberOfTurnsPerPiece;
     private final TextOutputHandler stylisedPrinterIOMechanism = new SystemOut();
 
@@ -28,9 +28,24 @@ public class TurnsTracker implements GameEventSubscriber {
     public TurnsTracker() {
         this.numberOfTurnsPerPiece = new LinkedHashMap<>();
     }
+
     @Override
-    public void notify(GameEvent state) {
-        if (state instanceof TurnChange(int pieceNumber)) {
+    public void notify(BetterGameStateTransition event) {
+        StylisedPrinter.printSubheading(this.stylisedPrinterIOMechanism, "Turns Breakdown");
+        int runningTotal = 0;
+
+        for (Integer key : this.numberOfTurnsPerPiece.keySet()) {
+            this.stylisedPrinterIOMechanism.println(
+                "-> Piece " + key + " had " + this.numberOfTurnsPerPiece.get(key) + " turns");
+            runningTotal += this.numberOfTurnsPerPiece.get(key);
+        }
+        this.stylisedPrinterIOMechanism.println("-> In total, there were " + runningTotal + " turns this game.");
+    }
+
+    @Override
+    public void notify(TurnChange event) {
+            int pieceNumber = event.pieceNumber();
+
             String colour = (pieceNumber <= 4) ? colours.get(pieceNumber) : colours.getLast();
             StylisedPrinter.printSubheading(stylisedPrinterIOMechanism, colour + "Piece " + pieceNumber + colours.getLast() + "'s Turn");
 
@@ -43,19 +58,11 @@ public class TurnsTracker implements GameEventSubscriber {
 
             this.stylisedPrinterIOMechanism.println("-> Number of turns so far: " + (currentScore + 1));
 
-        } else if (state instanceof BetterGameStateTransition stateTransition
-            && stateTransition.state().equals(GameOver.class)
-        ) {
-            StylisedPrinter.printSubheading(this.stylisedPrinterIOMechanism, "Turns Breakdown");
-            int runningTotal = 0;
-
-            for (Integer key : this.numberOfTurnsPerPiece.keySet()) {
-                this.stylisedPrinterIOMechanism.println(
-                    "-> Piece " + key + " had " + this.numberOfTurnsPerPiece.get(key) + " turns");
-                runningTotal += this.numberOfTurnsPerPiece.get(key);
-            }
-            this.stylisedPrinterIOMechanism.println("-> In total, there were " + runningTotal + " turns this game.");
-        }
     }
 
+    @Override
+    public void notify(DiceRolled event) {}
+
+    @Override
+    public void notify(PieceWon event) {}
 }
