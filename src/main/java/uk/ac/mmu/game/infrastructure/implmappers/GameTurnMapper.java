@@ -1,0 +1,19 @@
+package uk.ac.mmu.game.infrastructure.implmappers;
+
+import uk.ac.mmu.game.domain.game.gameturn.ComprehensiveGameTurn;
+import uk.ac.mmu.game.domain.game.gameturn.GameTurn;
+
+public class GameTurnMapper {
+    public static final String COMPREHENSIVE_GAME_TURN = "Default";
+
+    public static GameTurn getImplementationFromString(String name) throws ImplFactoryException {
+        if (name.equals(COMPREHENSIVE_GAME_TURN))
+            return new ComprehensiveGameTurn();
+
+        throw new ImplFactoryException("Invalid variant passed to game turn factory");
+    }
+
+    public static String getStringFromImplementation(GameTurn impl) {
+        return COMPREHENSIVE_GAME_TURN;
+    }
+}

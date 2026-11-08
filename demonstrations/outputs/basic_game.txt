@@ -1,0 +1,123 @@
+|=|---------------------------|=|
+|=|                           |=|
+|=|-------|=| Ready |=|-------|=|
+|=|                           |=|
+|=|---------------------------|=|
+
+
+|=|-------|=| Game Configuration |=|-------|=|
+-> Board Dimensions: [5,5]
+- Number of Teleporter-Pairs: 0
+- Win Condition: CrossTheFinishLine
+- Hit Condition: HitsDoNothing
+- Number of dice: 1xD6
+
+|=|-------|=| Piece Configuration |=|-------|=|
+- Number of Pieces: 2
+- Starting corner of each piece (in order): 
+--- LowerLeftOrigin
+--- UpperRightOrigin
+
+|=|-----------------------------|=|
+|=|                             |=|
+|=|-------|=| In Play |=|-------|=|
+|=|                             |=|
+|=|-----------------------------|=|
+
+
+|=|-------|=| Piece 0's Turn |=|-------|=|
+-> Number of turns so far: 1
+=> The Dice was rolled and landed on a 1
+=> (Internally, the piece is currently at [1,0])
+=> The piece started its turn at [0,0] and ended at [1,0]
+
+|=|-------|=| Piece 1's Turn |=|-------|=|
+-> Number of turns so far: 1
+=> The Dice was rolled and landed on a 1
+=> (Internally, the piece is currently at [3,4])
+=> The piece started its turn at [4,4] and ended at [3,4]
+
+|=|-------|=| Piece 0's Turn |=|-------|=|
+-> Number of turns so far: 2
+=> The Dice was rolled and landed on a 1
+=> (Internally, the piece is currently at [2,0])
+=> The piece started its turn at [1,0] and ended at [2,0]
+
+|=|-------|=| Piece 1's Turn |=|-------|=|
+-> Number of turns so far: 2
+=> The Dice was rolled and landed on a 5
+=> (Internally, the piece is currently at [1,3])
+=> The piece started its turn at [3,4] and ended at [1,3]
+
+|=|-------|=| Piece 0's Turn |=|-------|=|
+-> Number of turns so far: 3
+=> The Dice was rolled and landed on a 3
+=> (Internally, the piece is currently at [4,1])
+=> The piece started its turn at [2,0] and ended at [4,1]
+
+|=|-------|=| Piece 1's Turn |=|-------|=|
+-> Number of turns so far: 3
+=> The Dice was rolled and landed on a 6
+=> (Internally, the piece is currently at [2,2])
+=> The piece started its turn at [1,3] and ended at [2,2]
+
+|=|-------|=| Piece 0's Turn |=|-------|=|
+-> Number of turns so far: 4
+=> The Dice was rolled and landed on a 5
+=> (Internally, the piece is currently at [0,2])
+=> The piece started its turn at [4,1] and ended at [0,2]
+
+|=|-------|=| Piece 1's Turn |=|-------|=|
+-> Number of turns so far: 4
+=> The Dice was rolled and landed on a 5
+=> (Internally, the piece is currently at [2,1])
+=> The piece started its turn at [2,2] and ended at [2,1]
+
+|=|-------|=| Piece 0's Turn |=|-------|=|
+-> Number of turns so far: 5
+=> The Dice was rolled and landed on a 1
+=> (Internally, the piece is currently at [1,2])
+=> The piece started its turn at [0,2] and ended at [1,2]
+
+|=|-------|=| Piece 1's Turn |=|-------|=|
+-> Number of turns so far: 5
+=> The Dice was rolled and landed on a 3
+=> (Internally, the piece is currently at [4,0])
+=> The piece started its turn at [2,1] and ended at [4,0]
+
+|=|-------|=| Piece 0's Turn |=|-------|=|
+-> Number of turns so far: 6
+=> The Dice was rolled and landed on a 1
+=> (Internally, the piece is currently at [2,2])
+=> The piece started its turn at [1,2] and ended at [2,2]
+
+|=|-------|=| Piece 1's Turn |=|-------|=|
+-> Number of turns so far: 6
+=> The Dice was rolled and landed on a 1
+=> (Internally, the piece is currently at [3,0])
+=> The piece started its turn at [4,0] and ended at [3,0]
+
+|=|-------|=| Piece 0's Turn |=|-------|=|
+-> Number of turns so far: 7
+=> The Dice was rolled and landed on a 2
+=> (Internally, the piece is currently at [4,2])
+=> The piece started its turn at [2,2] and ended at [4,2]
+
+|=|-------|=| Piece 1's Turn |=|-------|=|
+-> Number of turns so far: 7
+=> The Dice was rolled and landed on a 4
+=> (Internally, the piece is currently at [0,-1])
+=> The piece has landed on [0,-1] and has won the game!
+
+
+|=|-------------------------------|=|
+|=|                               |=|
+|=|-------|=| Game Over |=|-------|=|
+|=|                               |=|
+|=|-------------------------------|=|
+
+
+|=|-------|=| Turns Breakdown |=|-------|=|
+-> Piece 0 had 7 turns
+-> Piece 1 had 7 turns
+-> In total, there were 14 turns this game.

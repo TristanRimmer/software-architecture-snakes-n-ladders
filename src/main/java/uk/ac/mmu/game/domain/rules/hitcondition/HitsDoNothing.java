@@ -1,0 +1,16 @@
+package uk.ac.mmu.game.domain.rules.hitcondition;
+
+import java.util.List;
+
+import uk.ac.mmu.game.domain.pieces.Piece;
+import uk.ac.mmu.game.domain.util.GridPosition;
+
+public final class HitsDoNothing implements CollisionCondition {
+    @Override
+    public CollisionStatus evaluateCollisions(Piece piece, GridPosition oldPos, GridPosition proposedPos,
+            List<GridPosition> allCurrentPositions) {
+        piece.setPosition(proposedPos);
+
+        return CollisionStatus.MOVEHAPPENED;
+    }
+}

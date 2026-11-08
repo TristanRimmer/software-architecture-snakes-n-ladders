@@ -1,0 +1,61 @@
+package uk.ac.mmu.game.infrastructure.contextsource;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import uk.ac.mmu.game.domain.board.Board;
+import uk.ac.mmu.game.domain.board.SquareBoard;
+import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
+import uk.ac.mmu.game.domain.board.specialpositions.SpecialPositionContainer;
+import uk.ac.mmu.game.domain.board.specialpositions.TeleporterContainerDisallowingWinTeleporters;
+import uk.ac.mmu.game.domain.board.specialpositions.TwoWayTeleporter;
+import uk.ac.mmu.game.domain.dice.DiceRolling;
+import uk.ac.mmu.game.domain.dice.variations.SingleDice;
+import uk.ac.mmu.game.domain.game.GameConfiguration;
+import uk.ac.mmu.game.domain.game.gameturn.ComprehensiveGameTurn;
+import uk.ac.mmu.game.domain.game.gameturn.GameTurn;
+import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
+import uk.ac.mmu.game.domain.rules.hitcondition.HitsForfeitTurn;
+import uk.ac.mmu.game.domain.rules.wincondition.ExactHit;
+import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
+import uk.ac.mmu.game.domain.util.BoardDimension;
+import uk.ac.mmu.game.domain.util.BoardDimensionInvalidException;
+import uk.ac.mmu.game.domain.util.GridPosition;
+import uk.ac.mmu.game.infrastructure.random.JavaStlRandom;
+
+public class HardCodedGameConfigurationSource {
+    public static GameConfiguration getGameConfiguration() {
+		List<SpecialLinkedPositions> specialPositions = new ArrayList<>();
+		specialPositions.add(
+            new TwoWayTeleporter(
+                new GridPosition(0,3), 
+                new GridPosition(1, 0)));
+		specialPositions.add(
+            new TwoWayTeleporter(
+                new GridPosition(0,0), 
+                new GridPosition(1, 0)));
+
+
+        BoardDimension boardDimensions = null;
+        try {
+            boardDimensions = BoardDimension.create(5);
+        } catch (BoardDimensionInvalidException ex) {
+            /* Hard Coded -> this catch will never be reached */
+        }
+
+		Board board = new SquareBoard(boardDimensions);
+        SpecialPositionContainer specialPositionContainer = new TeleporterContainerDisallowingWinTeleporters(board.getBoardWidth(), board.getBoardHeight());
+
+        for (SpecialLinkedPositions p : specialPositions)
+            specialPositionContainer.registerNewSpecialPosition(p);
+
+		DiceRolling diceRoller = new SingleDice(new JavaStlRandom(), 6);
+		WinCondition winEvaluator = new ExactHit();
+		CollisionCondition collisionHandler = new HitsForfeitTurn();
+
+        GameTurn turnSequence = new ComprehensiveGameTurn();
+
+        return new GameConfiguration(winEvaluator, collisionHandler, diceRoller, board, specialPositionContainer, turnSequence);
+    }
+
+}

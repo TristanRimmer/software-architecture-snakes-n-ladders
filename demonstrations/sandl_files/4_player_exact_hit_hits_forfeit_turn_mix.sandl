@@ -1,0 +1,55 @@
+24854995_Game_Save
+BoardSize 6 6
+NumSpecialPositions 2
+OneWayTeleporter 1 1 4 1
+TwoWayTeleporter 3 2 2 3
+HitCondition HitsForfeitTurn
+WinCondition ExactHit
+TurnSequence Default
+DiceRule Strict
+DiceRolls 39
+RandomNumbersSource Default
+3
+4
+1
+2
+2
+4
+6
+3
+1
+1
+4
+1
+1
+1
+4
+4
+4
+2
+3
+6
+6
+6
+2
+4
+5
+3
+3
+3
+1
+5
+4
+2
+6
+1
+3
+2
+5
+5
+2
+NumPieces 4
+LowerLeftOrigin
+UpperRightOrigin
+LowerRightOrigin
+UpperLeftOrigin

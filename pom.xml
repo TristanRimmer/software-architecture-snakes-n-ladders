@@ -11,7 +11,6 @@
     <groupId>uk.ac.mmu</groupId>
     <artifactId>game</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <!-- <packaging>pom</packaging> -->
     <name/>
     <description/>
     <url/>
@@ -33,7 +32,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-json</artifactId>
+            <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
         <dependency>
@@ -45,6 +44,16 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <mainClass>
+                        uk.ac.mmu.game.HardCodedApplication
+                    </mainClass>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

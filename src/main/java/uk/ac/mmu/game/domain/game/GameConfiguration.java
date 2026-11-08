@@ -1,0 +1,17 @@
+package uk.ac.mmu.game.domain.game;
+
+import uk.ac.mmu.game.domain.board.Board;
+import uk.ac.mmu.game.domain.board.specialpositions.SpecialPositionContainer;
+import uk.ac.mmu.game.domain.dice.DiceRolling;
+import uk.ac.mmu.game.domain.game.gameturn.GameTurn;
+import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
+import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
+
+public record GameConfiguration(
+        WinCondition winEvaluator,
+        CollisionCondition collisionEvaluator,
+        DiceRolling diceRoller,
+        Board board,
+        SpecialPositionContainer specialPositions,
+        GameTurn turnSequence) {
+}

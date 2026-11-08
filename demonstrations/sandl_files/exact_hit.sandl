@@ -1,0 +1,25 @@
+24854995_Game_Save
+BoardSize 5 5
+NumSpecialPositions 0
+HitCondition HitsDoNothing
+WinCondition ExactHit
+TurnSequence Default
+DiceRule Strict
+DiceRolls 13
+RandomNumbersSource Default
+4
+4
+6
+4
+4
+1
+1
+1
+4
+1
+6
+3
+1
+NumPieces 2
+LowerLeftOrigin
+UpperRightOrigin

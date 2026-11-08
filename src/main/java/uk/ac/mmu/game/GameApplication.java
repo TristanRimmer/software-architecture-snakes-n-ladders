@@ -1,115 +1,69 @@
 package uk.ac.mmu.game;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Import;
 
-import uk.ac.mmu.game.board.Board;
-import uk.ac.mmu.game.board.BoardService;
-import uk.ac.mmu.game.board.SpecialPositionService;
-import uk.ac.mmu.game.diceroller.DiceRoller;
-import uk.ac.mmu.game.diceroller.DiceRollingService;
-import uk.ac.mmu.game.diceroller.NextDiceRoll;
-import uk.ac.mmu.game.diceroller.SingleDice;
-import uk.ac.mmu.game.gamestate.ComprehensiveGameTurn;
-import uk.ac.mmu.game.gamestate.Game;
-import uk.ac.mmu.game.gamestate.GameConfiguration;
-import uk.ac.mmu.game.hitcondition.HitsForfeitTurn;
-import uk.ac.mmu.game.hitcondition.PieceCollisionService;
-import uk.ac.mmu.game.observer.GameEventPublisher;
-import uk.ac.mmu.game.observer.subscribers.ConsolePrinter;
-import uk.ac.mmu.game.observer.subscribers.DiceRollRecorder;
-import uk.ac.mmu.game.pieces.LowerLeftOrigin;
-import uk.ac.mmu.game.pieces.LowerRightOrigin;
-import uk.ac.mmu.game.pieces.Piece;
-import uk.ac.mmu.game.pieces.PieceService;
-import uk.ac.mmu.game.pieces.PositionTrackingConverter;
-import uk.ac.mmu.game.pieces.UpperLeftOrigin;
-import uk.ac.mmu.game.pieces.UpperRightOrigin;
-import uk.ac.mmu.game.wincondition.ExactHit;
-import uk.ac.mmu.game.wincondition.WinEvaluationService;
+import uk.ac.mmu.game.domain.events.GameEventPublisher;
+import uk.ac.mmu.game.domain.game.GameConfiguration;
+import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
+import uk.ac.mmu.game.infrastructure.contextsource.SpringBootConfiguration;
+import uk.ac.mmu.game.infrastructure.input.CommandLineInterface;
+import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
+import uk.ac.mmu.game.infrastructure.output.SystemOut;
+import uk.ac.mmu.game.infrastructure.subscribers.ConfigurableStateDebuggerPrinter;
+import uk.ac.mmu.game.infrastructure.subscribers.GameRelatedEventPrinter;
+import uk.ac.mmu.game.infrastructure.subscribers.PieceRelatedEventPrinter;
+import uk.ac.mmu.game.infrastructure.subscribers.TurnsTracker;
+import uk.ac.mmu.game.usecase.GameRepository;
+import uk.ac.mmu.game.usecase.action.GameAction;
+import uk.ac.mmu.game.usecase.action.NewGameAction;
+import uk.ac.mmu.game.usecase.action.ReplayGameAction;
+import uk.ac.mmu.game.usecase.action.SessionOverAction;
 
+@Import(SpringBootConfiguration.class)
 @SpringBootApplication
 public class GameApplication {
-	/*
-		GameApplication:
-		- Owns the board -> DONE!
-		- Owns the pieces -> DONE!
-		- Owns the DiceRoller -> DONE!
-		- Owns a HitCondition Evaluator -> VERY PRIMITIVE VERSION IMPLEMENTED
-		- Owns the WinCondition Evaluater -> DONE
-	*/
+	private static final List<String> PLAY_OPTIONS = List.of("New", "Replay", "Exit");
 	public static void main(String[] args) {
-		SpringApplication.run(GameApplication.class, args);
-		/*
-			Board Initialisation
-		*/
-		ArrayList<SpecialPositionService> specialPositions = new ArrayList<>();
-		//specialPositions.add(new Teleporter(new GridPosition(0,3), new GridPosition(1, 0)));
+		ConfigurableApplicationContext context = 
+			SpringApplication.run(GameApplication.class, args);
 
-		BoardService board = new Board(5, 5, specialPositions);
+		GameRepository repository = context.getBean(GameRepository.class);
 
-		/*
-			Piece initialisation
-		*/
-		ArrayList<PieceService> pieces = new ArrayList<>();
+		while (true) {
+            StylisedPrinter.printBanner(new SystemOut(), "Snakes & Ladders");
 
-		// Could implement a wicked factory here
-		PositionTrackingConverter pieceConverter = new LowerLeftOrigin();
-		pieces.add(new Piece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
+			// Not configurable
+            GameEventPublisher publisher = new GameEventPublisher();
+            publisher.registerNewSubscriber(new PieceRelatedEventPrinter());
+            publisher.registerNewSubscriber(new GameRelatedEventPrinter());
+            publisher.registerNewSubscriber(new ConfigurableStateDebuggerPrinter());
+            publisher.registerNewSubscriber(new TurnsTracker());
 
-		pieceConverter = new UpperRightOrigin();
-		pieces.add(new Piece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
+            GameAction action = switch (
+				CommandLineInterface.pickOptionNumberFromList(
+					"Choose how you would like to source a game", 
+					PLAY_OPTIONS)) {
+                        case 0 -> new NewGameAction(
+                                context.getBean(GameConfiguration.class), 
+                                context.getBean(PieceConfigurationsList.class),
+                                publisher, 
+                                repository
+                            );
+                        case 1 -> new ReplayGameAction(
+                            publisher, 
+                            repository
+                        );
+                        default -> new SessionOverAction(); 
+                    };
+            if (action.endOfSession())
+                return;
 
-		pieceConverter = new UpperLeftOrigin();
-		pieces.add(new Piece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
-
-		pieceConverter = new LowerRightOrigin();
-		pieces.add(new Piece(pieceConverter, board.getBoardWidth(), board.getBoardHeight()));
-		
-		/*
-			Dice Rolling Initialisation
-		*/
-		NextDiceRoll chosenDiceImpl = new SingleDice(6);
-		// NextDiceRoll chosenDiceImpl = new DiceStreamFixed(
-		// 	new ArrayList<>(
-		// 		List.of(5, 5, 4, 5, 2, 1, 2, 1, 4, 3, 2, 3, 5, 3, 3, 2, 2, 6, 2, 4, 3, 4, 2, 4, 6, 1, 5, 5)
-		// 	 	//List.of(1, 1, 5, 2, 5, 3, 2, 3, 6, 5, 2, 6, 6, 6, 5, 1, 6, 1, 2, 6, 4, 1, 6, 1, 5, 3)
-		// 		//List.of(6, 6, 3, 5, 2, 5, 6, 2, 6, 6, 4, 2, 4, 4, 3)
-		// 	)
-		// );
-		DiceRollingService diceRoller = new DiceRoller(chosenDiceImpl);
-
-		/*
-			Win Condition Ininitalisation		
-		*/
-		WinEvaluationService winEvaluator = new ExactHit();
-
-		/*
-			Hit Condition Initialisation
-		*/
-		PieceCollisionService collisionHandler = new HitsForfeitTurn();
-
-		GameEventPublisher publisher = new GameEventPublisher();
-		publisher.registerNewSubscriber(new ConsolePrinter());
-
-		DiceRollRecorder diceRollTracker = new DiceRollRecorder();
-		publisher.registerNewSubscriber(diceRollTracker);
-
-		GameConfiguration config = new GameConfiguration(winEvaluator, collisionHandler, diceRoller, board, new ComprehensiveGameTurn());
-
-		Game game = new Game(config, pieces, publisher);
-
-		game.play();
-
-		ArrayList<Integer> diceStream = diceRollTracker.getListOfDiceRolls();
-
-		System.out.println("Dice Roll History: ");
-		String diceRollSequence = "| ";
-		for (Integer i : diceStream) {
-			diceRollSequence = diceRollSequence + i + ", ";
+            action.run();
 		}
-		System.out.println(diceRollSequence + " |");
 	}
 }
