@@ -10,9 +10,7 @@ import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamFixed;
 import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamUnbounded;
 import uk.ac.mmu.game.domain.events.GameRelatedEventSubscriber;
 import uk.ac.mmu.game.domain.events.types.BetterGameStateTransition;
-import uk.ac.mmu.game.domain.events.types.DiceRolled;
-import uk.ac.mmu.game.domain.events.types.PieceWon;
-import uk.ac.mmu.game.domain.events.types.TurnChange;
+import uk.ac.mmu.game.domain.events.types.GameRelatedEvent;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
 import uk.ac.mmu.game.domain.game.state.Ready;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
@@ -26,7 +24,7 @@ import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
 import uk.ac.mmu.game.infrastructure.output.SystemOut;
 import uk.ac.mmu.game.infrastructure.output.TextOutputHandler;
 
-public class MetadataDumper implements GameRelatedEventSubscriber {
+public final class MetadataDumper implements GameRelatedEventSubscriber {
     private final GameConfiguration gameConfig;
     private final PieceConfigurationsList pieces;
     private final TextOutputHandler output = new SystemOut();
@@ -36,8 +34,13 @@ public class MetadataDumper implements GameRelatedEventSubscriber {
         this.pieces = pieces;
     }
 
-    @Override
-    public void notify(BetterGameStateTransition event) {
+    @Override 
+    public void notify(GameRelatedEvent event) {
+        if (event instanceof BetterGameStateTransition ev)
+            this.action(ev);
+    }
+
+    private void action(BetterGameStateTransition event) {
         
         if (!event.state().equals(Ready.class))
             return;
@@ -94,13 +97,4 @@ public class MetadataDumper implements GameRelatedEventSubscriber {
             output.println("--- " + PositionTrackingConverterMapper.getStringFromImplementation(p));
         }
     }
-
-    @Override
-    public void notify(DiceRolled event) {}
-
-    @Override
-    public void notify(TurnChange event) {}
-
-    @Override
-    public void notify(PieceWon event) {}
 }
