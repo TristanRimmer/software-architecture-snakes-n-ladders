@@ -8,13 +8,14 @@ import uk.ac.mmu.game.domain.events.GameRelatedEventSubscriber;
 import uk.ac.mmu.game.domain.events.types.BetterGameStateTransition;
 import uk.ac.mmu.game.domain.events.types.GameRelatedEvent;
 import uk.ac.mmu.game.domain.events.types.TurnChange;
+import uk.ac.mmu.game.domain.game.state.GameOver;
 import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
 import uk.ac.mmu.game.infrastructure.output.SystemOut;
 import uk.ac.mmu.game.infrastructure.output.TextOutputHandler;
 
 public final class TurnsTracker implements GameRelatedEventSubscriber {
     private final Map<Integer, Integer> numberOfTurnsPerPiece;
-    private final TextOutputHandler stylisedPrinterIOMechanism = new SystemOut();
+    private final TextOutputHandler io = new SystemOut();
 
     private static final List<String> colours = List.of(
         "\u001B[31m", // Red
@@ -28,7 +29,6 @@ public final class TurnsTracker implements GameRelatedEventSubscriber {
         this.numberOfTurnsPerPiece = new LinkedHashMap<>();
     }
 
-
     @Override
     public void notify(GameRelatedEvent event) {
         switch (event) {
@@ -39,22 +39,25 @@ public final class TurnsTracker implements GameRelatedEventSubscriber {
     }
 
     private void action(BetterGameStateTransition event) {
-        StylisedPrinter.printSubheading(this.stylisedPrinterIOMechanism, "Turns Breakdown");
+        if (!event.state().equals(GameOver.class)) 
+            return;
+
+        StylisedPrinter.printSubheading(this.io, "Turns Breakdown");
         int runningTotal = 0;
 
         for (Integer key : this.numberOfTurnsPerPiece.keySet()) {
-            this.stylisedPrinterIOMechanism.println(
+            this.io.println(
                 "-> Piece " + key + " had " + this.numberOfTurnsPerPiece.get(key) + " turns");
             runningTotal += this.numberOfTurnsPerPiece.get(key);
         }
-        this.stylisedPrinterIOMechanism.println("-> In total, there were " + runningTotal + " turns this game.");
+        this.io.println("-> In total, there were " + runningTotal + " turns this game.");
     }
 
     private void action(TurnChange event) {
         int pieceNumber = event.pieceNumber();
 
         String colour = (pieceNumber <= 4) ? colours.get(pieceNumber) : colours.getLast();
-        StylisedPrinter.printSubheading(stylisedPrinterIOMechanism, colour + "Piece " + pieceNumber + colours.getLast() + "'s Turn");
+        StylisedPrinter.printSubheading(io, colour + "Piece " + pieceNumber + colours.getLast() + "'s Turn");
 
         if (!this.numberOfTurnsPerPiece.containsKey(pieceNumber))
             this.numberOfTurnsPerPiece.put(pieceNumber, 0);
@@ -63,6 +66,6 @@ public final class TurnsTracker implements GameRelatedEventSubscriber {
 
         this.numberOfTurnsPerPiece.put(pieceNumber, currentScore + 1);
 
-        this.stylisedPrinterIOMechanism.println("-> Number of turns so far: " + (currentScore + 1));
+        this.io.println("-> Number of turns so far: " + (currentScore + 1));
     }
 }

@@ -25,7 +25,6 @@ public final class PieceRelatedEventPrinter implements PieceRelatedEventSubscrib
         System.out.println("-> piece has moved from " + event.oldPos() + " to " + event.newPos());
     }
 
-    // The args are unused but allow method overloading
     private void action(PiecesHit event) {
         System.out.println("-> piece has hit another piece on the board!");
     }

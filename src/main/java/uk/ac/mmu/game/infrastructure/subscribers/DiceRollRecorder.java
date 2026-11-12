@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.mmu.game.domain.events.GameRelatedEventSubscriber;
+import uk.ac.mmu.game.domain.events.types.BetterGameStateTransition;
 import uk.ac.mmu.game.domain.events.types.DiceRolled;
 import uk.ac.mmu.game.domain.events.types.GameRelatedEvent;
+import uk.ac.mmu.game.domain.game.state.GameOver;
 
-public final class DiceRollRecorder implements GameRelatedEventSubscriber{
+public final class DiceRollRecorder implements GameRelatedEventSubscriber {
     private final List<Integer> list;
-    private final Boolean gameWon;
+    private boolean gameWon;
 
     public DiceRollRecorder() {
         this.list = new ArrayList<>();
@@ -20,15 +22,22 @@ public final class DiceRollRecorder implements GameRelatedEventSubscriber{
         return this.list;
     }
 
-
     @Override
     public void notify(GameRelatedEvent event) {
-        if (event instanceof DiceRolled dr)
-            this.action(dr);
+        switch (event) {
+            case DiceRolled ev -> this.action(ev);
+            case BetterGameStateTransition ev -> this.action(ev);
+            default -> {}
+        }
     }
 
     private void action(DiceRolled event) {
         if (!this.gameWon)
             this.list.add(event.diceRoll());
+    }
+
+    private void action(BetterGameStateTransition event) {
+        if (event.state().equals(GameOver.class))
+            this.gameWon = true;
     }
 }
