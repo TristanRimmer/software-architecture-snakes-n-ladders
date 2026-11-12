@@ -4,6 +4,7 @@ import uk.ac.mmu.game.domain.events.GameRelatedEventSubscriber;
 import uk.ac.mmu.game.domain.events.types.BetterGameStateTransition;
 import uk.ac.mmu.game.domain.events.types.DiceRolled;
 import uk.ac.mmu.game.domain.events.types.GameRelatedEvent;
+import uk.ac.mmu.game.domain.events.types.TurnChange;
 import uk.ac.mmu.game.domain.game.state.GameOver;
 import uk.ac.mmu.game.domain.game.state.GameState;
 import uk.ac.mmu.game.domain.game.state.InPlay;
@@ -20,7 +21,7 @@ public final class GameRelatedEventPrinter implements GameRelatedEventSubscriber
         switch (event) {
             case BetterGameStateTransition ev -> this.action(ev);
             case DiceRolled ev -> this.action(ev);
-            default -> {}
+            case TurnChange ev -> {} 
         }
     }
 

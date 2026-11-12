@@ -6,6 +6,7 @@ import java.util.Map;
 
 import uk.ac.mmu.game.domain.events.GameRelatedEventSubscriber;
 import uk.ac.mmu.game.domain.events.types.BetterGameStateTransition;
+import uk.ac.mmu.game.domain.events.types.DiceRolled;
 import uk.ac.mmu.game.domain.events.types.GameRelatedEvent;
 import uk.ac.mmu.game.domain.events.types.TurnChange;
 import uk.ac.mmu.game.domain.game.state.GameOver;
@@ -34,7 +35,7 @@ public final class TurnsTracker implements GameRelatedEventSubscriber {
         switch (event) {
             case BetterGameStateTransition ev -> this.action(ev);
             case TurnChange ev -> this.action(ev);
-            default -> {}
+            case DiceRolled ev -> {} 
         }
     }
 

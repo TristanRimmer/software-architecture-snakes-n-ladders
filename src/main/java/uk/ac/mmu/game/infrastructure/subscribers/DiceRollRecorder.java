@@ -7,6 +7,7 @@ import uk.ac.mmu.game.domain.events.GameRelatedEventSubscriber;
 import uk.ac.mmu.game.domain.events.types.BetterGameStateTransition;
 import uk.ac.mmu.game.domain.events.types.DiceRolled;
 import uk.ac.mmu.game.domain.events.types.GameRelatedEvent;
+import uk.ac.mmu.game.domain.events.types.TurnChange;
 import uk.ac.mmu.game.domain.game.state.GameOver;
 
 public final class DiceRollRecorder implements GameRelatedEventSubscriber {
@@ -27,7 +28,7 @@ public final class DiceRollRecorder implements GameRelatedEventSubscriber {
         switch (event) {
             case DiceRolled ev -> this.action(ev);
             case BetterGameStateTransition ev -> this.action(ev);
-            default -> {}
+            case TurnChange ev -> {}
         }
     }
 

@@ -10,7 +10,9 @@ import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamFixed;
 import uk.ac.mmu.game.domain.dice.variations.stream.DiceStreamUnbounded;
 import uk.ac.mmu.game.domain.events.GameRelatedEventSubscriber;
 import uk.ac.mmu.game.domain.events.types.BetterGameStateTransition;
+import uk.ac.mmu.game.domain.events.types.DiceRolled;
 import uk.ac.mmu.game.domain.events.types.GameRelatedEvent;
+import uk.ac.mmu.game.domain.events.types.TurnChange;
 import uk.ac.mmu.game.domain.game.GameConfiguration;
 import uk.ac.mmu.game.domain.game.state.Ready;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
@@ -36,8 +38,11 @@ public final class MetadataDumper implements GameRelatedEventSubscriber {
 
     @Override 
     public void notify(GameRelatedEvent event) {
-        if (event instanceof BetterGameStateTransition ev)
-            this.action(ev);
+        switch (event) {
+            case BetterGameStateTransition ev -> this.action(ev);
+            case DiceRolled ev -> {}
+            case TurnChange ev -> {}
+        }
     }
 
     private void action(BetterGameStateTransition event) {
