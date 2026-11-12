@@ -4,7 +4,4 @@ import uk.ac.mmu.game.domain.events.types.ConfigurableStateRelatedEvent;
 
 public interface ConfigurableStateRelatedEventSubscriber {
     void notify(ConfigurableStateRelatedEvent event);
-    // void notify(HitConditionsPreventedMove event);
-    // void notify(WinConditionPreventedWin event);
-    // void notify(SpecialPositionMovedPiece event);
 }

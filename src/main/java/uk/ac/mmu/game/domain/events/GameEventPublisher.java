@@ -6,7 +6,7 @@ import uk.ac.mmu.game.domain.events.types.ConfigurableStateRelatedEvent;
 import uk.ac.mmu.game.domain.events.types.GameRelatedEvent;
 import uk.ac.mmu.game.domain.events.types.PieceRelatedEvent;
 
-public class GameEventPublisher {
+public final class GameEventPublisher {
     private final ArrayList<ConfigurableStateRelatedEventSubscriber> configurableStateSubscribers;
     private final ArrayList<GameRelatedEventSubscriber> gameRelatedEventSubscribers;
     private final ArrayList<PieceRelatedEventSubscriber> pieceRelatedEventSubscribers;
@@ -28,18 +28,12 @@ public class GameEventPublisher {
     }
 
     public void publish(ConfigurableStateRelatedEvent event) {
-        for (ConfigurableStateRelatedEventSubscriber sub : this.configurableStateSubscribers) {
-            sub.notify(event);
-        }
+        this.configurableStateSubscribers.forEach(subscriber -> subscriber.notify(event));
     }
     public void publish(GameRelatedEvent event) {
-        for (GameRelatedEventSubscriber sub : this.gameRelatedEventSubscribers) {
-            sub.notify(event);
-        }
+        this.gameRelatedEventSubscribers.forEach(subscriber -> subscriber.notify(event));
     }
     public void publish(PieceRelatedEvent event) {
-        for (PieceRelatedEventSubscriber sub : this.pieceRelatedEventSubscribers) {
-            sub.notify(event);
-        }
+        this.pieceRelatedEventSubscribers.forEach(subscriber -> subscriber.notify(event));
     }
 }
