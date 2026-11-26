@@ -47,8 +47,6 @@ import uk.ac.mmu.game.usecase.GameIDInvalidException;
 import uk.ac.mmu.game.usecase.GameRepository;
 import uk.ac.mmu.game.usecase.types.GameStore;
 
-// TODO: there is a bit of code cleanup to do here
-
 public class FileSystemGameRepository implements GameRepository {
     // Private Error for failed serialisation
     private class FileSystemInternalError extends Exception {
@@ -66,19 +64,6 @@ public class FileSystemGameRepository implements GameRepository {
     private static final String BACKUP_HOME_DIRECTORY = "";
     private static final String DIRECTORY_OF_SAVES = "MMU_24854995_SandL";
     private static final String SAVE_FILE_CUSTOM_EXTENSION = "sandl";
-
-    private static final String DICE_RULE_HEADER = "DiceRule";
-    private static final String DICE_RULE_STRICT = "Strict";
-    private static final String DICE_RULE_LENIENT = "Lenient";
-    private static final String TURN_SEQUENCE_HEADER = "TurnSequence";
-    private static final String SPECIAL_POSITION_HEADER = "NumSpecialPositions";
-    private static final String DICE_ROLLS_HEADER = "DiceRolls";
-    private static final String PIECES_HEADER = "NumPieces";
-    private static final String GAME_SAVE_FILE_HEADER = "24854995_Game_Save";
-    private static final String WIN_CONDITION_HEADER = "WinCondition";
-    private static final String HIT_CONDITION_HEADER = "HitCondition";
-    private static final String BOARD_SIZE_HEADER = "BoardSize";
-    private static final String RANDOM_NUMBER_GENERATOR = "RandomNumbersSource";
 
     private final Path pathToDirectory;
     private List<String> listOfSavesAsFiles;
@@ -131,27 +116,39 @@ public class FileSystemGameRepository implements GameRepository {
     private GameStore serialiseGameFileToGameStore(Path file) throws FileSystemInternalError {
         // Instantiating them outside the map rather than explicitly in the map means i can avoid casts
         // when calling getObject()
-        WinConditionDeserialiser winConditionDeserialiser = new WinConditionDeserialiser(WIN_CONDITION_HEADER);
-        HitConditionDeserialiser hitConditionDeserialiser = new HitConditionDeserialiser(HIT_CONDITION_HEADER);
-        IsDiceRuleStrictDeserialiser diceRuleDeserialiser = new IsDiceRuleStrictDeserialiser(DICE_RULE_HEADER, DICE_RULE_STRICT, DICE_RULE_LENIENT);
-        DiceRollsDeserialiser diceRollsDeserialiser = new DiceRollsDeserialiser(DICE_ROLLS_HEADER);
-        TurnSequenceDeserialiser turnSequenceDeserialiser = new TurnSequenceDeserialiser(TURN_SEQUENCE_HEADER);
-        SpecialPositionDeserialiser specialPositionDeserialiser = new SpecialPositionDeserialiser(SPECIAL_POSITION_HEADER);
-        BoardDeserialiser boardDeserialiser = new BoardDeserialiser(SquareBoard.class, BOARD_SIZE_HEADER);
-        PiecePositionTrackerDeserialiser piecePositionTrackerDeserialiser = new PiecePositionTrackerDeserialiser(PIECES_HEADER);
-        GenerateRandomNumberDeserialiser randomNumberDeserialiser = new GenerateRandomNumberDeserialiser(RANDOM_NUMBER_GENERATOR);
+        WinConditionDeserialiser winConditionDeserialiser = 
+            new WinConditionDeserialiser(SavedGameHeaders.WIN_CONDITION_HEADER.value());
+        HitConditionDeserialiser hitConditionDeserialiser = 
+            new HitConditionDeserialiser(SavedGameHeaders.HIT_CONDITION_HEADER.value());
+        TurnSequenceDeserialiser turnSequenceDeserialiser = 
+            new TurnSequenceDeserialiser(SavedGameHeaders.TURN_SEQUENCE_HEADER.value());
+        SpecialPositionDeserialiser specialPositionDeserialiser = 
+            new SpecialPositionDeserialiser(SavedGameHeaders.SPECIAL_POSITION_HEADER.value());
+        BoardDeserialiser boardDeserialiser = 
+            new BoardDeserialiser(SquareBoard.class, SavedGameHeaders.BOARD_SIZE_HEADER.value());
+        PiecePositionTrackerDeserialiser piecePositionTrackerDeserialiser = 
+            new PiecePositionTrackerDeserialiser(SavedGameHeaders.PIECES_HEADER.value());
+        GenerateRandomNumberDeserialiser randomNumberDeserialiser = 
+            new GenerateRandomNumberDeserialiser(SavedGameHeaders.RANDOM_NUMBER_GENERATOR.value());
+        DiceRollsDeserialiser diceRollsDeserialiser = 
+            new DiceRollsDeserialiser(SavedGameHeaders.DICE_ROLLS_HEADER.value());
+        IsDiceRuleStrictDeserialiser diceRuleDeserialiser = 
+            new IsDiceRuleStrictDeserialiser(
+                SavedGameHeaders.DICE_RULE_HEADER.value(), 
+                SavedGameHeaders.DICE_RULE_STRICT.value(), 
+                SavedGameHeaders.DICE_RULE_LENIENT.value());
 
         List<GameSubcomponentDeserialiser<?>> deserialisers = new ArrayList<>(
             List.of(
                 winConditionDeserialiser, 
                 hitConditionDeserialiser, 
-                diceRollsDeserialiser, 
-                diceRuleDeserialiser, 
                 turnSequenceDeserialiser, 
                 specialPositionDeserialiser, 
                 boardDeserialiser, 
                 piecePositionTrackerDeserialiser, 
-                randomNumberDeserialiser
+                randomNumberDeserialiser,
+                diceRollsDeserialiser,
+                diceRuleDeserialiser
             )
         );
 
@@ -189,7 +186,14 @@ public class FileSystemGameRepository implements GameRepository {
                 : new DiceStreamUnbounded(diceRolls, new SingleDice(randomNumberGenerator, 6));
 
             return new GameStore(
-                new GameConfiguration(winCondition, collisionCondition, diceRoller, board, fileSystemSpecialPositionContainer, turnSequence), 
+                new GameConfiguration(
+                    winCondition, 
+                    collisionCondition, 
+                    diceRoller, 
+                    board, 
+                    fileSystemSpecialPositionContainer, 
+                    turnSequence
+                ), 
                 pieceMoveset, 
                 diceRolls, 
                 this.getNameFromFile(file.getFileName().toString()));
@@ -224,14 +228,14 @@ public class FileSystemGameRepository implements GameRepository {
         Path newFile = this.mapFileNameToPath(fileName);
 
         try (BufferedWriter writer = Files.newBufferedWriter(newFile)) {
-            writer.write(GAME_SAVE_FILE_HEADER);
+            writer.write(SavedGameHeaders.GAME_SAVE_FILE_HEADER.value());
             writer.newLine();
 
             writer.write(
-                    BOARD_SIZE_HEADER + " " + config.board().getBoardWidth().getValue() + " " + config.board().getBoardHeight().getValue());
+                    SavedGameHeaders.BOARD_SIZE_HEADER.value() + " " + config.board().getBoardWidth().getValue() + " " + config.board().getBoardHeight().getValue());
             writer.newLine();
 
-            writer.write(SPECIAL_POSITION_HEADER + " " + config.specialPositions().getSpecialPositions().size());
+            writer.write(SavedGameHeaders.SPECIAL_POSITION_HEADER.value() + " " + config.specialPositions().getSpecialPositions().size());
             writer.newLine();
 
             for (SpecialLinkedPositions pos : config.specialPositions().getSpecialPositions()) {
@@ -245,26 +249,26 @@ public class FileSystemGameRepository implements GameRepository {
                 writer.newLine();
             }
 
-            writer.write(HIT_CONDITION_HEADER +
+            writer.write(SavedGameHeaders.HIT_CONDITION_HEADER.value() +
                     " " + HitConditionMapper.getStringFromImplementation(config.collisionEvaluator()));
             writer.newLine();
 
-            writer.write(WIN_CONDITION_HEADER + " "
+            writer.write(SavedGameHeaders.WIN_CONDITION_HEADER.value() + " "
                     + WinConditionMapper.getStringFromImplementation(config.winEvaluator()));
             writer.newLine();
 
             writer.write(
-                    TURN_SEQUENCE_HEADER + " " + GameTurnMapper.getStringFromImplementation(config.turnSequence()));
+                    SavedGameHeaders.TURN_SEQUENCE_HEADER.value() + " " + GameTurnMapper.getStringFromImplementation(config.turnSequence()));
             writer.newLine();
 
-            writer.write(DICE_RULE_HEADER + " " + DICE_RULE_STRICT);
+            writer.write(SavedGameHeaders.DICE_RULE_HEADER.value() + " " + SavedGameHeaders.DICE_RULE_STRICT.value());
             writer.newLine();
 
-            writer.write(DICE_ROLLS_HEADER + " " + gameData.diceRolls().size());
+            writer.write(SavedGameHeaders.DICE_ROLLS_HEADER.value() + " " + gameData.diceRolls().size());
             writer.newLine();
 
             // INFO: On replay, the old configuration doesn't matter, so its always unseeded
-            writer.write(RANDOM_NUMBER_GENERATOR + " " + GenerateRandomNumberMapper.JAVA_STL_UNSEEDED);
+            writer.write(SavedGameHeaders.RANDOM_NUMBER_GENERATOR.value() + " " + GenerateRandomNumberMapper.JAVA_STL_UNSEEDED);
             writer.newLine();
 
             for (Integer roll : gameData.diceRolls()) {
@@ -272,7 +276,7 @@ public class FileSystemGameRepository implements GameRepository {
                 writer.newLine();
             }
 
-            writer.write(PIECES_HEADER + " " + gameData.pieces().converters().size());
+            writer.write(SavedGameHeaders.PIECES_HEADER.value() + " " + gameData.pieces().converters().size());
             writer.newLine();
 
             for (PositionTrackingConverter piece : gameData.pieces().converters()) {
