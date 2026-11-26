@@ -3,9 +3,9 @@ package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialis
 import java.util.List;
 
 import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
-import uk.ac.mmu.game.infrastructure.implmappers.HitConditionMapper;
-import uk.ac.mmu.game.infrastructure.implmappers.ImplFactoryException;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
+import uk.ac.mmu.game.infrastructure.persistence.implmappers.HitConditionMapper;
+import uk.ac.mmu.game.infrastructure.persistence.implmappers.ImplFactoryException;
 
 public class HitConditionDeserialiser implements GamSubcomponentDeserialiser<CollisionCondition> {
 

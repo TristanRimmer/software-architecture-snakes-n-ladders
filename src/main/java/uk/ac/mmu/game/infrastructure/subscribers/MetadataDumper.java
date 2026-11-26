@@ -18,13 +18,13 @@ import uk.ac.mmu.game.domain.game.state.Ready;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
 import uk.ac.mmu.game.domain.util.GridPosition;
 import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
-import uk.ac.mmu.game.infrastructure.implmappers.HitConditionMapper;
-import uk.ac.mmu.game.infrastructure.implmappers.PositionTrackingConverterMapper;
-import uk.ac.mmu.game.infrastructure.implmappers.SpecialPositionMapper;
-import uk.ac.mmu.game.infrastructure.implmappers.WinConditionMapper;
 import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
 import uk.ac.mmu.game.infrastructure.output.SystemOut;
 import uk.ac.mmu.game.infrastructure.output.TextOutputHandler;
+import uk.ac.mmu.game.infrastructure.persistence.implmappers.HitConditionMapper;
+import uk.ac.mmu.game.infrastructure.persistence.implmappers.PositionTrackingConverterMapper;
+import uk.ac.mmu.game.infrastructure.persistence.implmappers.SpecialPositionMapper;
+import uk.ac.mmu.game.infrastructure.persistence.implmappers.WinConditionMapper;
 
 public final class MetadataDumper implements GameRelatedEventSubscriber {
     private final GameConfiguration gameConfig;

@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.infrastructure.implmappers;
+package uk.ac.mmu.game.infrastructure.persistence.implmappers;
 
 import uk.ac.mmu.game.domain.dice.GenerateRandomNumber;
 import uk.ac.mmu.game.infrastructure.random.JavaStlRandom;

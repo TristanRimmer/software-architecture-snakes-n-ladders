@@ -3,7 +3,7 @@ package uk.ac.mmu.game.domain.dice.variations;
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 import uk.ac.mmu.game.domain.dice.GenerateRandomNumber;
 
-public class TwoDice implements DiceRolling {
+public final class TwoDice implements DiceRolling {
     GenerateRandomNumber rng;
     int maxDiceRoll;
     

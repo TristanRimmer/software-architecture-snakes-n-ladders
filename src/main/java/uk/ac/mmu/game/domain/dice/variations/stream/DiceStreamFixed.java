@@ -4,7 +4,7 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 
-public class DiceStreamFixed implements DiceRolling {
+public final class DiceStreamFixed implements DiceRolling {
     DiceRollFromStream diceRollStream;
 
     public DiceStreamFixed(List<Integer> stream) {

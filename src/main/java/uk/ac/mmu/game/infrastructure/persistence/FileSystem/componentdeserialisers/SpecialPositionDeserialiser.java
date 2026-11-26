@@ -5,9 +5,9 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
 import uk.ac.mmu.game.domain.util.GridPosition;
-import uk.ac.mmu.game.infrastructure.implmappers.ImplFactoryException;
-import uk.ac.mmu.game.infrastructure.implmappers.SpecialPositionMapper;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
+import uk.ac.mmu.game.infrastructure.persistence.implmappers.ImplFactoryException;
+import uk.ac.mmu.game.infrastructure.persistence.implmappers.SpecialPositionMapper;
 
 public class SpecialPositionDeserialiser implements GamSubcomponentDeserialiser<ArrayList<SpecialLinkedPositions>>{
     private final String SPECIAL_POSITION_HEADER;

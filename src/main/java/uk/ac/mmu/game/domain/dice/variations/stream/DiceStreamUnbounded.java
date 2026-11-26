@@ -4,7 +4,7 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.dice.DiceRolling;
 
-public class DiceStreamUnbounded implements DiceRolling {
+public final class DiceStreamUnbounded implements DiceRolling {
     DiceRollFromStream diceRollStream;
     DiceRolling backupRoller;
 

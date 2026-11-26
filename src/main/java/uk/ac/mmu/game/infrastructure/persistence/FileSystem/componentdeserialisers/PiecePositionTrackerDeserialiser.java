@@ -5,9 +5,9 @@ import java.util.List;
 
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
 import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
-import uk.ac.mmu.game.infrastructure.implmappers.ImplFactoryException;
-import uk.ac.mmu.game.infrastructure.implmappers.PositionTrackingConverterMapper;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
+import uk.ac.mmu.game.infrastructure.persistence.implmappers.ImplFactoryException;
+import uk.ac.mmu.game.infrastructure.persistence.implmappers.PositionTrackingConverterMapper;
 
 public class PiecePositionTrackerDeserialiser implements GamSubcomponentDeserialiser<PieceConfigurationsList> {
     private final String PIECES_HEADER;

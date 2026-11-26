@@ -3,7 +3,7 @@ package uk.ac.mmu.game.domain.dice.variations.stream;
 import java.util.List;
 
 
-public class DiceRollFromStream {    
+public final class DiceRollFromStream {    
     List<Integer> stream;
     int currentDiceRollIndex;
 
