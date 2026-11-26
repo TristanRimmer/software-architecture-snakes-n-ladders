@@ -1,6 +1,6 @@
 package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers;
 
-public interface GamSubcomponentDeserialiser<T> {
+public interface GameSubcomponentDeserialiser<T> {
     void loadNextLine(String line);
 
     boolean loadedObjectSuccessfully();

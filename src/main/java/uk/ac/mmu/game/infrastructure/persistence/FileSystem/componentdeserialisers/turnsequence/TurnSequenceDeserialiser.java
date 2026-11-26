@@ -1,13 +1,14 @@
-package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers;
+package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.turnsequence;
 
 import java.util.List;
 
 import uk.ac.mmu.game.domain.game.gameturn.GameTurn;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.GameTurnMapper;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.ImplFactoryException;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.DeserialisedObjectNotCreatedException;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.GameSubcomponentDeserialiser;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.ImplFactoryException;
 
-public class TurnSequenceDeserialiser implements GamSubcomponentDeserialiser<GameTurn> {
+public class TurnSequenceDeserialiser implements GameSubcomponentDeserialiser<GameTurn> {
     private final String TURN_SEQUENCE_HEADER;
 
     private boolean instanceCreated = false;

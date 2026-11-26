@@ -36,9 +36,9 @@ import uk.ac.mmu.game.domain.util.BoardDimensionInvalidException;
 import uk.ac.mmu.game.domain.util.GridPosition;
 import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemGameRepository;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.hitcondition.HitConditionMapper;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.wincondition.WinConditionMapper;
 import uk.ac.mmu.game.infrastructure.persistence.InMemoryGameRepository;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.HitConditionMapper;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.WinConditionMapper;
 import uk.ac.mmu.game.infrastructure.random.JavaStlRandom;
 import uk.ac.mmu.game.usecase.GameRepository;
 

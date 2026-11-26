@@ -21,10 +21,10 @@ import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
 import uk.ac.mmu.game.infrastructure.output.StylisedPrinter;
 import uk.ac.mmu.game.infrastructure.output.SystemOut;
 import uk.ac.mmu.game.infrastructure.output.TextOutputHandler;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.HitConditionMapper;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.PositionTrackingConverterMapper;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.SpecialPositionMapper;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.WinConditionMapper;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.hitcondition.HitConditionMapper;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.positiontrackingconverter.PositionTrackingConverterMapper;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.teleporter.SpecialPositionMapper;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.wincondition.WinConditionMapper;
 
 public final class MetadataDumper implements GameRelatedEventSubscriber {
     private final GameConfiguration gameConfig;

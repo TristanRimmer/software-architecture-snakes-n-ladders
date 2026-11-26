@@ -1,9 +1,10 @@
-package uk.ac.mmu.game.infrastructure.persistence.implmappers;
+package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.teleporter;
 
 import uk.ac.mmu.game.domain.board.specialpositions.OneWayTeleporter;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
 import uk.ac.mmu.game.domain.board.specialpositions.TwoWayTeleporter;
 import uk.ac.mmu.game.domain.util.GridPosition;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.ImplFactoryException;
 
 public class SpecialPositionMapper {
     public static final String TWO_WAY_TELEPORER = "TwoWayTeleporter";

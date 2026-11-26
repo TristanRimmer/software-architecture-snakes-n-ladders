@@ -1,11 +1,13 @@
-package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers;
+package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.diceroller;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.DeserialisedObjectNotCreatedException;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.GameSubcomponentDeserialiser;
 
-public class DiceRollsDeserialiser implements GamSubcomponentDeserialiser<ArrayList<Integer>> {
+public class DiceRollsDeserialiser implements GameSubcomponentDeserialiser<ArrayList<Integer>> {
     private final String DICE_ROLLS_HEADER;
     private final ArrayList<Integer> rolls = new ArrayList<>();
 

@@ -1,8 +1,9 @@
-package uk.ac.mmu.game.infrastructure.persistence.implmappers;
+package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.wincondition;
 
 import uk.ac.mmu.game.domain.rules.wincondition.CrossTheFinishline;
 import uk.ac.mmu.game.domain.rules.wincondition.ExactHit;
 import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.ImplFactoryException;
 
 public final class WinConditionMapper {
     public static final String CROSS_THE_FINISH_LINE = "CrossTheFinishLine";

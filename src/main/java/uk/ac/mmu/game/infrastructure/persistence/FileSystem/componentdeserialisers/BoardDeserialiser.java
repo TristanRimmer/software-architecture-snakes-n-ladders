@@ -8,7 +8,7 @@ import uk.ac.mmu.game.domain.util.BoardDimension;
 import uk.ac.mmu.game.domain.util.BoardDimensionInvalidException;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
 
-public class BoardDeserialiser implements GamSubcomponentDeserialiser<Board> {
+public class BoardDeserialiser implements GameSubcomponentDeserialiser<Board> {
     private int boardWidth = -1;
     private int boardHeight = -1;
 

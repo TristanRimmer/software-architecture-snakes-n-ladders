@@ -1,8 +1,9 @@
-package uk.ac.mmu.game.infrastructure.persistence.implmappers;
+package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.hitcondition;
 
 import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
 import uk.ac.mmu.game.domain.rules.hitcondition.HitsDoNothing;
 import uk.ac.mmu.game.domain.rules.hitcondition.HitsForfeitTurn;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.ImplFactoryException;
 
 public final class HitConditionMapper {
     public static final String HITS_DO_NOTHING = "HitsDoNothing";

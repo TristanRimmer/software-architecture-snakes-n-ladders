@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers;
+package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.positiontrackingconverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,10 +6,11 @@ import java.util.List;
 import uk.ac.mmu.game.domain.pieces.positiontrackers.PositionTrackingConverter;
 import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.ImplFactoryException;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.PositionTrackingConverterMapper;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.DeserialisedObjectNotCreatedException;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.GameSubcomponentDeserialiser;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.ImplFactoryException;
 
-public class PiecePositionTrackerDeserialiser implements GamSubcomponentDeserialiser<PieceConfigurationsList> {
+public class PiecePositionTrackerDeserialiser implements GameSubcomponentDeserialiser<PieceConfigurationsList> {
     private final String PIECES_HEADER;
     private final ArrayList<PositionTrackingConverter> converters = new ArrayList<>();
 

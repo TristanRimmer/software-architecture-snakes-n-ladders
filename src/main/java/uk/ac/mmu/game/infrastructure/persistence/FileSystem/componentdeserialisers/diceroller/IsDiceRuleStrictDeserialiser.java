@@ -1,10 +1,12 @@
-package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers;
+package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.diceroller;
 
 import java.util.List;
 
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.DeserialisedObjectNotCreatedException;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.GameSubcomponentDeserialiser;
 
-public class IsDiceRuleStrictDeserialiser implements GamSubcomponentDeserialiser<Boolean>{
+public class IsDiceRuleStrictDeserialiser implements GameSubcomponentDeserialiser<Boolean>{
     private final String DICE_RULE_HEADER;
     private final String DICE_RULE_STRICT;
     private final String DICE_RULE_LENIENT;

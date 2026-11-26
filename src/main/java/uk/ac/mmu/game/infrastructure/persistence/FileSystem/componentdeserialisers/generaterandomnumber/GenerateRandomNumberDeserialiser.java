@@ -1,14 +1,15 @@
-package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers;
+package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.generaterandomnumber;
 
 import java.util.List;
 
 import uk.ac.mmu.game.domain.dice.GenerateRandomNumber;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.GenerateRandomNumberMapper;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.ImplFactoryException;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.DeserialisedObjectNotCreatedException;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.GameSubcomponentDeserialiser;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.ImplFactoryException;
 import uk.ac.mmu.game.infrastructure.random.JavaStlRandomSeeded;
 
-public class GenerateRandomNumberDeserialiser implements GamSubcomponentDeserialiser<GenerateRandomNumber>{
+public class GenerateRandomNumberDeserialiser implements GameSubcomponentDeserialiser<GenerateRandomNumber>{
     private final String RANDOM_NUMBER_GENERATOR;
 
     private boolean instanceCreated = false;

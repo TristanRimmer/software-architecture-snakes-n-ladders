@@ -1,4 +1,4 @@
-package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers;
+package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.teleporter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,10 +6,11 @@ import java.util.List;
 import uk.ac.mmu.game.domain.board.specialpositions.SpecialLinkedPositions;
 import uk.ac.mmu.game.domain.util.GridPosition;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.ImplFactoryException;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.SpecialPositionMapper;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.DeserialisedObjectNotCreatedException;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.GameSubcomponentDeserialiser;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.ImplFactoryException;
 
-public class SpecialPositionDeserialiser implements GamSubcomponentDeserialiser<ArrayList<SpecialLinkedPositions>>{
+public class SpecialPositionDeserialiser implements GameSubcomponentDeserialiser<ArrayList<SpecialLinkedPositions>>{
     private final String SPECIAL_POSITION_HEADER;
     private final ArrayList<SpecialLinkedPositions> positions = new ArrayList<>();
 

@@ -1,13 +1,14 @@
-package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers;
+package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.hitcondition;
 
 import java.util.List;
 
 import uk.ac.mmu.game.domain.rules.hitcondition.CollisionCondition;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.HitConditionMapper;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.ImplFactoryException;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.DeserialisedObjectNotCreatedException;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.GameSubcomponentDeserialiser;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.ImplFactoryException;
 
-public class HitConditionDeserialiser implements GamSubcomponentDeserialiser<CollisionCondition> {
+public class HitConditionDeserialiser implements GameSubcomponentDeserialiser<CollisionCondition> {
 
     private boolean instanceCreated = false;
     private CollisionCondition condition = null;

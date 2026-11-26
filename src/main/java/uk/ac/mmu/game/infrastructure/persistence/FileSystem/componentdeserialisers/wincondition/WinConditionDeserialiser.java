@@ -1,13 +1,14 @@
-package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers;
+package uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.wincondition;
 
 import java.util.List;
 
 import uk.ac.mmu.game.domain.rules.wincondition.WinCondition;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.FileSystemUtil;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.ImplFactoryException;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.WinConditionMapper;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.DeserialisedObjectNotCreatedException;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.GameSubcomponentDeserialiser;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.ImplFactoryException;
 
-public class WinConditionDeserialiser implements GamSubcomponentDeserialiser<WinCondition>{
+public class WinConditionDeserialiser implements GameSubcomponentDeserialiser<WinCondition>{
 
     private boolean instanceCreated = false;
     private WinCondition condition = null;

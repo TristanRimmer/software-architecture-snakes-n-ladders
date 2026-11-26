@@ -28,21 +28,21 @@ import uk.ac.mmu.game.domain.util.GridPosition;
 import uk.ac.mmu.game.domain.util.PieceConfigurationsList;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.BoardDeserialiser;
 import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.DeserialisedObjectNotCreatedException;
-import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.DiceRollsDeserialiser;
-import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.GamSubcomponentDeserialiser;
-import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.GenerateRandomNumberDeserialiser;
-import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.HitConditionDeserialiser;
-import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.IsDiceRuleStrictDeserialiser;
-import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.PiecePositionTrackerDeserialiser;
-import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.SpecialPositionDeserialiser;
-import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.TurnSequenceDeserialiser;
-import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.WinConditionDeserialiser;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.GameTurnMapper;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.GenerateRandomNumberMapper;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.HitConditionMapper;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.PositionTrackingConverterMapper;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.SpecialPositionMapper;
-import uk.ac.mmu.game.infrastructure.persistence.implmappers.WinConditionMapper;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.GameSubcomponentDeserialiser;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.diceroller.DiceRollsDeserialiser;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.diceroller.IsDiceRuleStrictDeserialiser;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.generaterandomnumber.GenerateRandomNumberDeserialiser;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.generaterandomnumber.GenerateRandomNumberMapper;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.hitcondition.HitConditionDeserialiser;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.hitcondition.HitConditionMapper;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.positiontrackingconverter.PiecePositionTrackerDeserialiser;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.positiontrackingconverter.PositionTrackingConverterMapper;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.teleporter.SpecialPositionDeserialiser;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.teleporter.SpecialPositionMapper;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.turnsequence.GameTurnMapper;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.turnsequence.TurnSequenceDeserialiser;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.wincondition.WinConditionDeserialiser;
+import uk.ac.mmu.game.infrastructure.persistence.FileSystem.componentdeserialisers.wincondition.WinConditionMapper;
 import uk.ac.mmu.game.usecase.GameIDInvalidException;
 import uk.ac.mmu.game.usecase.GameRepository;
 import uk.ac.mmu.game.usecase.types.GameStore;
@@ -141,7 +141,7 @@ public class FileSystemGameRepository implements GameRepository {
         PiecePositionTrackerDeserialiser piecePositionTrackerDeserialiser = new PiecePositionTrackerDeserialiser(PIECES_HEADER);
         GenerateRandomNumberDeserialiser randomNumberDeserialiser = new GenerateRandomNumberDeserialiser(RANDOM_NUMBER_GENERATOR);
 
-        List<GamSubcomponentDeserialiser<?>> deserialisers = new ArrayList<>(
+        List<GameSubcomponentDeserialiser<?>> deserialisers = new ArrayList<>(
             List.of(
                 winConditionDeserialiser, 
                 hitConditionDeserialiser, 
@@ -159,7 +159,7 @@ public class FileSystemGameRepository implements GameRepository {
             String currentLine;
 
             while ((currentLine = reader.readLine()) != null) {
-                for (GamSubcomponentDeserialiser<?> obj : deserialisers) {
+                for (GameSubcomponentDeserialiser<?> obj : deserialisers) {
                     obj.loadNextLine(currentLine);
                 }
             }
